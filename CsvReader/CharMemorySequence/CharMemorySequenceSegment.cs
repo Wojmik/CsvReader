@@ -2,10 +2,11 @@
 using System.Buffers;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace WojciechMikołajewicz.CsvReader
+namespace WojciechMikołajewicz.CsvReader.CharMemorySequence
 {
-	class CharDataSegment : IDisposable
+	class CharMemorySequenceSegment
 	{
 		public char[] Segment { get; private set; }
 
@@ -13,9 +14,9 @@ namespace WojciechMikołajewicz.CsvReader
 
 		public int Count { get; set; }
 
-		public CharDataSegment Next { get; private set; }
+		public CharMemorySequenceSegment Next { get; private set; }
 
-		public CharDataSegment(CharDataSegment previous, int minimumLength)
+		public CharMemorySequenceSegment(CharMemorySequenceSegment previous, int minimumLength)
 		{
 			if(previous!=null)
 				previous.Next=this;
@@ -23,11 +24,12 @@ namespace WojciechMikołajewicz.CsvReader
 			Segment=ArrayPool<char>.Shared.Rent(minimumLength);
 		}
 
-		public void Reuse(CharDataSegment previous)
+		public void Reuse(CharMemorySequenceSegment previous)
 		{
 			this.Next=null;
 			this.Start=0;
 			this.Count=0;
+			this.LoadingTask=null;
 
 			previous.Next=this;
 		}
@@ -35,7 +37,7 @@ namespace WojciechMikołajewicz.CsvReader
 		public void Dispose()
 		{
 			char[] segment = this.Segment;
-			
+
 			if(segment!=null)
 			{
 				ArrayPool<char>.Shared.Return(segment, true);
