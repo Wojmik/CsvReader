@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using WojciechMikołajewicz.CsvReader.CharMemorySequence;
+using WojciechMikołajewicz.CsvReader.MemorySequence;
 
 namespace WojciechMikołajewicz.CsvReader
 {
@@ -17,13 +17,15 @@ namespace WojciechMikołajewicz.CsvReader
 
 		private readonly System.Numerics.Vector<ushort> SearchVector;
 
-		private CharMemorySequence.CharMemorySequence CharMemorySequence;
+		private MemorySequence<char> CharMemorySequence;
 
-		private CharMemorySequenceSegment CurrentlyLoadingSegment;
+		private MemorySequenceSegment<char> CurrentlyLoadingSegment;
 
 		ValueTask<int> LoadingTask;
 
 		private int BufferSizeInChars { get; }
+
+		public long Position { get => this.CharMemorySequence.CurrentPosition.AbsolutePosition; }
 
 		public CsvReader(TextReader textReader)
 		{
@@ -45,69 +47,99 @@ namespace WojciechMikołajewicz.CsvReader
 
 			this.SearchVector=new System.Numerics.Vector<ushort>(searchVactorData);
 
-			//Create CharMemorySequence and first segment
-			this.CharMemorySequence.First=new CharMemorySequenceSegment(previous: null, minimumLength: this.BufferSizeInChars);
-			this.CharMemorySequence.Last=this.CharMemorySequence.First;
+			//Add first segment to CharMemorySequence
+			this.CharMemorySequence.AddNewSegment(minimumLength: this.BufferSizeInChars);
 		}
 
-		public async ValueTask<CharArrayNode> ReadNextCharArrayNodeAsync()
+		public async ValueTask<MemorySequenceNode> ReadNextMemorySequenceNodeAsync(CancellationToken cancellationToken)
 		{
-			
+			var foud=await FindKeyChar(checkCharMethod: IsKeyChar, cancellationToken: cancellationToken)
+				.ConfigureAwait(false);
+
+			//Is it EndOfStream
+			if(foud.EndOfStream)
+				return new MemorySequenceNode(startPosition: this.CharMemorySequence.CurrentPosition, endPosition: foud.FoundPosition, nodeType: NodeType.EndOfStream, escaped: false);
+
+			//It is not EndOfStream
+			if(foud.Character==this.EscapeChar)
+
 		}
 
-		private async ValueTask<long> FindKeyChar(CancellationToken cancellationToken)
+		private async ValueTask<FindKeyCharResult> FindKeyChar(CheckCharDelegate checkCharMethod, CancellationToken cancellationToken)
 		{
-			//If there isn't anything to read, flip first to last
-			while(this.CharMemorySequence.First.Count<=0)
+			var readingSegment = this.CharMemorySequence.CurrentPosition.SequenceSegment;
+			var readingPositionInSegment = this.CharMemorySequence.CurrentPosition.PositionInSegment;
+			char character;
+			bool endOfStream = false;
+
+			do
 			{
-				//Should I run loading task (very first load)
-				if(this.CurrentlyLoadingSegment==null)
-					StartLoadSequenceSegment(charMemorySequenceSegment: this.CharMemorySequence.First, cancellationToken: cancellationToken);
+				//Move one character forward
+				readingPositionInSegment++;
 
-				//If we are on loading segment then wait for loading complete and start next loading
-				if(object.ReferenceEquals(this.CurrentlyLoadingSegment, this.CharMemorySequence.First))
+				//If we are outside of a segment, start changing segment procedure
+				if(readingSegment.Memory.Length<=readingPositionInSegment)
 				{
-					this.CurrentlyLoadingSegment.Count = await LoadingTask.ConfigureAwait(false);
-					
-					//Check EndOfStream
-					if(this.CurrentlyLoadingSegment.Count<=0)
-						return -1;
+					var nextReadingSegment=readingSegment.Next;
 
-					//Start next loading task
-					if(this.CurrentlyLoadingSegment.Next==null)
-						this.CharMemorySequence.AddNewSegment(minimumLength: this.BufferSizeInChars);
-					StartLoadSequenceSegment(charMemorySequenceSegment: this.CurrentlyLoadingSegment.Next, cancellationToken: cancellationToken);
-					break;
+					//Is it very first load
+					if(this.CurrentlyLoadingSegment==null)
+					{
+						//Start load data to first segment
+						StartLoadSequenceSegment(charMemorySequenceSegment: this.CharMemorySequence.CurrentPosition.SequenceSegment, cancellationToken: cancellationToken);
+						//Rollback segment switch
+						nextReadingSegment=readingSegment;
+					}
+
+					//If we are on loading segment then wait for loading complete and start next loading
+					if(object.ReferenceEquals(this.CurrentlyLoadingSegment, nextReadingSegment))
+					{
+						this.CurrentlyLoadingSegment.Count = await LoadingTask
+							.ConfigureAwait(false);
+
+						//Check EndOfStream
+						if(this.CurrentlyLoadingSegment.Count<=0)
+						{
+							endOfStream=true;
+							readingPositionInSegment--;
+							character='\0';
+							break;
+						}
+
+						//Start next loading task
+						if(this.CurrentlyLoadingSegment.Next==null)
+							this.CharMemorySequence.AddNewSegment(minimumLength: this.BufferSizeInChars);
+						StartLoadSequenceSegment(charMemorySequenceSegment: this.CurrentlyLoadingSegment.Next, cancellationToken: cancellationToken);
+					}
+
+					//Switch to next segment
+					readingSegment=nextReadingSegment;
+					readingPositionInSegment=0;
 				}
-
-				//Flip first to last
-				this.CharMemorySequence.FlipFirstToLast();
 			}
+			while(!checkCharMethod(character: character=readingSegment.Array[readingPositionInSegment]));
 
-			
-
-
+			return new FindKeyCharResult(foundPosition: new MemorySequencePosition<char>(sequenceSegment: readingSegment, positionInSegment: readingPositionInSegment), character: character, endOfStream: endOfStream);
 		}
 
-		private void StartLoadSequenceSegment(CharMemorySequenceSegment charMemorySequenceSegment, CancellationToken cancellationToken)
+		private bool IsKeyChar(char character)
+		{
+			return System.Numerics.Vector.EqualsAny(this.SearchVector, new System.Numerics.Vector<ushort>(character));
+		}
+
+		private bool IsEscapeChar(char character)
+		{
+			return character==this.EscapeChar;
+		}
+
+		private void StartLoadSequenceSegment(MemorySequenceSegment<char> charMemorySequenceSegment, CancellationToken cancellationToken)
 		{
 			this.CurrentlyLoadingSegment=charMemorySequenceSegment;
-			LoadingTask=this.TextReader.ReadBlockAsync(charMemorySequenceSegment.Segment, cancellationToken);
+			LoadingTask=this.TextReader.ReadBlockAsync(charMemorySequenceSegment.Array, cancellationToken);
 		}
 
 		public void Dispose()
 		{
-		}
-	}
-
-	public class DataChunk<T> : ReadOnlySequenceSegment<T>
-	{
-		public DataChunk()
-		{
-			System.Numerics.Vector<ushort> vector;
-			System.Numerics.Vector.
-
-			new System.IO.StreamReader("")
 		}
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Numerics;
 
 namespace Tester
@@ -15,6 +16,12 @@ namespace Tester
 
 
 			Console.WriteLine("Hello World!");
+
+
+			var reader = new System.Text.Json.Utf8JsonReader();
+			reader.TokenType;
+
+			ReadOnlySequence<byte>
 		}
 	}
 }
