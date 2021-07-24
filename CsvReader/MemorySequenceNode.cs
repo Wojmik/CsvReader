@@ -13,14 +13,14 @@ namespace WojciechMikołajewicz.CsvReader
 
 		public readonly NodeType NodeType;
 
-		public readonly bool Escaped;
+		public readonly int EscapeCount;
 
-		public MemorySequenceNode(in MemorySequencePosition<char> startPosition, in MemorySequencePosition<char> endPosition, NodeType nodeType, bool escaped)
+		public MemorySequenceNode(in MemorySequencePosition<char> startPosition, in MemorySequencePosition<char> endPosition, NodeType nodeType, int escapeCount)
 		{
 			this.StartPosition=startPosition;
 			this.EndPosition=endPosition;
 			this.NodeType=nodeType;
-			this.Escaped=escaped;
+			this.EscapeCount=escapeCount;
 		}
 	}
 }

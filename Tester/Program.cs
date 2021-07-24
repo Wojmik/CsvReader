@@ -19,9 +19,9 @@ namespace Tester
 
 
 			var reader = new System.Text.Json.Utf8JsonReader();
-			reader.TokenType;
+			//reader.TokenType;
 
-			ReadOnlySequence<byte>
+			//ReadOnlySequence<byte>
 		}
 	}
 }

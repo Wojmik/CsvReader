@@ -5,7 +5,7 @@ using WojciechMikołajewicz.CsvReader.MemorySequence;
 
 namespace WojciechMikołajewicz.CsvReader
 {
-	readonly struct FindKeyCharResult
+	readonly struct ReadCharResult
 	{
 		public readonly MemorySequencePosition<char> FoundPosition;
 
@@ -13,7 +13,7 @@ namespace WojciechMikołajewicz.CsvReader
 
 		public readonly bool EndOfStream;
 
-		public FindKeyCharResult(in MemorySequencePosition<char> foundPosition, char character, bool endOfStream)
+		public ReadCharResult(in MemorySequencePosition<char> foundPosition, char character, bool endOfStream)
 		{
 			this.FoundPosition=foundPosition;
 			this.Character=character;
