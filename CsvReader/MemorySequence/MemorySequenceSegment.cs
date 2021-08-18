@@ -10,7 +10,7 @@ namespace WojciechMikołajewicz.CsvReader.MemorySequence
 	/// Segment of continuest memory of <see cref="MemorySequence{T}"/>
 	/// </summary>
 	/// <typeparam name="T">Type of elements</typeparam>
-	class MemorySequenceSegment<T> : ReadOnlySequenceSegment<T>
+	class MemorySequenceSegment<T> : ReadOnlySequenceSegment<T>, IDisposable
 	{
 		/// <summary>
 		/// Array for data
@@ -43,7 +43,7 @@ namespace WojciechMikołajewicz.CsvReader.MemorySequence
 			{
 				previous.NextInternal=this;
 				previous.Next=this;
-				RunningIndex=previous.RunningIndex+previous.Memory.Length;
+				RunningIndex=previous.RunningIndex+previous.Array.Length;
 			}
 
 			Array=ArrayPool<T>.Shared.Rent(minimumLength);
@@ -58,7 +58,7 @@ namespace WojciechMikołajewicz.CsvReader.MemorySequence
 			this.NextInternal=null;
 			this.Next=null;
 			this.Count=0;
-			this.RunningIndex=previous.RunningIndex+previous.Memory.Length;
+			this.RunningIndex=previous.RunningIndex+previous.Array.Length;
 
 			previous.NextInternal=this;
 			previous.Next=this;
@@ -67,7 +67,7 @@ namespace WojciechMikołajewicz.CsvReader.MemorySequence
 		/// <summary>
 		/// Returns memory of this <see cref="MemorySequenceSegment{T}"/> to the shared pool
 		/// </summary>
-		internal void Dispose()
+		public void Dispose()
 		{
 			T[] segment = this.Array;
 

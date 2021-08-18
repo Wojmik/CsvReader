@@ -9,7 +9,7 @@ using WojciechMikołajewicz.CsvReader;
 using WojciechMikołajewicz.CsvReader.MemorySequence;
 using WojciechMikołajewicz.CsvReaderTests.TestDevices;
 
-namespace WojciechMikołajewicz.CsvReaderTests
+namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 {
 	[TestClass]
 	public class GetCharTest
@@ -22,7 +22,7 @@ namespace WojciechMikołajewicz.CsvReaderTests
 			const int ChunkLength = 10;
 
 			using var textReader = new RepeatedTextReader(TestString) { MaxReadSize = ChunkLength, };
-			using var csvReader = new CsvDeserializer(textReader, false, bufferSize: 32);
+			using var csvReader = new CsvReader.CsvReader(textReader, new CsvReaderOptions() { BufferSizeInChars = 32, });
 			
 			var memSeq = csvReader.CharMemorySequence_Get();
 
@@ -81,7 +81,7 @@ namespace WojciechMikołajewicz.CsvReaderTests
 			const int ChunkLength = 10;
 
 			using var textReader = new RepeatedTextReader(TestString) { MaxReadSize = ChunkLength, };
-			using var csvReader = new CsvDeserializer(textReader, false, bufferSize: 32);
+			using var csvReader = new CsvReader.CsvReader(textReader, new CsvReaderOptions() { BufferSizeInChars = 32, });
 			
 			var memSeq = csvReader.CharMemorySequence_Get();
 
@@ -104,7 +104,7 @@ namespace WojciechMikołajewicz.CsvReaderTests
 			const int ChunkLength = 10;
 
 			using var textReader = new RepeatedTextReader(TestString) { MaxReadSize = ChunkLength, };
-			using var csvReader = new CsvDeserializer(textReader, false, bufferSize: 32);
+			using var csvReader = new CsvReader.CsvReader(textReader, new CsvReaderOptions() { BufferSizeInChars = 32, });
 			
 			var memSeq = csvReader.CharMemorySequence_Get();
 

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using WojciechMikołajewicz.CsvReader.MemorySequence;
 
-namespace WojciechMikołajewicz.CsvReaderTests
+namespace WojciechMikołajewicz.CsvReaderTests.MemorySequenceTest
 {
 	[TestClass]
 	public class MemorySequencePositionTest

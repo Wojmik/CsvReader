@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CsvReader", "CsvReader\CsvR
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tester", "Tester\Tester.csproj", "{ED1C3C77-ADC5-4287-9744-213308D8E147}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CsvReaderTests", "CsvReaderTests\CsvReaderTests.csproj", "{7C4E473B-64E5-49FB-854E-B9DA168C7696}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CsvReaderTests", "CsvReaderTests\CsvReaderTests.csproj", "{7C4E473B-64E5-49FB-854E-B9DA168C7696}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{56205025-254C-4B66-8485-F15102F4679C}"
 	ProjectSection(SolutionItems) = preProject

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using WojciechMikołajewicz.CsvReader;
 using WojciechMikołajewicz.CsvReader.MemorySequence;
 
-namespace WojciechMikołajewicz.CsvReaderTests
+namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 {
 	[TestClass]
 	public class ReadChunkTest
@@ -20,7 +20,7 @@ namespace WojciechMikołajewicz.CsvReaderTests
 		public async Task TestAsync()
 		{
 			using var textReader = new StringReader(TestString);
-			using var csvReader = new CsvDeserializer(textReader, false, bufferSize: 32);
+			using var csvReader = new CsvReader.CsvReader(textReader, new CsvReaderOptions() { BufferSizeInChars = 32, });
 
 			Assert.AreEqual(0, csvReader.Position, "Position should be 0 and is {0}", csvReader.Position);
 
@@ -68,7 +68,7 @@ namespace WojciechMikołajewicz.CsvReaderTests
 			MemorySequenceSegment<char> previousSegment = null;
 
 			using var textReader = new RepeatedTextReader(TestString) { MaxReadSize = ChunkLength, };
-			using var csvReader = new CsvDeserializer(textReader, false, bufferSize: 32);
+			using var csvReader = new CsvReader.CsvReader(textReader, new CsvReaderOptions() { BufferSizeInChars = 32, });
 
 			while(sequenceSwitch<3)
 			{
@@ -129,7 +129,7 @@ namespace WojciechMikołajewicz.CsvReaderTests
 			using var memoryStream = new MemoryStream();
 			using var streamWritter = new StreamWriter(memoryStream, Encoding.UTF8);
 			using var streamReader = new StreamReader(memoryStream, streamWritter.Encoding, true);
-			using var csvReader = new CsvDeserializer(streamReader, false, bufferSize: 32);
+			using var csvReader = new CsvReader.CsvReader(streamReader, new CsvReaderOptions() { BufferSizeInChars = 32, });
 
 			MemorySequenceSegmentSpan<char> segmentRead = default;
 			var segmentLength = csvReader.CharMemorySequence_Get().CurrentPosition.InternalSequenceSegment.Array.Length;
