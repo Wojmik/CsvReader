@@ -19,20 +19,21 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 		{
 			const int ChunkLength = 10;
 
-			using var textReader = new RepeatedTextReader(TestString) { MaxReadSize = ChunkLength, };
-			using var csvReader = new CsvReader.CsvReader(textReader, new CsvReaderOptions() { BufferSizeInChars = 32, });
+			using(var textReader = new RepeatedTextReader(TestString) { MaxReadSize = ChunkLength, })
+			using(var csvReader = new CsvReader.CsvReader(textReader, new CsvReaderOptions() { BufferSizeInChars = 32, }))
+			{
+				var memSeq = csvReader.CharMemorySequence_Get();
 
-			var memSeq = csvReader.CharMemorySequence_Get();
+				//Read third char again
+				var foundChar = await csvReader.FindCharAsync(memSeq.CurrentPosition, 109, new char[] { '\"' }, default);
+				Assert.AreEqual(false, foundChar.EndOfStream);
 
-			//Read third char again
-			var foundChar = await csvReader.FindCharAsync(memSeq.CurrentPosition, 109, new char[] { '\"' }, default);
-			Assert.AreEqual(false, foundChar.EndOfStream);
+				int skipTimes = Math.DivRem(109, TestString.Length, out int startPosInTestString);
+				int foundPosition = TestString.Length*skipTimes+(TestString+TestString).IndexOf('\"', startPosInTestString);
 
-			int skipTimes = Math.DivRem(109, TestString.Length, out int startPosInTestString);
-			int foundPosition = TestString.Length*skipTimes+(TestString+TestString).IndexOf('\"', startPosInTestString);
-
-			Assert.AreEqual('\"', foundChar.Character);
-			Assert.AreEqual(foundPosition, foundChar.FoundPosition.AbsolutePosition);
+				Assert.AreEqual('\"', foundChar.Character);
+				Assert.AreEqual(foundPosition, foundChar.FoundPosition.AbsolutePosition);
+			}
 		}
 	}
 }

@@ -75,7 +75,7 @@ namespace WojciechMikołajewicz.CsvReader.MemorySequence
 			{
 				this.Memory = default;
 				ArrayPool<T>.Shared.Return(segment, true);
-				this.Array=null;
+				this.Array = null;
 			}
 		}
 	}

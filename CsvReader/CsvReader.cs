@@ -45,9 +45,11 @@ namespace WojciechMikołajewicz.CsvReader
 
 		private int BufferSizeInChars { get; }
 
-		public long Position { get => this.CharMemorySequence.CurrentPosition.AbsolutePosition; }
+		public long Position { get => this.CharMemorySequence.CurrentPosition.AbsolutePosition + NewCurrentOffset; }
 
 		private readonly bool LeaveOpen;
+
+		private char[] TempCellArray;
 
 		public CsvReader(TextReader textReader)
 			: this(textReader: textReader, options: new CsvReaderOptions())
@@ -111,13 +113,145 @@ namespace WojciechMikołajewicz.CsvReader
 		}
 #endif
 
-		private async ValueTask Yh()
+		/// <summary>
+		/// Method reads next csv node as <see cref="StringNode"/>
+		/// </summary>
+		/// <param name="cancellationToken">Cancellation token</param>
+		/// <exception cref="System.Runtime.Serialization.SerializationException">Broken csv detected. End of stream inside escaped cell or data after end of escaped cell</exception>
+		/// <returns>Next csv node read</returns>
+		public async ValueTask<StringNode> ReadNextNodeAsStringAsync(CancellationToken cancellationToken)
 		{
-			
-			//var a= PipeReader.Create(TextReader);
+			var memorySequenceNode = await ReadNextNodeAsMemorySequenceAsync(cancellationToken)
+				.ConfigureAwait(false);
 
-			//new SequenceReader<char>()
-			//new ReadOnlySequenceSegment<char>()
+			int requiredMemory = CalculateRequiredSize(memorySequenceNode);
+
+#if NETSTANDARD2_1_OR_GREATER
+			var data = string.Create(requiredMemory, (StartPosition: memorySequenceNode.StartPosition, EndPosition: memorySequenceNode.EndPosition, SkipCharPositions: memorySequenceNode.SkipCharPositions), FillString);
+
+			void FillString(Span<char> destination, (MemorySequencePosition<char> StartPosition, MemorySequencePosition<char> EndPosition, IReadOnlyList<MemorySequencePosition<char>> SkipCharPositions) state)
+			{
+				int written = CopyMemorySequenceToContinousRegion(state.StartPosition, state.EndPosition, state.SkipCharPositions, destination);
+			}
+#else
+			var destination = ProvideMemory(memorySequenceNode.StartPosition.InternalSequenceSegment, requiredMemory);
+			requiredMemory = CopyMemorySequenceToContinousRegion(memorySequenceNode.StartPosition, memorySequenceNode.EndPosition, memorySequenceNode.SkipCharPositions, destination.Span);
+			var data = destination.ToString();
+#endif
+
+			return new StringNode(data, memorySequenceNode.NodeType);
+		}
+
+		/// <summary>
+		/// Method reads next csv node as <see cref="MemoryNode"/>
+		/// </summary>
+		/// <param name="cancellationToken">Cancellation token</param>
+		/// <exception cref="System.Runtime.Serialization.SerializationException">Broken csv detected. End of stream inside escaped cell or data after end of escaped cell</exception>
+		/// <returns>Next csv node read</returns>
+		public async ValueTask<MemoryNode> ReadNextNodeAsMemoryAsync(CancellationToken cancellationToken)
+		{
+			var memorySequenceNode = await ReadNextNodeAsMemorySequenceAsync(cancellationToken)
+				.ConfigureAwait(false);
+
+			//Check is it single segment
+			if(object.ReferenceEquals(memorySequenceNode.StartPosition.SequenceSegment, memorySequenceNode.EndPosition.SequenceSegment))
+			{
+				//Single segment, only sliding is needed
+				if(0<memorySequenceNode.SkipCharPositions.Count)
+				{
+					int i, startHole, endHole;
+					endHole = memorySequenceNode.SkipCharPositions[0].PositionInSegment;
+					for(i = 1; i<memorySequenceNode.SkipCharPositions.Count; i++)
+					{
+						startHole = endHole+1;
+						endHole = memorySequenceNode.SkipCharPositions[i].PositionInSegment;
+						Array.Copy(memorySequenceNode.StartPosition.InternalSequenceSegment.Array, startHole, memorySequenceNode.StartPosition.InternalSequenceSegment.Array, startHole-i, endHole-startHole);
+					}
+					startHole = endHole+1;
+					endHole = memorySequenceNode.EndPosition.PositionInSegment;
+					Array.Copy(memorySequenceNode.StartPosition.InternalSequenceSegment.Array, startHole, memorySequenceNode.StartPosition.InternalSequenceSegment.Array, startHole-i, endHole-startHole);
+				}
+				return new MemoryNode(memorySequenceNode.StartPosition.SequenceSegment.Memory.Slice(memorySequenceNode.StartPosition.PositionInSegment, memorySequenceNode.EndPosition.PositionInSegment-memorySequenceNode.StartPosition.PositionInSegment-memorySequenceNode.SkipCharPositions.Count), memorySequenceNode.NodeType);
+			}
+
+			//Provide memory for cell data
+			int requiredMemory = CalculateRequiredSize(memorySequenceNode);
+			var destination = ProvideMemory(memorySequenceNode.StartPosition.InternalSequenceSegment, requiredMemory);
+
+			//Copy cell data to destination continous memory region
+			requiredMemory = CopyMemorySequenceToContinousRegion(memorySequenceNode.StartPosition, memorySequenceNode.EndPosition, memorySequenceNode.SkipCharPositions, destination.Span);
+
+			return new MemoryNode(destination, memorySequenceNode.NodeType);
+		}
+
+		private int CalculateRequiredSize(in MemorySequenceNode memorySequenceNode)
+		{
+			return (int)(memorySequenceNode.EndPosition.AbsolutePosition-memorySequenceNode.StartPosition.AbsolutePosition)-memorySequenceNode.SkipCharPositions.Count;
+		}
+
+		private Memory<char> ProvideMemory(MemorySequenceSegment<char> sequenceSegment, int requiredSize)
+		{
+			char[] destination;
+
+			if(requiredSize<=sequenceSegment.Array.Length)//Sequence segment is big enough to fit cell data
+				destination = sequenceSegment.Array;
+			else
+			{
+				if(TempCellArray==null)
+					TempCellArray = ArrayPool<char>.Shared.Rent(requiredSize);
+				else if(TempCellArray.Length<requiredSize)
+				{
+					ArrayPool<char>.Shared.Return(TempCellArray, true);
+					TempCellArray = ArrayPool<char>.Shared.Rent(requiredSize);
+				}
+				destination = TempCellArray;
+			}
+
+			return new Memory<char>(destination, 0, requiredSize);
+		}
+
+		private int CopyMemorySequenceToContinousRegion(MemorySequencePosition<char> startPosition, MemorySequencePosition<char> endPosition, IReadOnlyList<MemorySequencePosition<char>> skipCharPositions, Span<char> destination)
+		{
+			//Copy cell data to destination continous memory region
+			var segment = startPosition.SequenceSegment;
+			int sourceIndex = startPosition.PositionInSegment, destinationIndex = 0, skipIndex = 0;
+			while(!ReferenceEquals(segment, endPosition.SequenceSegment))
+			{
+				CopySegment(destination, segment.Memory.Length);
+
+				segment = segment.Next;
+				sourceIndex = 0;
+			}
+			CopySegment(destination, endPosition.PositionInSegment);
+
+			return destinationIndex;
+
+			void CopySegment(Span<char> in_destination, int segmentLength)
+			{
+				int chunkLength;
+
+				//Copy chunks between skips
+				while(skipIndex<skipCharPositions.Count && ReferenceEquals(segment, skipCharPositions[skipIndex].SequenceSegment))
+				{
+					chunkLength = skipCharPositions[skipIndex].PositionInSegment-sourceIndex;
+					segment.Memory.Span
+						.Slice(sourceIndex, chunkLength)
+						.CopyTo(in_destination.Slice(destinationIndex));
+
+					sourceIndex += chunkLength+1;
+					destinationIndex += chunkLength;
+
+					skipIndex++;
+				}
+
+				//Copy last chunk in this segment
+				chunkLength = segmentLength-sourceIndex;
+				segment.Memory.Span
+					.Slice(sourceIndex, chunkLength)
+					.CopyTo(in_destination.Slice(destinationIndex));
+
+				destinationIndex += chunkLength;
+			}
 		}
 
 		/// <summary>
@@ -226,7 +360,7 @@ namespace WojciechMikołajewicz.CsvReader
 					if(NewCurrentOffset<=0)//New line
 					{
 						NewCurrentOffset = LineEnding==LineEnding.CRLF ? 2 : 1;
-						return new MemorySequenceNode(CharMemorySequence.CurrentPosition, found.FoundPosition, NodeType.NewLine, Array.Empty<MemorySequencePosition<char>>());
+						return new MemorySequenceNode(CharMemorySequence.CurrentPosition, found.FoundPosition.AddOffset(NewCurrentOffset), NodeType.NewLine, Array.Empty<MemorySequencePosition<char>>());
 					}
 					else//Cell ended by new line
 						return new MemorySequenceNode(CharMemorySequence.CurrentPosition, found.FoundPosition, NodeType.Cell, Array.Empty<MemorySequencePosition<char>>());
@@ -431,6 +565,11 @@ namespace WojciechMikołajewicz.CsvReader
 
 			this.SkipPositions.Clear();
 
+			if(TempCellArray!=null)
+			{
+				ArrayPool<char>.Shared.Return(TempCellArray, true);
+				TempCellArray = null;
+			}
 			CharMemorySequence.Dispose();
 		}
 	}

@@ -10,13 +10,10 @@ namespace WojciechMikołajewicz.CsvReader
 
 		public readonly NodeType NodeType;
 
-		public readonly bool Escaped;
-
-		public StringNode(string data, NodeType nodeType, bool escaped)
+		public StringNode(string data, NodeType nodeType)
 		{
 			this.Data=data;
 			this.NodeType=nodeType;
-			this.Escaped=escaped;
 		}
 	}
 }

@@ -47,7 +47,7 @@ namespace WojciechMikołajewicz.CsvReaderTests.TestDevices
 				written += chunkSize;
 			}
 
-			return ValueTask.FromResult(toWrite);
+			return new ValueTask<int>(toWrite);
 		}
 
 		public override async Task<int> ReadBlockAsync(char[] buffer, int index, int count)

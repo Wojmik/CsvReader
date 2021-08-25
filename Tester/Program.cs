@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Buffers;
 using System.Numerics;
+using TesterDll;
 
 namespace Tester
 {
@@ -17,8 +18,10 @@ namespace Tester
 
 			Console.WriteLine("Hello World!");
 
+			Console.WriteLine(Test.FromSpan());
 
-			var reader = new System.Text.Json.Utf8JsonReader();
+
+			//var reader = new System.Text.Json.Utf8JsonReader();
 			//reader.TokenType;
 
 			//ReadOnlySequence<byte>

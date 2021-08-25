@@ -13,37 +13,52 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 	[TestClass]
 	public class ReadNextNodeAsMemorySequenceTest
 	{
-		[TestMethod]
-		public async Task ReadNextNodeAsMemorySequenceTestAsync()
+		static IEnumerable<object[]> GetSampleData()
 		{
-			const string testData = ",Abc,\"Test \"\"line\"\"\nsecond \"\"line\"\"\"\r\nCde";
+			yield return new object[]
+			{
+				",Abc,\"Test \"\"line\"\"\nsecond \"\"line\"\"\"\r\nCde",
+				new StringNode[]
+				{
+					new StringNode("", NodeType.Cell),
+					new StringNode("Abc", NodeType.Cell),
+					new StringNode("Test \"\"line\"\"\nsecond \"\"line\"\"", NodeType.Cell),
+					new StringNode("\r\n", NodeType.NewLine),
+					new StringNode("Cde", NodeType.Cell),
+					new StringNode("", NodeType.EndOfStream),
+					new StringNode("", NodeType.EndOfStream),
+				}
+			};
+		}
 
-			using var textReader = new StringReader(testData);
-			using var csvReader = new CsvReader.CsvReader(textReader, new CsvReaderOptions() { BufferSizeInChars=4, CanEscape=true, DelimiterChar=',', EscapeChar='\"', LineEnding=LineEnding.Auto, });
-			MemorySequenceNode msn;
+		[DataTestMethod]
+		[DynamicData(nameof(GetSampleData), DynamicDataSourceType.Method)]
+		public async Task ReadNextNodeAsMemorySequenceBigBufferTestAsync(string sample, IEnumerable<StringNode> expectedNodes)
+		{
+			using(var textReader = new StringReader(sample))
+			using(var csvReader = new CsvReader.CsvReader(textReader, new CsvReaderOptions() { BufferSizeInChars=64, CanEscape=true, DelimiterChar=',', EscapeChar='\"', LineEnding=LineEnding.Auto, }))
+			{
+				foreach(var expectedNode in expectedNodes)
+				{
+					var msn = await csvReader.ReadNextNodeAsMemorySequenceAsync(default);
+					CheckNodeText(expectedNode.NodeType, expectedNode.Data, msn);
+				}
+			}
+		}
 
-			msn = await csvReader.ReadNextNodeAsMemorySequenceAsync(default);
-			CheckNodeText(NodeType.Cell, "", msn);
-
-			msn = await csvReader.ReadNextNodeAsMemorySequenceAsync(default);
-			CheckNodeText(NodeType.Cell, "Abc", msn);
-
-			msn = await csvReader.ReadNextNodeAsMemorySequenceAsync(default);
-			CheckNodeText(NodeType.Cell, "Test \"\"line\"\"\nsecond \"\"line\"\"", msn);
-
-			msn = await csvReader.ReadNextNodeAsMemorySequenceAsync(default);
-			CheckNodeText(NodeType.NewLine, "\r\n", msn);
-
-			msn = await csvReader.ReadNextNodeAsMemorySequenceAsync(default);
-			CheckNodeText(NodeType.Cell, "Cde", msn);
-
-			msn = await csvReader.ReadNextNodeAsMemorySequenceAsync(default);
-			Assert.AreEqual(NodeType.EndOfStream, msn.NodeType);
-			Assert.AreEqual(0, msn.SkipCharPositions.Count);
-
-			msn = await csvReader.ReadNextNodeAsMemorySequenceAsync(default);
-			Assert.AreEqual(NodeType.EndOfStream, msn.NodeType);
-			Assert.AreEqual(0, msn.SkipCharPositions.Count);
+		[DataTestMethod]
+		[DynamicData(nameof(GetSampleData), DynamicDataSourceType.Method)]
+		public async Task ReadNextNodeAsMemorySequenceSmallBufferTestAsync(string sample, IEnumerable<StringNode> expectedNodes)
+		{
+			using(var textReader = new StringReader(sample))
+			using(var csvReader = new CsvReader.CsvReader(textReader, new CsvReaderOptions() { BufferSizeInChars=4, CanEscape=true, DelimiterChar=',', EscapeChar='\"', LineEnding=LineEnding.Auto, }))
+			{
+				foreach(var expectedNode in expectedNodes)
+				{
+					var msn = await csvReader.ReadNextNodeAsMemorySequenceAsync(default);
+					CheckNodeText(expectedNode.NodeType, expectedNode.Data, msn);
+				}
+			}
 		}
 
 		private void CheckNodeText(NodeType expectedNodeType, string expected, MemorySequenceNode actual)
@@ -56,7 +71,7 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 			//Compare chunks
 			var segment = actual.StartPosition.SequenceSegment;
 			int expectedIndex = 0, actualIndex = actual.StartPosition.PositionInSegment;
-			while(segment!=actual.EndPosition.SequenceSegment)
+			while(!ReferenceEquals(segment, actual.EndPosition.SequenceSegment))
 			{
 				expectedChunk = expected.AsSpan(expectedIndex, segment.Memory.Length-actualIndex);
 				actualChunk = segment.Memory.Slice(actualIndex).Span;
@@ -70,7 +85,7 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 
 			//Compare last chunk
 			expectedChunk = expected.AsSpan(expectedIndex, expected.Length-expectedIndex);
-			actualChunk = segment.Memory.Slice(actualIndex, expected.Length-expectedIndex).Span;
+			actualChunk = segment.Memory.Slice(actualIndex, actual.EndPosition.PositionInSegment-actualIndex).Span;
 			Assert.IsTrue(MemoryExtensions.SequenceEqual(actualChunk, expectedChunk));
 
 			//Check skip positions

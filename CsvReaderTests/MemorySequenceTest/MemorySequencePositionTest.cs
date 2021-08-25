@@ -19,11 +19,11 @@ namespace WojciechMikołajewicz.CsvReaderTests.MemorySequenceTest
 			const string seg1Data = "Zażółć gęślą jaźń";
 			const string seg2Data = "ZAŻÓŁĆ GĘŚLĄ JAŹŃ";
 
-			Segment1 = new(null, 128);
+			Segment1 = new MemorySequenceSegment<char>(null, 128);
 			seg1Data.AsSpan().CopyTo(Segment1.Array);
 			Segment1.Count = seg1Data.Length;
 
-			Segment2 = new(null, 128);
+			Segment2 = new MemorySequenceSegment<char>(null, 128);
 			seg2Data.AsSpan().CopyTo(Segment2.Array);
 			Segment2.Count=seg2Data.Length;
 		}
@@ -38,8 +38,8 @@ namespace WojciechMikołajewicz.CsvReaderTests.MemorySequenceTest
 		[TestMethod]
 		public void EqualTest()
 		{
-			MemorySequencePosition<char> pos1 = new(Segment1, 8);
-			MemorySequencePosition<char> pos2 = new(Segment1, 8);
+			var pos1 = new MemorySequencePosition<char>(Segment1, 8);
+			var pos2 = new MemorySequencePosition<char>(Segment1, 8);
 
 			var pos1HashCode = pos1.GetHashCode();
 			var pos2HashCode = pos2.GetHashCode();
@@ -50,8 +50,8 @@ namespace WojciechMikołajewicz.CsvReaderTests.MemorySequenceTest
 		[TestMethod]
 		public void NotEqualDiferentSegmentsTest()
 		{
-			MemorySequencePosition<char> pos1 = new(Segment1, 8);
-			MemorySequencePosition<char> pos2 = new(Segment2, 8);
+			var pos1 = new MemorySequencePosition<char>(Segment1, 8);
+			var pos2 = new MemorySequencePosition<char>(Segment2, 8);
 
 			Assert.IsFalse(pos1.Equals(pos2), "Pos1 should not be equal to pos2 and is not");
 		}
@@ -59,8 +59,8 @@ namespace WojciechMikołajewicz.CsvReaderTests.MemorySequenceTest
 		[TestMethod]
 		public void NotEqualDiferentPositionsTest()
 		{
-			MemorySequencePosition<char> pos1 = new(Segment1, 1);
-			MemorySequencePosition<char> pos2 = new(Segment1, 14);
+			var pos1 = new MemorySequencePosition<char>(Segment1, 1);
+			var pos2 = new MemorySequencePosition<char>(Segment1, 14);
 
 			Assert.IsFalse(pos1.Equals(pos2), "Pos1 should not be equal to pos2 and is not");
 		}

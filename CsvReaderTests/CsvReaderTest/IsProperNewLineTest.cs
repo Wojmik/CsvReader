@@ -19,19 +19,20 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 		[DataRow(LineEnding.CR, "\r")]
 		public void CheckSearchArray(LineEnding lineEnding, string newLineSearchCharacters)
 		{
-			using var textReader = new StringReader(string.Empty);
 			var csvReaderOptions = new CsvReaderOptions() { LineEnding = lineEnding, BufferSizeInChars = 32, };
-			using var csvReader = new CsvReader.CsvReader(textReader, csvReaderOptions);
+			using(var textReader = new StringReader(string.Empty))
+			using(var csvReader = new CsvReader.CsvReader(textReader, csvReaderOptions))
+			{
+				Assert.AreEqual(lineEnding, csvReader.LineEnding);
 
-			Assert.AreEqual(lineEnding, csvReader.LineEnding);
+				var searchArray = csvReader.SearchArray_Get();
 
-			var searchArray = csvReader.SearchArray_Get();
+				Assert.AreEqual(newLineSearchCharacters.Length+1, searchArray.Length);
 
-			Assert.AreEqual(newLineSearchCharacters.Length+1, searchArray.Length);
-
-			Assert.IsTrue(searchArray.Span.Contains(csvReaderOptions.DelimiterChar));
-			foreach(var ch in newLineSearchCharacters)
-				Assert.IsTrue(searchArray.Span.Contains(ch));
+				Assert.IsTrue(searchArray.Span.Contains(csvReaderOptions.DelimiterChar));
+				foreach(var ch in newLineSearchCharacters)
+					Assert.IsTrue(searchArray.Span.Contains(ch));
+			}
 		}
 
 		[DataTestMethod]
@@ -50,14 +51,15 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 		[DataRow(LineEnding.CR, "\n", false)]
 		public async Task IsProperNewLineTestAsync(LineEnding lineEnding, string sample, bool expected)
 		{
-			using var textReader = new StringReader(sample);
-			using var csvReader = new CsvReader.CsvReader(textReader, new CsvReaderOptions() { LineEnding = lineEnding, BufferSizeInChars = 32, });
+			using(var textReader = new StringReader(sample))
+			using(var csvReader = new CsvReader.CsvReader(textReader, new CsvReaderOptions() { LineEnding = lineEnding, BufferSizeInChars = 32, }))
+			{
+				var charRead = await csvReader.GetCharAsync(csvReader.CharMemorySequence_Get().CurrentPosition, 0, default);
 
-			var charRead = await csvReader.GetCharAsync(csvReader.CharMemorySequence_Get().CurrentPosition, 0, default);
+				var actual = await csvReader.IsProperNewLineAsync(charRead, default);
 
-			var actual = await csvReader.IsProperNewLineAsync(charRead, default);
-
-			Assert.AreEqual(expected, actual);
+				Assert.AreEqual(expected, actual);
+			}
 		}
 
 		[DataTestMethod]
@@ -72,25 +74,26 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 		[DataRow("\r\nA", true, LineEnding.CRLF, "\r")]
 		public async Task AutoLineEndingTestAsync(string sample, bool expected, LineEnding afterLineEnding, string afterNewLineSearchCharacters)
 		{
-			using var textReader = new StringReader(sample);
 			var csvReaderOptions = new CsvReaderOptions() { LineEnding = LineEnding.Auto, BufferSizeInChars = 32, };
-			using var csvReader = new CsvReader.CsvReader(textReader, csvReaderOptions);
+			using(var textReader = new StringReader(sample))
+			using(var csvReader = new CsvReader.CsvReader(textReader, csvReaderOptions))
+			{
+				var charRead = await csvReader.GetCharAsync(csvReader.CharMemorySequence_Get().CurrentPosition, 0, default);
 
-			var charRead = await csvReader.GetCharAsync(csvReader.CharMemorySequence_Get().CurrentPosition, 0, default);
+				var actual = await csvReader.IsProperNewLineAsync(charRead, default);
 
-			var actual = await csvReader.IsProperNewLineAsync(charRead, default);
+				Assert.AreEqual(expected, actual);
 
-			Assert.AreEqual(expected, actual);
+				Assert.AreEqual(afterLineEnding, csvReader.LineEnding);
 
-			Assert.AreEqual(afterLineEnding, csvReader.LineEnding);
+				var searchArray = csvReader.SearchArray_Get();
 
-			var searchArray = csvReader.SearchArray_Get();
+				Assert.AreEqual(afterNewLineSearchCharacters.Length+1, searchArray.Length);
 
-			Assert.AreEqual(afterNewLineSearchCharacters.Length+1, searchArray.Length);
-
-			Assert.IsTrue(searchArray.Span.Contains(csvReaderOptions.DelimiterChar));
-			foreach(var ch in afterNewLineSearchCharacters)
-				Assert.IsTrue(searchArray.Span.Contains(ch));
+				Assert.IsTrue(searchArray.Span.Contains(csvReaderOptions.DelimiterChar));
+				foreach(var ch in afterNewLineSearchCharacters)
+					Assert.IsTrue(searchArray.Span.Contains(ch));
+			}
 		}
 	}
 }
