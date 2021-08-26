@@ -33,8 +33,12 @@ namespace WojciechMikołajewicz.CsvReaderTests.TestDevices
 			return await ReadAsync(new Memory<char>(buffer, index, count))
 				.ConfigureAwait(false);
 		}
-
-		public override ValueTask<int> ReadAsync(Memory<char> buffer, CancellationToken cancellationToken = default)
+		
+		public
+#if NETCOREAPP2_1_OR_GREATER
+			override
+#endif
+			ValueTask<int> ReadAsync(Memory<char> buffer, CancellationToken cancellationToken = default)
 		{
 			int toWrite = Math.Min(buffer.Length, (int)Math.Min(MaxReadSize, Length - Position)), written = 0, position, chunkSize;
 
@@ -56,7 +60,11 @@ namespace WojciechMikołajewicz.CsvReaderTests.TestDevices
 				.ConfigureAwait(false);
 		}
 
-		public override async ValueTask<int> ReadBlockAsync(Memory<char> buffer, CancellationToken cancellationToken = default)
+		public
+#if NETCOREAPP2_1_OR_GREATER
+			override
+#endif
+			async ValueTask<int> ReadBlockAsync(Memory<char> buffer, CancellationToken cancellationToken = default)
 		{
 			int written = 0, chunkSize;
 

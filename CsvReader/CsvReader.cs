@@ -552,7 +552,7 @@ namespace WojciechMikołajewicz.CsvReader
 				LoadingTask = new ValueTask<int>(0);
 			}
 #else
-			if(!LoadingTask.IsCompleted)
+			if(LoadingTask!=null && !LoadingTask.IsCompleted)
 			{
 				try
 				{

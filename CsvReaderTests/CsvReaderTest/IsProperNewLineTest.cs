@@ -28,10 +28,10 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 				var searchArray = csvReader.SearchArray_Get();
 
 				Assert.AreEqual(newLineSearchCharacters.Length+1, searchArray.Length);
-
-				Assert.IsTrue(searchArray.Span.Contains(csvReaderOptions.DelimiterChar));
+				
+				Assert.IsTrue(0<=searchArray.Span.IndexOf(csvReaderOptions.DelimiterChar));
 				foreach(var ch in newLineSearchCharacters)
-					Assert.IsTrue(searchArray.Span.Contains(ch));
+					Assert.IsTrue(0<=searchArray.Span.IndexOf(ch));
 			}
 		}
 
@@ -90,9 +90,9 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 
 				Assert.AreEqual(afterNewLineSearchCharacters.Length+1, searchArray.Length);
 
-				Assert.IsTrue(searchArray.Span.Contains(csvReaderOptions.DelimiterChar));
+				Assert.IsTrue(0<=searchArray.Span.IndexOf(csvReaderOptions.DelimiterChar));
 				foreach(var ch in afterNewLineSearchCharacters)
-					Assert.IsTrue(searchArray.Span.Contains(ch));
+					Assert.IsTrue(0<=searchArray.Span.IndexOf(ch));
 			}
 		}
 	}

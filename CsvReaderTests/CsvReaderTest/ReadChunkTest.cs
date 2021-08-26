@@ -143,8 +143,8 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 				{
 					pos = written % TestString.Length;
 					toWrite =  Math.Min(TestString.Length-pos, segmentLength-1-written);
-					streamWritter.Write(TestString.AsSpan(pos, toWrite));
-					sbExpected.Append(TestString.AsSpan(pos, toWrite));
+					streamWritter.Write(TestString.Substring(pos, toWrite));
+					sbExpected.Append(TestString, pos, toWrite);
 					written += toWrite;
 				}
 
@@ -155,8 +155,8 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 				//Write something else for the second segment
 				pos = written % TestString.Length;
 				toWrite = TestString.Length-pos;
-				streamWritter.Write(TestString.AsSpan(pos, toWrite));
-				sbExpected.Append(TestString.AsSpan(pos, toWrite));
+				streamWritter.Write(TestString.Substring(pos, toWrite));
+				sbExpected.Append(TestString, pos, toWrite);
 				written += toWrite;
 
 				streamWritter.Flush();
