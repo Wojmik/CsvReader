@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WojciechMikołajewicz.CsvReader;
+using WojciechMikołajewicz.CsvReader.CsvNodes;
 using WojciechMikołajewicz.CsvReader.MemorySequence;
 
 namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
@@ -69,9 +70,9 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 			//Assert.AreEqual(escapePositions.Length, actual.SkipCharPositions.Count);
 
 			//Compare chunks
-			var segment = actual.StartPosition.SequenceSegment;
-			int expectedIndex = 0, actualIndex = actual.StartPosition.PositionInSegment;
-			while(!ReferenceEquals(segment, actual.EndPosition.SequenceSegment))
+			var segment = actual.MemorySequence.StartPosition.SequenceSegment;
+			int expectedIndex = 0, actualIndex = actual.MemorySequence.StartPosition.PositionInSegment;
+			while(!ReferenceEquals(segment, actual.MemorySequence.EndPosition.SequenceSegment))
 			{
 				expectedChunk = expected.AsSpan(expectedIndex, segment.Memory.Length-actualIndex);
 				actualChunk = segment.Memory.Slice(actualIndex).Span;
@@ -85,23 +86,23 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 
 			//Compare last chunk
 			expectedChunk = expected.AsSpan(expectedIndex, expected.Length-expectedIndex);
-			actualChunk = segment.Memory.Slice(actualIndex, actual.EndPosition.PositionInSegment-actualIndex).Span;
+			actualChunk = segment.Memory.Slice(actualIndex, actual.MemorySequence.EndPosition.PositionInSegment-actualIndex).Span;
 			Assert.IsTrue(MemoryExtensions.SequenceEqual(actualChunk, expectedChunk));
 
 			//Check skip positions
 			int skipCharIndex = 0, skipListIndex = 0, positionInSegment;
-			long absoluteStartCellPosition = actual.StartPosition.AbsolutePosition;
+			long absoluteStartCellPosition = actual.MemorySequence.StartPosition.AbsolutePosition;
 			while(0<=(skipCharIndex=expected.IndexOf("\"\"", skipCharIndex)))
 			{
-				var skipEntry = actual.SkipCharPositions[skipListIndex];
+				var skipEntry = actual.MemorySequence.SkipCharPositions[skipListIndex];
 				Assert.AreEqual('\"', skipEntry.SequenceSegment.Memory.Span[skipEntry.PositionInSegment]);
 
 				int relativePosition = (int)(skipEntry.AbsolutePosition-absoluteStartCellPosition);
 				Assert.IsTrue(skipCharIndex==relativePosition || skipCharIndex+1==relativePosition);
 
 				bool corectPosition = false;
-				segment = actual.StartPosition.SequenceSegment;
-				positionInSegment = actual.StartPosition.PositionInSegment + skipCharIndex;
+				segment = actual.MemorySequence.StartPosition.SequenceSegment;
+				positionInSegment = actual.MemorySequence.StartPosition.PositionInSegment + skipCharIndex;
 				while(segment.Memory.Length<=positionInSegment)
 				{
 					positionInSegment -= segment.Memory.Length;
@@ -122,7 +123,7 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 				skipCharIndex += 2;
 				skipListIndex++;
 			}
-			Assert.AreEqual(skipListIndex, actual.SkipCharPositions.Count);
+			Assert.AreEqual(skipListIndex, actual.MemorySequence.SkipCharPositions.Count);
 		}
 	}
 }

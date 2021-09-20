@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace WojciechMikołajewicz.CsvReader
+namespace WojciechMikołajewicz.CsvReader.CsvNodes
 {
 	public readonly struct StringNode
 	{

@@ -82,7 +82,7 @@ namespace WojciechMikołajewicz.CsvReader.MemorySequence
 			segmentToFlip.Reuse(previous: this.LastSegment);
 			this.LastSegment=segmentToFlip;
 
-			return newCurrent;
+			return newCurrent!;
 		}
 
 		public void Dispose()

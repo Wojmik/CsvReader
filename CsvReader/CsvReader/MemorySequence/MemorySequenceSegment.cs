@@ -25,7 +25,7 @@ namespace WojciechMikołajewicz.CsvReader.MemorySequence
 		/// <summary>
 		/// Next node of MemorySequenceSegment&lt;T&gt; type
 		/// </summary>
-		internal MemorySequenceSegment<T> NextInternal { get; private set; }
+		internal MemorySequenceSegment<T>? NextInternal { get; private set; }
 
 		///// <summary>
 		///// Reference to next <see cref="MemorySequenceSegment{T}"/>
@@ -75,7 +75,10 @@ namespace WojciechMikołajewicz.CsvReader.MemorySequence
 			{
 				this.Memory = default;
 				ArrayPool<T>.Shared.Return(segment, true);
+				//This is set to null by design. From safety reason should not exist any referance to array after returned to pool. After Dispose segment is useless anyway.
+#pragma warning disable CS8625
 				this.Array = null;
+#pragma warning restore CS8625
 			}
 		}
 	}
