@@ -30,6 +30,30 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 					new StringNode("", NodeType.EndOfStream),
 				}
 			};
+			yield return new object[]
+			{
+				"Id,Text1,Text2\r\n7,Abcd,Efgh\r\n8,,\r\n9,,",
+				new StringNode[]
+				{
+					new StringNode("Id", NodeType.Cell),
+					new StringNode("Text1", NodeType.Cell),
+					new StringNode("Text2", NodeType.Cell),
+					new StringNode("\r\n", NodeType.NewLine),
+					new StringNode("7", NodeType.Cell),
+					new StringNode("Abcd", NodeType.Cell),
+					new StringNode("Efgh", NodeType.Cell),
+					new StringNode("\r\n", NodeType.NewLine),
+					new StringNode("8", NodeType.Cell),
+					new StringNode("", NodeType.Cell),
+					new StringNode("", NodeType.Cell),
+					new StringNode("\r\n", NodeType.NewLine),
+					new StringNode("9", NodeType.Cell),
+					new StringNode("", NodeType.Cell),
+					new StringNode("", NodeType.Cell),
+					new StringNode("", NodeType.EndOfStream),
+					new StringNode("", NodeType.EndOfStream),
+				}
+			};
 		}
 
 		[DataTestMethod]
@@ -37,7 +61,7 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 		public async Task ReadNextNodeAsMemorySequenceBigBufferTestAsync(string sample, IEnumerable<StringNode> expectedNodes)
 		{
 			using(var textReader = new StringReader(sample))
-			using(var csvReader = new CsvReader.CsvReader(textReader, new CsvReaderOptions() { BufferSizeInChars=64, CanEscape=true, DelimiterChar=',', EscapeChar='\"', LineEnding=LineEnding.Auto, }))
+			using(var csvReader = new CsvReader.CsvReader(textReader, new CsvReaderOptions() { BufferSizeInChars=64, CanEscape=true, DelimiterChar=',', EscapeChar='\"', LineEnding=LineEnding.Auto, PermitEmptyLineAtEnd=true, }))
 			{
 				foreach(var expectedNode in expectedNodes)
 				{
@@ -52,7 +76,7 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 		public async Task ReadNextNodeAsMemorySequenceSmallBufferTestAsync(string sample, IEnumerable<StringNode> expectedNodes)
 		{
 			using(var textReader = new StringReader(sample))
-			using(var csvReader = new CsvReader.CsvReader(textReader, new CsvReaderOptions() { BufferSizeInChars=4, CanEscape=true, DelimiterChar=',', EscapeChar='\"', LineEnding=LineEnding.Auto, }))
+			using(var csvReader = new CsvReader.CsvReader(textReader, new CsvReaderOptions() { BufferSizeInChars=4, CanEscape=true, DelimiterChar=',', EscapeChar='\"', LineEnding=LineEnding.Auto, PermitEmptyLineAtEnd=true, }))
 			{
 				foreach(var expectedNode in expectedNodes)
 				{
@@ -79,7 +103,11 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 
 				Assert.IsTrue(MemoryExtensions.SequenceEqual(actualChunk, expectedChunk));
 
-				segment = segment.Next;
+				segment = segment.Next
+#if NETCOREAPP3_0_OR_GREATER
+					!
+#endif
+					;
 				actualIndex = 0;
 				expectedIndex += expectedChunk.Length;
 			}
@@ -106,7 +134,11 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 				while(segment.Memory.Length<=positionInSegment)
 				{
 					positionInSegment -= segment.Memory.Length;
-					segment = segment.Next;
+					segment = segment.Next
+#if NETCOREAPP3_0_OR_GREATER
+						!
+#endif
+						;
 				}
 				corectPosition |= new MemorySequencePosition<char>((MemorySequenceSegment<char>)segment, positionInSegment)==skipEntry;
 
@@ -114,7 +146,11 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 				while(segment.Memory.Length<=positionInSegment)
 				{
 					positionInSegment -= segment.Memory.Length;
-					segment = segment.Next;
+					segment = segment.Next
+#if NETCOREAPP3_0_OR_GREATER
+						!
+#endif
+						;
 				}
 				corectPosition |= new MemorySequencePosition<char>((MemorySequenceSegment<char>)segment, positionInSegment)==skipEntry;
 

@@ -76,6 +76,9 @@ namespace WojciechMikołajewicz.CsvReader
 
 			//TRecord type configuration
 			var recordConfigurationBuilder = new RecordConfiguration<TRecord>(options, StringDeduplicator);
+			//Automatic discover properties of TRecord and add bindings
+			recordConfigurationBuilder.DiscoverRecordBinding();
+			//Set configuration provided by user
 			if(recordConfiguration!=null)
 				recordConfiguration.Configure(recordConfigurationBuilder);
 
@@ -209,6 +212,56 @@ namespace WojciechMikołajewicz.CsvReader
 			}
 		}
 #endif
+
+		/// <summary>
+		/// Enumerates records from csv
+		/// </summary>
+		/// <returns>Enumerable of <typeparamref name="TRecord"/></returns>
+		/// <exception cref="System.Runtime.Serialization.SerializationException">
+		/// <para>Csv not well formated.</para>
+		/// <list type="bullet">
+		/// <item>Unexpected character after escaped cell</item>
+		/// <item>Unexpected end of stream inside escaped cell</item>
+		/// <item>Inconsistent number of columns in rows when <see cref="CsvDeserializerOptions.CheckColumnsCountConsistency"/> set to true</item>
+		/// </list>
+		/// </exception>
+		public IEnumerable<TRecord> Read()
+		{
+			int columnsCount = -1, rowIndex = 0;
+
+			if(HasHeaderRow)
+			{
+				columnsCount = ReadHeaderRowAsync(default).GetAwaiter().GetResult();
+				rowIndex++;
+			}
+
+			while(true)
+			{
+				ProcessCellParams<TRecord> data = new ProcessCellParams<TRecord>(new TRecord());
+				MemorySequenceNode node;
+
+				while((node=CsvReader.ReadNextNodeAsMemorySequenceAsync().GetAwaiter().GetResult()).NodeType==NodeType.Cell)
+				{
+					ProcessCell(node.MemorySequence, ref data);
+				}
+
+				//If end of stream detected and didn't read any column then break
+				if(node.NodeType!=NodeType.NewLine && data.ColumnIndex==0)
+					break;
+
+				//Check columns count consistency
+				if(CheckColumnsCountConsistency && data.ColumnIndex!=columnsCount)
+				{
+					if(0<=columnsCount)
+						throw new System.Runtime.Serialization.SerializationException($"Inconsistent number of columns in row {rowIndex}. Should be {columnsCount} columns and is {data.ColumnIndex}");
+					columnsCount = data.ColumnIndex;
+				}
+
+				yield return data.Record;
+
+				rowIndex++;
+			}
+		}
 
 		private void ProcessCell(in MemorySequenceSpan memorySequence, ref ProcessCellParams<TRecord> parameters)
 		{

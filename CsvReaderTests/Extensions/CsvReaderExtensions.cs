@@ -11,6 +11,8 @@ namespace WojciechMikołajewicz.CsvReaderTests
 {
 	static class CsvReaderExtensions
 	{
+#pragma warning disable CS8605
+#pragma warning disable CS8602
 		public static ValueTask<MemorySequenceSegmentSpan<char>> ReadChunkAsync(this CsvReader.CsvReader @this, CancellationToken cancellationToken)
 		{
 			var memberInfo = typeof(CsvReader.CsvReader).GetMethod("ReadChunkAsync", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
@@ -46,5 +48,7 @@ namespace WojciechMikołajewicz.CsvReaderTests
 			var memberInfo = typeof(CsvReader.CsvReader).GetMethod("IsProperNewLineAsync", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
 			return (ValueTask<bool>)memberInfo.Invoke(@this, new object[] { charRead, cancellationToken, });
 		}
+#pragma warning restore CS8602
+#pragma warning restore CS8605
 	}
 }

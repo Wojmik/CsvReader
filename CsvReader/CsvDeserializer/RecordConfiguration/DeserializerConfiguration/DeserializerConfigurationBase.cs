@@ -21,7 +21,7 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.De
 		internal abstract bool TryBuild(
 #if NETSTANDARD2_1_OR_GREATER
 			[NotNullWhen(true)]
-# endif
+#endif
 			out CellDeserializerBase<TDeserialized>? cellDeserializer);
 	}
 }

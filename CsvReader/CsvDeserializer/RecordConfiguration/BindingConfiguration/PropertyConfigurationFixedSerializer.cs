@@ -19,11 +19,11 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.Bi
 			this.SerializerConfigurator = createSerializerConfigurator(this);
 		}
 
-		internal PropertyConfigurationFixedSerializer(PropertyConfigurationBase<TRecord, TProperty> propertyConfiguration, Func<PropertyConfigurationFixedSerializer<TRecord, TProperty, TSerializerConfigurator>, TSerializerConfigurator> createSerializerConfigurator)
-			: this(propertyConfiguration.RecordConfiguration, propertyConfiguration.PropertySelector, createSerializerConfigurator)
+		internal PropertyConfigurationFixedSerializer(BindingConfigurationBase<TRecord> bindingConfiguration, Expression<Func<TRecord, TProperty>> selector, Func<PropertyConfigurationFixedSerializer<TRecord, TProperty, TSerializerConfigurator>, TSerializerConfigurator> createSerializerConfigurator)
+			: this(bindingConfiguration.RecordConfiguration, selector, createSerializerConfigurator)
 		{
-			this.ColumnName = propertyConfiguration.ColumnName;
-			this.ColumnIndex = propertyConfiguration.ColumnIndex;
+			this.ColumnName = bindingConfiguration.ColumnName;
+			this.ColumnIndex = bindingConfiguration.ColumnIndex;
 		}
 
 		public PropertyConfigurationFixedSerializer<TRecord, TProperty, TSerializerConfigurator> ConfigureDeserializer(Action<TSerializerConfigurator> configureSerializerMethod)
@@ -35,19 +35,13 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.Bi
 
 		public PropertyConfigurationFixedSerializer<TRecord, TProperty, TSerializerConfigurator> BindToColumn(string columnName)
 		{
-			ColumnName = columnName??throw new ArgumentNullException(nameof(columnName));
-			ColumnIndex = -1;
-
+			BindToColumnInternal(columnName);
 			return this;
 		}
 
 		public PropertyConfigurationFixedSerializer<TRecord, TProperty, TSerializerConfigurator> BindToColumn(int columnIndex)
 		{
-			if(columnIndex<0)
-				throw new ArgumentOutOfRangeException(nameof(columnIndex), columnIndex, $"{nameof(columnIndex)} cannot be less than zero");
-			ColumnName = null;
-			ColumnIndex = columnIndex;
-
+			BindToColumnInternal(columnIndex);
 			return this;
 		}
 

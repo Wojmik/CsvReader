@@ -21,7 +21,11 @@ namespace WojciechMikołajewicz.CsvReaderTests.MemorySequenceTest
 				WriteSegment(seg0, seg0.Array.Length, "Seg 0 seq 0 ");
 
 				memSeq.AddNewSegment(minimumLength: 32);
-				var seg1 = seg0.NextInternal;
+				var seg1 = seg0.NextInternal
+#if NETCOREAPP3_0_OR_GREATER
+					!
+#endif
+					;
 				WriteSegment(seg1, seg1.Array.Length, "Seg 1 seq 1 ");
 
 				Assert.AreEqual(new MemorySequencePosition<char>(seg0, 0), memSeq.CurrentPosition);
@@ -76,18 +80,30 @@ namespace WojciechMikołajewicz.CsvReaderTests.MemorySequenceTest
 				WriteSegment(seg0, seg0.Array.Length, "Seg 0 seq 0 ");
 
 				memSeq.AddNewSegment(minimumLength: 32);
-				var seg1 = seg0.NextInternal;
+				var seg1 = seg0.NextInternal
+#if NETCOREAPP3_0_OR_GREATER
+					!
+#endif
+					;
 				WriteSegment(seg1, seg1.Array.Length, "Seg 1 seq 1 ");
 
 				memSeq.AddNewSegment(minimumLength: 32);
-				var seg2 = seg1.NextInternal;
+				var seg2 = seg1.NextInternal
+#if NETCOREAPP3_0_OR_GREATER
+!
+#endif
+					;
 				WriteSegment(seg2, seg2.Array.Length, "Seg 2 seq 2 ");
 
 				memSeq.MoveForward(new MemorySequencePosition<char>(seg2, 30), 0);
 				Assert.AreEqual(new MemorySequencePosition<char>(seg2, 30), memSeq.CurrentPosition);
 				Assert.AreEqual(seg0.Array.Length+seg1.Array.Length+30, memSeq.CurrentPosition.AbsolutePosition);
 				Assert.AreSame(seg0, memSeq.CurrentPosition.InternalSequenceSegment.NextInternal);
-				Assert.AreSame(seg1, memSeq.CurrentPosition.InternalSequenceSegment.NextInternal.NextInternal);
+				Assert.AreSame(seg1, memSeq.CurrentPosition.InternalSequenceSegment.NextInternal
+#if NETCOREAPP3_0_OR_GREATER
+					!
+#endif
+					.NextInternal);
 
 				WriteSegment(seg0, seg0.Array.Length, "Seg 0 seq 3 ");
 				WriteSegment(seg1, seg1.Array.Length, "Seg 1 seq 4 ");
@@ -110,7 +126,11 @@ namespace WojciechMikołajewicz.CsvReaderTests.MemorySequenceTest
 				WriteSegment(seg0, seg0.Array.Length, "Seg 0 seq 0 ");
 
 				memSeq.AddNewSegment(minimumLength: 32);
-				var seg1 = seg0.NextInternal;
+				var seg1 = seg0.NextInternal
+#if NETCOREAPP3_0_OR_GREATER
+					!
+#endif
+					;
 				WriteSegment(seg1, seg1.Array.Length, "Seg 1 seq 1 ");
 
 				memSeq.MoveForward(new MemorySequencePosition<char>(seg1, 30), 0);
@@ -137,7 +157,11 @@ namespace WojciechMikołajewicz.CsvReaderTests.MemorySequenceTest
 				WriteSegment(seg0, seg0.Array.Length-1, "Seg 0 seq 0 ");
 
 				memSeq.AddNewSegment(minimumLength: 32);
-				var seg1 = seg0.NextInternal;
+				var seg1 = seg0.NextInternal
+#if NETCOREAPP3_0_OR_GREATER
+					!
+#endif
+					;
 
 				Assert.ThrowsException<InvalidOperationException>(() => memSeq.MoveForward(new MemorySequencePosition<char>(seg1, 0), 0));
 			}
@@ -169,7 +193,11 @@ namespace WojciechMikołajewicz.CsvReaderTests.MemorySequenceTest
 				WriteSegment(seg0, seg0.Array.Length, "Seg 0 seq 0 ");
 
 				memSeq.AddNewSegment(minimumLength: 32);
-				var seg1 = seg0.NextInternal;
+				var seg1 = seg0.NextInternal
+#if NETCOREAPP3_0_OR_GREATER
+					!
+#endif
+					;
 				WriteSegment(seg1, seg1.Array.Length, "Seg 1 seq 1 ");
 
 				using(var seg2 = new MemorySequenceSegment<char>(null, 32))

@@ -10,6 +10,7 @@ namespace WojciechMikołajewicz.CsvReader
 	public class CsvReaderOptions
 	{
 		const bool CanEscapeDefault = true;
+		const bool PermitEmptyLineAtEndDefault = true;
 		const char EscapeCharDefault = '\"';
 		const char DelimiterCharDefault = ',';
 		const LineEnding LineEndingDefault = LineEnding.Auto;
@@ -19,6 +20,11 @@ namespace WojciechMikołajewicz.CsvReader
 		/// Data can be enclosed with escape characters to store control characters. Default is true
 		/// </summary>
 		public bool CanEscape { get; set; }
+
+		/// <summary>
+		/// Permits empty line at the end of the file. If false, empty line at the end of file is interpreted as record. Default is true
+		/// </summary>
+		public bool PermitEmptyLineAtEnd { get; set; }
 
 		/// <summary>
 		/// Escape character. Default is '"'
@@ -51,6 +57,7 @@ namespace WojciechMikołajewicz.CsvReader
 		public CsvReaderOptions()
 		{
 			CanEscape = CanEscapeDefault;
+			PermitEmptyLineAtEnd = PermitEmptyLineAtEndDefault;
 			EscapeChar = EscapeCharDefault;
 			DelimiterChar = DelimiterCharDefault;
 			LineEnding = LineEndingDefault;

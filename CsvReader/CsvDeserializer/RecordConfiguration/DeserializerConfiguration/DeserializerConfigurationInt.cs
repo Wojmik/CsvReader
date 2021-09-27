@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
 using WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers;
@@ -13,7 +14,11 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.De
 			: base(propertyConfiguration, NumberStyles.Integer)
 		{ }
 
-		internal override bool TryBuild(out CellDeserializerBase<int>? cellDeserializer)
+		internal override bool TryBuild(
+#if NETSTANDARD2_1_OR_GREATER
+			[NotNullWhen(true)]
+#endif
+			out CellDeserializerBase<int>? cellDeserializer)
 		{
 			cellDeserializer = new CellIntDeserializer(NumberStyles, FormatProvider);
 			return true;

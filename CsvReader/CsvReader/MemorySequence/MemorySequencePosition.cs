@@ -17,10 +17,7 @@ namespace WojciechMikołajewicz.CsvReader.MemorySequence
 
 		internal MemorySequencePosition(MemorySequenceSegment<T> sequenceSegment, int positionInSegment)
 		{
-			if(sequenceSegment==null)
-				throw new ArgumentNullException(nameof(sequenceSegment));
-
-			this.InternalSequenceSegment=sequenceSegment;
+			this.InternalSequenceSegment=sequenceSegment??throw new ArgumentNullException(nameof(sequenceSegment));
 			this.PositionInSegment=positionInSegment;
 		}
 

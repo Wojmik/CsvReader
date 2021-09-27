@@ -37,7 +37,7 @@ namespace WojciechMikołajewicz.CsvReader.MemorySequence
 		/// </summary>
 		/// <param name="previous">Previous <see cref="MemorySequenceSegment{T}"/>. This <see cref="MemorySequenceSegment{T}"/> is added as <see cref="Next"/> of <paramref name="previous"/></param>
 		/// <param name="minimumLength">Minimum memory size for this <see cref="MemorySequenceSegment{T}"/></param>
-		internal MemorySequenceSegment(MemorySequenceSegment<T> previous, int minimumLength)
+		internal MemorySequenceSegment(MemorySequenceSegment<T>? previous, int minimumLength)
 		{
 			if(previous!=null)
 			{

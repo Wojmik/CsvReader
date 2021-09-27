@@ -9,9 +9,11 @@ namespace WojciechMikołajewicz.CsvReaderTests.MemorySequenceTest
 	[TestClass]
 	public class MemorySequencePositionTest
 	{
+#pragma warning disable CS8618
 		static MemorySequenceSegment<char> Segment1;
 
 		static MemorySequenceSegment<char> Segment2;
+#pragma warning restore CS8618
 
 		[ClassInitialize]
 		public static void PrepareData(TestContext testContext)

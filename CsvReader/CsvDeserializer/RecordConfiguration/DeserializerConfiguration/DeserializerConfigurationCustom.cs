@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers;
 using WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration;
@@ -16,7 +17,11 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.De
 			this.CellDeserializer = cellDeserializer;
 		}
 
-		internal override bool TryBuild(out CellDeserializerBase<TDeserialized>? cellDeserializer)
+		internal override bool TryBuild(
+#if NETSTANDARD2_1_OR_GREATER
+			[NotNullWhen(true)]
+# endif
+			out CellDeserializerBase<TDeserialized>? cellDeserializer)
 		{
 			cellDeserializer = CellDeserializer;
 			return true;

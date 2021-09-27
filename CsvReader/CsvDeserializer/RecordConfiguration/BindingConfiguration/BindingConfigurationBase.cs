@@ -10,14 +10,28 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.Bi
 	{
 		protected internal RecordConfiguration<TRecord> RecordConfiguration { get; }
 
-		public string? ColumnName { get; protected set; }
+		public string? ColumnName { get; private protected set; }
 
-		public int ColumnIndex { get; protected set; }
+		public int ColumnIndex { get; private protected set; }
 
 		protected BindingConfigurationBase(RecordConfiguration<TRecord> recordConfiguration)
 		{
 			this.RecordConfiguration = recordConfiguration;
 			this.ColumnIndex = -1;
+		}
+
+		protected internal void BindToColumnInternal(string columnName)
+		{
+			ColumnName = columnName??throw new ArgumentNullException(nameof(columnName));
+			ColumnIndex = -1;
+		}
+
+		protected internal void BindToColumnInternal(int columnIndex)
+		{
+			if(columnIndex<0)
+				throw new ArgumentOutOfRangeException(nameof(columnIndex), columnIndex, $"{nameof(columnIndex)} cannot be less than zero");
+			ColumnName = null;
+			ColumnIndex = columnIndex;
 		}
 
 		internal abstract bool TryBuild(

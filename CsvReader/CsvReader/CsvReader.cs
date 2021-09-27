@@ -24,6 +24,8 @@ namespace WojciechMikołajewicz.CsvReader
 
 		public bool CanEscape { get; }
 
+		public bool PermitEmptyLineAtEnd { get; }
+
 		private readonly ReadOnlyMemory<char> EscapeCharArray;
 
 		private Memory<char> SearchArray;
@@ -50,6 +52,8 @@ namespace WojciechMikołajewicz.CsvReader
 
 		private char[]? TempCellArray;
 
+		private bool NextNodeIsCell;
+
 		public CsvReader(TextReader textReader)
 			: this(textReader: textReader, options: new CsvReaderOptions())
 		{ }
@@ -66,11 +70,14 @@ namespace WojciechMikołajewicz.CsvReader
 
 			this.TextReader = textReader??throw new ArgumentNullException(nameof(textReader));
 			this.CanEscape = options.CanEscape;
+			this.PermitEmptyLineAtEnd = options.PermitEmptyLineAtEnd;
 			this.EscapeChar = options.EscapeChar;
 			this.DelimiterChar = options.DelimiterChar;
 			this.LineEnding = options.LineEnding;
 			this.BufferSizeInChars = options.BufferSizeInChars;
 			this.LeaveOpen = options.LeaveOpen;
+
+			NextNodeIsCell = true;
 
 			//Create data for SearchArray
 			var searchArray = new char[2+(CanEscape ? 1 : 0)+(LineEnding==LineEnding.Auto ? 1 : 0)];
@@ -239,12 +246,20 @@ namespace WojciechMikołajewicz.CsvReader
 
 			//Check end of stream
 			if(found.EndOfStream)
+			{
+				if(NextNodeIsCell && 0<found.FoundPosition.AbsolutePosition)//If file is empty it should return only end of stream
+				{
+					NextNodeIsCell = false;
+					return new MemorySequenceNode(CharMemorySequence.CurrentPosition, found.FoundPosition, Array.Empty<MemorySequencePosition<char>>(), NodeType.Cell);
+				}
 				return new MemorySequenceNode(found.FoundPosition, found.FoundPosition, Array.Empty<MemorySequencePosition<char>>(), NodeType.EndOfStream);
+			}
 
 			//Check delimiter shortcut
 			if(found.Character==DelimiterChar)
 			{
 				NewCurrentOffset = 1;
+				NextNodeIsCell = true;
 				return new MemorySequenceNode(found.FoundPosition, found.FoundPosition, Array.Empty<MemorySequencePosition<char>>(), NodeType.Cell);
 			}
 
@@ -283,18 +298,21 @@ namespace WojciechMikołajewicz.CsvReader
 				if(readResult.EndOfStream)
 				{
 					NewCurrentOffset = (int)(readResult.FoundPosition.AbsolutePosition-CharMemorySequence.CurrentPosition.AbsolutePosition);
+					NextNodeIsCell = false;
 					return new MemorySequenceNode(CharMemorySequence.CurrentPosition+1, currentPosition, SkipPositions, NodeType.Cell);
 				}
 
 				if(readResult.Character==DelimiterChar)
 				{
 					NewCurrentOffset = (int)(readResult.FoundPosition.AbsolutePosition-CharMemorySequence.CurrentPosition.AbsolutePosition) + 1;
+					NextNodeIsCell = true;
 					return new MemorySequenceNode(CharMemorySequence.CurrentPosition+1, currentPosition, SkipPositions, NodeType.Cell);
 				}
 
 				if(await IsProperNewLineAsync(readResult, cancellationToken).ConfigureAwait(false))
 				{
 					NewCurrentOffset = (int)(readResult.FoundPosition.AbsolutePosition-CharMemorySequence.CurrentPosition.AbsolutePosition);
+					NextNodeIsCell = false;
 					return new MemorySequenceNode(CharMemorySequence.CurrentPosition+1, currentPosition, SkipPositions, NodeType.Cell);
 				}
 
@@ -311,6 +329,7 @@ namespace WojciechMikołajewicz.CsvReader
 				if(found.EndOfStream)
 				{
 					NewCurrentOffset = (int)(found.FoundPosition.AbsolutePosition-CharMemorySequence.CurrentPosition.AbsolutePosition);
+					NextNodeIsCell = false;
 					return new MemorySequenceNode(CharMemorySequence.CurrentPosition, found.FoundPosition, Array.Empty<MemorySequencePosition<char>>(), NodeType.Cell);
 				}
 
@@ -318,6 +337,7 @@ namespace WojciechMikołajewicz.CsvReader
 				if(found.Character==DelimiterChar)
 				{
 					NewCurrentOffset = (int)(found.FoundPosition.AbsolutePosition-CharMemorySequence.CurrentPosition.AbsolutePosition) + 1;
+					NextNodeIsCell = true;
 					return new MemorySequenceNode(CharMemorySequence.CurrentPosition, found.FoundPosition, Array.Empty<MemorySequencePosition<char>>(), NodeType.Cell);
 				}
 
@@ -326,13 +346,17 @@ namespace WojciechMikołajewicz.CsvReader
 				{
 					NewCurrentOffset = (int)(found.FoundPosition.AbsolutePosition-CharMemorySequence.CurrentPosition.AbsolutePosition);
 
-					if(NewCurrentOffset<=0)//New line
+					if(NewCurrentOffset<=0 && !NextNodeIsCell)//New line
 					{
 						NewCurrentOffset = LineEnding==LineEnding.CRLF ? 2 : 1;
+						NextNodeIsCell = !PermitEmptyLineAtEnd;
 						return new MemorySequenceNode(CharMemorySequence.CurrentPosition, found.FoundPosition.AddOffset(NewCurrentOffset), Array.Empty<MemorySequencePosition<char>>(), NodeType.NewLine);
 					}
 					else//Cell ended by new line
+					{
+						NextNodeIsCell = false;
 						return new MemorySequenceNode(CharMemorySequence.CurrentPosition, found.FoundPosition, Array.Empty<MemorySequencePosition<char>>(), NodeType.Cell);
+					}
 				}
 			}
 		}

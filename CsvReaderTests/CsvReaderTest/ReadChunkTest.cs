@@ -66,7 +66,11 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 			const int ChunkLength = 10;
 			int sequenceSwitch = 0, readerPosition = 0;
 			MemorySequenceSegmentSpan<char> segmentRead = default;
+#if NETCOREAPP3_0_OR_GREATER
+			MemorySequenceSegment<char>? previousSegment = null;
+#else
 			MemorySequenceSegment<char> previousSegment = null;
+#endif
 
 			using(var textReader = new RepeatedTextReader(TestString) { MaxReadSize = ChunkLength, })
 			using(var csvReader = new CsvReader.CsvReader(textReader, new CsvReaderOptions() { BufferSizeInChars = 32, }))
@@ -77,7 +81,7 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 
 					segmentRead = await csvReader.ReadChunkAsync(default);
 
-					if(!Object.ReferenceEquals(previousSegment?.Array, segmentRead.Segment.Array))
+					if(!ReferenceEquals(previousSegment?.Array, segmentRead.Segment.Array))
 						sequenceSwitch++;
 
 					//Check chunk

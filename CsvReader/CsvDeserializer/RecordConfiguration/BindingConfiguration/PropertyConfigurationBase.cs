@@ -10,12 +10,17 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.Bi
 {
 	public abstract class PropertyConfigurationBase<TRecord, TProperty> : BindingConfigurationBase<TRecord>
 	{
-		protected internal Expression<Func<TRecord, TProperty>> PropertySelector { get; }
+		protected internal Expression<Func<TRecord, TProperty>> PropertySelector { get; private set; }
 
 		protected PropertyConfigurationBase(RecordConfiguration<TRecord> recordConfiguration, Expression<Func<TRecord, TProperty>> selector)
 			: base(recordConfiguration)
 		{
 			PropertySelector = selector;
+		}
+
+		internal void ChangePropertySelector(Expression<Func<TRecord, TProperty>> propertySelector)
+		{
+			PropertySelector = propertySelector;
 		}
 
 		protected Action<TRecord, TProperty> GetSetPropertyDelegate()
