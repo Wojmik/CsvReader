@@ -7,18 +7,19 @@ using WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.Bindin
 
 namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration
 {
-	public abstract class DeserializerConfigurationStyleProviderBase<TRecord, TDeserialized, TDeserializerConfigurator> : DeserializerConfigurationBase<TRecord, TDeserialized>
-		where TDeserializerConfigurator : DeserializerConfigurationStyleProviderBase<TRecord, TDeserialized, TDeserializerConfigurator>
+	public abstract class DeserializerConfigurationNumberStyleFormatProviderNullableBase<TRecord, TDeserialized, TDeserializerConfigurator> : DeserializerConfigurationBase<TRecord, TDeserialized?>
+		where TDeserialized : struct
+		where TDeserializerConfigurator : DeserializerConfigurationNumberStyleFormatProviderNullableBase<TRecord, TDeserialized, TDeserializerConfigurator>
 	{
 		public NumberStyles NumberStyles { get; private set; }
 
 		private IFormatProvider? _FormatProvider;
 		public IFormatProvider FormatProvider { get => _FormatProvider??RecordConfiguration.DefaultCulture; }
 
-		public DeserializerConfigurationStyleProviderBase(PropertyConfigurationBase<TRecord, TDeserialized> propertyConfiguration, NumberStyles defaultNumberStyles)
+		public DeserializerConfigurationNumberStyleFormatProviderNullableBase(PropertyConfigurationBase<TRecord, TDeserialized?> propertyConfiguration, NumberStyles defaultNumberStyles)
 			: base(propertyConfiguration)
 		{
-			this.NumberStyles = defaultNumberStyles;
+			NumberStyles = defaultNumberStyles;
 		}
 
 		public TDeserializerConfigurator SetNumberStyles(NumberStyles numberStyles)

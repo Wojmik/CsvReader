@@ -9,11 +9,11 @@ using WojciechMikołajewicz.CsvReader.CsvNodes;
 
 namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 {
-	sealed class CellIntDeserializer :
+	sealed class CellUIntDeserializer :
 #if NETSTANDARD2_1_OR_GREATER
-		CellDeserializerFromMemoryBase<int>
+		CellDeserializerFromMemoryBase<uint>
 #else
-		CellDeserializerFromStringBase<int>
+		CellDeserializerFromStringBase<uint>
 #endif
 	{
 		private readonly NumberStyles NumberStyles;
@@ -22,9 +22,9 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 
 		private readonly bool AllowEmpty;
 
-		private readonly int ValueForEmpty;
+		private readonly uint ValueForEmpty;
 
-		public CellIntDeserializer(NumberStyles numberStyles, IFormatProvider formatProvider, bool allowEmpty, int valueForEmpty)
+		public CellUIntDeserializer(NumberStyles numberStyles, IFormatProvider formatProvider, bool allowEmpty, uint valueForEmpty)
 		{
 			NumberStyles = numberStyles;
 			FormatProvider = formatProvider;
@@ -33,25 +33,25 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 		}
 
 #if NETSTANDARD2_1_OR_GREATER
-		protected override int DeserializeFromMemory(in ReadOnlyMemory<char> value)
+		protected override uint DeserializeFromMemory(in ReadOnlyMemory<char> value)
 		{
-			int parsedValue;
+			uint parsedValue;
 
 			if(AllowEmpty && value.IsEmpty)
 				parsedValue = ValueForEmpty;
 			else
-				parsedValue = int.Parse(value.Span, NumberStyles, FormatProvider);
+				parsedValue = uint.Parse(value.Span, NumberStyles, FormatProvider);
 			return parsedValue;
 		}
 #else
-		protected override int DeserializeFromString(string value)
+		protected override uint DeserializeFromString(string value)
 		{
-			int parsedValue;
+			uint parsedValue;
 
 			if(AllowEmpty && string.IsNullOrEmpty(value))
 				parsedValue = ValueForEmpty;
 			else
-				parsedValue = int.Parse(value, NumberStyles, FormatProvider);
+				parsedValue = uint.Parse(value, NumberStyles, FormatProvider);
 			return parsedValue;
 		}
 #endif

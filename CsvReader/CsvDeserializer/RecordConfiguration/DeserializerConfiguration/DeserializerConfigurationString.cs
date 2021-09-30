@@ -10,7 +10,7 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.De
 	public class DeserializerConfigurationString<TRecord> : DeserializerConfigurationBase<TRecord, string?>
 	{
 		private bool? _EmptyAsNull;
-		public bool EmptyAsNull { get => _EmptyAsNull??RecordConfiguration.EmptyStringAsNull; }
+		public bool EmptyAsNull { get => _EmptyAsNull??RecordConfiguration.EmptyAsNull; }
 
 		private bool? _DeduplicateStrings;
 		public bool DeduplicateStrings { get => _DeduplicateStrings??RecordConfiguration.DeduplicateStrings; }

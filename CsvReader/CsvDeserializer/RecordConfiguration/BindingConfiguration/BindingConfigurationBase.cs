@@ -34,6 +34,12 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.Bi
 			ColumnIndex = columnIndex;
 		}
 
+		protected internal void IgnoreInternal()
+		{
+			ColumnName = null;
+			ColumnIndex = -1;
+		}
+
 		internal abstract bool TryBuild(
 #if NETSTANDARD2_1_OR_GREATER
 			[NotNullWhen(true)]

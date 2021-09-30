@@ -9,11 +9,11 @@ using WojciechMikołajewicz.CsvReader.CsvNodes;
 
 namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 {
-	sealed class CellIntDeserializer :
+	sealed class CellSByteDeserializer :
 #if NETSTANDARD2_1_OR_GREATER
-		CellDeserializerFromMemoryBase<int>
+		CellDeserializerFromMemoryBase<sbyte>
 #else
-		CellDeserializerFromStringBase<int>
+		CellDeserializerFromStringBase<sbyte>
 #endif
 	{
 		private readonly NumberStyles NumberStyles;
@@ -22,9 +22,9 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 
 		private readonly bool AllowEmpty;
 
-		private readonly int ValueForEmpty;
+		private readonly sbyte ValueForEmpty;
 
-		public CellIntDeserializer(NumberStyles numberStyles, IFormatProvider formatProvider, bool allowEmpty, int valueForEmpty)
+		public CellSByteDeserializer(NumberStyles numberStyles, IFormatProvider formatProvider, bool allowEmpty, sbyte valueForEmpty)
 		{
 			NumberStyles = numberStyles;
 			FormatProvider = formatProvider;
@@ -33,25 +33,25 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 		}
 
 #if NETSTANDARD2_1_OR_GREATER
-		protected override int DeserializeFromMemory(in ReadOnlyMemory<char> value)
+		protected override sbyte DeserializeFromMemory(in ReadOnlyMemory<char> value)
 		{
-			int parsedValue;
+			sbyte parsedValue;
 
 			if(AllowEmpty && value.IsEmpty)
 				parsedValue = ValueForEmpty;
 			else
-				parsedValue = int.Parse(value.Span, NumberStyles, FormatProvider);
+				parsedValue = sbyte.Parse(value.Span, NumberStyles, FormatProvider);
 			return parsedValue;
 		}
 #else
-		protected override int DeserializeFromString(string value)
+		protected override sbyte DeserializeFromString(string value)
 		{
-			int parsedValue;
+			sbyte parsedValue;
 
 			if(AllowEmpty && string.IsNullOrEmpty(value))
 				parsedValue = ValueForEmpty;
 			else
-				parsedValue = int.Parse(value, NumberStyles, FormatProvider);
+				parsedValue = sbyte.Parse(value, NumberStyles, FormatProvider);
 			return parsedValue;
 		}
 #endif

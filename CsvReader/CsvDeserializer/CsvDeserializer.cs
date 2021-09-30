@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -98,11 +99,6 @@ namespace WojciechMikołajewicz.CsvReader
 				//All column indexes have to be valid
 				if(columnBindings[0].ColumnIndex<0)
 					throw new InvalidOperationException($"Could not find out column index for column name: \"{columnBindings[0].ColumnName}\"");
-
-				//Check for duplicates in column indexes
-				for(int i = 1; i<columnBindings.Length; i++)
-					if(columnBindings[i-1].ColumnIndex>=columnBindings[i].ColumnIndex)
-						throw new InvalidOperationException($"Duplicated column index for columns: name: \"{columnBindings[i-1].ColumnName}\", index: {columnBindings[i-1].ColumnIndex} and name: \"{columnBindings[i].ColumnName}\", index: {columnBindings[i].ColumnIndex}");
 			}
 
 			static int Comparison(ColumnBinding<TRecord> x, ColumnBinding<TRecord> y)
@@ -118,36 +114,20 @@ namespace WojciechMikołajewicz.CsvReader
 
 		private async ValueTask<int> ReadHeaderRowAsync(CancellationToken cancellationToken)
 		{
-			Dictionary<string, ColumnBinding<TRecord>> columnsByName = new Dictionary<string, ColumnBinding<TRecord>>(HeaderRowColumnNamesComparer);
-			Dictionary<int, ColumnBinding<TRecord>> columnsByIndex = new Dictionary<int, ColumnBinding<TRecord>>();
-
-			foreach(var binding in ColumnBinders)
-				if(binding.ColumnName!=null)
-				{
-#if NETSTANDARD2_1_OR_GREATER
-					if(!columnsByName.TryAdd(binding.ColumnName, binding))
-						throw new InvalidOperationException($"Duplicated column name: \"{binding.ColumnName}\"");
-#else
-					if(columnsByName.ContainsKey(binding.ColumnName))
-						throw new InvalidOperationException($"Duplicated column name: \"{binding.ColumnName}\"");
-					columnsByName.Add(binding.ColumnName, binding);
-#endif
-				}
-				else
-					columnsByIndex.Add(binding.ColumnIndex, binding);
+			var columnsByName = ColumnBinders.Where(bnd => bnd.ColumnName!=null).ToLookup(bnd => bnd.ColumnName!, HeaderRowColumnNamesComparer);
+			var columnsByIndex = ColumnBinders.Where(bnd => bnd.ColumnName==null).ToLookup(bnd => bnd.ColumnIndex);
 
 			StringNode node;
 			int columnIndex = 0;
 			var bindings = new List<ColumnBinding<TRecord>>(ColumnBinders.Length);
 			while((node = await CsvReader.ReadNextNodeAsStringAsync(cancellationToken).ConfigureAwait(false)).NodeType==NodeType.Cell)
 			{
-				if(columnsByName.TryGetValue(node.Data, out var binding))
+				foreach(var binding in columnsByName[node.Data])
 				{
 					binding.ColumnIndex = columnIndex;
 					bindings.Add(binding);
 				}
-				if(columnsByIndex.TryGetValue(columnIndex, out binding))
-					bindings.Add(binding);
+				bindings.AddRange(columnsByIndex[columnIndex]);
 
 				columnIndex++;
 			}
@@ -191,7 +171,14 @@ namespace WojciechMikołajewicz.CsvReader
 				
 				while((node=await CsvReader.ReadNextNodeAsMemorySequenceAsync(cancellationToken).ConfigureAwait(false)).NodeType==NodeType.Cell)
 				{
-					ProcessCell(node.MemorySequence, ref data);
+					try
+					{
+						ProcessCell(node.MemorySequence, ref data);
+					}
+					catch(Exception ex)
+					{
+						throw new SerializationException($"Error parsing data in row {rowIndex} and column index {data.ColumnIndex}, name \"{ColumnBinders[data.BinderIndex].ColumnName}\"", ex);
+					}
 				}
 
 				//If end of stream detected and didn't read any column then break
@@ -202,7 +189,7 @@ namespace WojciechMikołajewicz.CsvReader
 				if(CheckColumnsCountConsistency && data.ColumnIndex!=columnsCount)
 				{
 					if(0<=columnsCount)
-						throw new System.Runtime.Serialization.SerializationException($"Inconsistent number of columns in row {rowIndex}. Should be {columnsCount} columns and is {data.ColumnIndex}");
+						throw new SerializationException($"Inconsistent number of columns in row {rowIndex}. Should be {columnsCount} columns and is {data.ColumnIndex}");
 					columnsCount = data.ColumnIndex;
 				}
 
@@ -242,7 +229,14 @@ namespace WojciechMikołajewicz.CsvReader
 
 				while((node=CsvReader.ReadNextNodeAsMemorySequenceAsync().GetAwaiter().GetResult()).NodeType==NodeType.Cell)
 				{
-					ProcessCell(node.MemorySequence, ref data);
+					try
+					{
+						ProcessCell(node.MemorySequence, ref data);
+					}
+					catch(Exception ex)
+					{
+						throw new SerializationException($"Error parsing data in row {rowIndex} and column index {data.ColumnIndex}, name \"{ColumnBinders[data.BinderIndex].ColumnName}\"", ex);
+					}
 				}
 
 				//If end of stream detected and didn't read any column then break
@@ -253,7 +247,7 @@ namespace WojciechMikołajewicz.CsvReader
 				if(CheckColumnsCountConsistency && data.ColumnIndex!=columnsCount)
 				{
 					if(0<=columnsCount)
-						throw new System.Runtime.Serialization.SerializationException($"Inconsistent number of columns in row {rowIndex}. Should be {columnsCount} columns and is {data.ColumnIndex}");
+						throw new SerializationException($"Inconsistent number of columns in row {rowIndex}. Should be {columnsCount} columns and is {data.ColumnIndex}");
 					columnsCount = data.ColumnIndex;
 				}
 

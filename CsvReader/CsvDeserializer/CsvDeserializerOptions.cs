@@ -11,7 +11,7 @@ namespace WojciechMikołajewicz.CsvReader
 	public class CsvDeserializerOptions : CsvReaderOptions
 	{
 		const bool HasHeaderRowDefault = true;
-		const bool EmptyStringAsNullDefault = true;
+		const bool EmptyAsNullDefault = true;
 		const bool DeduplicateStringsDefault = true;
 		const bool CheckColumnsCountConsistencyDefault = true;
 
@@ -33,7 +33,7 @@ namespace WojciechMikołajewicz.CsvReader
 		/// <summary>
 		/// If empty strings should be converted to nulls. Default is true
 		/// </summary>
-		public bool EmptyStringAsNull { get; set; }
+		public bool EmptyAsNull { get; set; }
 
 		/// <summary>
 		/// If strings with the same value should be deduplicated. Default is true
@@ -57,7 +57,7 @@ namespace WojciechMikołajewicz.CsvReader
 			HasHeaderRow = HasHeaderRowDefault;
 			HeaderRowColumnNamesComparer = StringComparer.OrdinalIgnoreCase;
 			DeserializationCulture = CultureInfo.InvariantCulture;
-			EmptyStringAsNull = EmptyStringAsNullDefault;
+			EmptyAsNull = EmptyAsNullDefault;
 			DeduplicateStrings = DeduplicateStringsDefault;
 			CheckColumnsCountConsistency = CheckColumnsCountConsistencyDefault;
 		}

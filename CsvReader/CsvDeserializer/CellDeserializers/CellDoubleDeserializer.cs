@@ -9,11 +9,11 @@ using WojciechMikołajewicz.CsvReader.CsvNodes;
 
 namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 {
-	sealed class CellIntDeserializer :
+	sealed class CellDoubleDeserializer :
 #if NETSTANDARD2_1_OR_GREATER
-		CellDeserializerFromMemoryBase<int>
+		CellDeserializerFromMemoryBase<double>
 #else
-		CellDeserializerFromStringBase<int>
+		CellDeserializerFromStringBase<double>
 #endif
 	{
 		private readonly NumberStyles NumberStyles;
@@ -22,9 +22,9 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 
 		private readonly bool AllowEmpty;
 
-		private readonly int ValueForEmpty;
+		private readonly double ValueForEmpty;
 
-		public CellIntDeserializer(NumberStyles numberStyles, IFormatProvider formatProvider, bool allowEmpty, int valueForEmpty)
+		public CellDoubleDeserializer(NumberStyles numberStyles, IFormatProvider formatProvider, bool allowEmpty, double valueForEmpty)
 		{
 			NumberStyles = numberStyles;
 			FormatProvider = formatProvider;
@@ -33,25 +33,25 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 		}
 
 #if NETSTANDARD2_1_OR_GREATER
-		protected override int DeserializeFromMemory(in ReadOnlyMemory<char> value)
+		protected override double DeserializeFromMemory(in ReadOnlyMemory<char> value)
 		{
-			int parsedValue;
+			double parsedValue;
 
 			if(AllowEmpty && value.IsEmpty)
 				parsedValue = ValueForEmpty;
 			else
-				parsedValue = int.Parse(value.Span, NumberStyles, FormatProvider);
+				parsedValue = double.Parse(value.Span, NumberStyles, FormatProvider);
 			return parsedValue;
 		}
 #else
-		protected override int DeserializeFromString(string value)
+		protected override double DeserializeFromString(string value)
 		{
-			int parsedValue;
+			double parsedValue;
 
 			if(AllowEmpty && string.IsNullOrEmpty(value))
 				parsedValue = ValueForEmpty;
 			else
-				parsedValue = int.Parse(value, NumberStyles, FormatProvider);
+				parsedValue = double.Parse(value, NumberStyles, FormatProvider);
 			return parsedValue;
 		}
 #endif

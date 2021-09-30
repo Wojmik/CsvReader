@@ -8,19 +8,19 @@ using WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.Bindin
 
 namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration
 {
-	public class DeserializerConfigurationInt<TRecord> : DeserializerConfigurationNumberStyleFormatProviderBase<TRecord, int, DeserializerConfigurationInt<TRecord>>
+	public class DeserializerConfigurationDateTimeNullable<TRecord> : DeserializerConfigurationDateTimeStyleFormatProviderNullableBase<TRecord, DateTime, DeserializerConfigurationDateTimeNullable<TRecord>>
 	{
-		public DeserializerConfigurationInt(PropertyConfigurationBase<TRecord, int> propertyConfiguration)
-			: base(propertyConfiguration, NumberStyles.Integer)
+		public DeserializerConfigurationDateTimeNullable(PropertyConfigurationBase<TRecord, DateTime?> propertyConfiguration)
+			: base(propertyConfiguration, DateTimeStyles.None)
 		{ }
 
 		internal override bool TryBuild(
 #if NETSTANDARD2_1_OR_GREATER
 			[NotNullWhen(true)]
 #endif
-			out CellDeserializerBase<int>? cellDeserializer)
+			out CellDeserializerBase<DateTime?>? cellDeserializer)
 		{
-			cellDeserializer = new CellIntDeserializer(NumberStyles, FormatProvider, AllowEmpty, ValueForEmpty);
+			cellDeserializer = new CellDateTimeNullableDeserializer(FormatProvider, DateTimeStyles);
 			return true;
 		}
 	}

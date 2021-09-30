@@ -8,9 +8,9 @@ using WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.Bindin
 
 namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration
 {
-	public class DeserializerConfigurationInt<TRecord> : DeserializerConfigurationNumberStyleFormatProviderBase<TRecord, int, DeserializerConfigurationInt<TRecord>>
+	public class DeserializerConfigurationUIntNullable<TRecord> : DeserializerConfigurationNumberStyleFormatProviderNullableBase<TRecord, uint, DeserializerConfigurationUIntNullable<TRecord>>
 	{
-		public DeserializerConfigurationInt(PropertyConfigurationBase<TRecord, int> propertyConfiguration)
+		public DeserializerConfigurationUIntNullable(PropertyConfigurationBase<TRecord, uint?> propertyConfiguration)
 			: base(propertyConfiguration, NumberStyles.Integer)
 		{ }
 
@@ -18,9 +18,9 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.De
 #if NETSTANDARD2_1_OR_GREATER
 			[NotNullWhen(true)]
 #endif
-			out CellDeserializerBase<int>? cellDeserializer)
+			out CellDeserializerBase<uint?>? cellDeserializer)
 		{
-			cellDeserializer = new CellIntDeserializer(NumberStyles, FormatProvider, AllowEmpty, ValueForEmpty);
+			cellDeserializer = new CellUIntNullableDeserializer(NumberStyles, FormatProvider);
 			return true;
 		}
 	}

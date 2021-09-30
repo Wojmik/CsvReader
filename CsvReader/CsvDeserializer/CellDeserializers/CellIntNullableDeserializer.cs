@@ -9,48 +9,38 @@ using WojciechMikołajewicz.CsvReader.CsvNodes;
 
 namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 {
-	sealed class CellIntDeserializer :
+	sealed class CellIntNullableDeserializer :
 #if NETSTANDARD2_1_OR_GREATER
-		CellDeserializerFromMemoryBase<int>
+		CellDeserializerFromMemoryBase<int?>
 #else
-		CellDeserializerFromStringBase<int>
+		CellDeserializerFromStringBase<int?>
 #endif
 	{
 		private readonly NumberStyles NumberStyles;
 
 		private readonly IFormatProvider FormatProvider;
 
-		private readonly bool AllowEmpty;
-
-		private readonly int ValueForEmpty;
-
-		public CellIntDeserializer(NumberStyles numberStyles, IFormatProvider formatProvider, bool allowEmpty, int valueForEmpty)
+		public CellIntNullableDeserializer(NumberStyles numberStyles, IFormatProvider formatProvider)
 		{
 			NumberStyles = numberStyles;
 			FormatProvider = formatProvider;
-			AllowEmpty = allowEmpty;
-			ValueForEmpty = valueForEmpty;
 		}
 
 #if NETSTANDARD2_1_OR_GREATER
-		protected override int DeserializeFromMemory(in ReadOnlyMemory<char> value)
+		protected override int? DeserializeFromMemory(in ReadOnlyMemory<char> value)
 		{
-			int parsedValue;
+			int? parsedValue = default;
 
-			if(AllowEmpty && value.IsEmpty)
-				parsedValue = ValueForEmpty;
-			else
+			if(!value.IsEmpty)
 				parsedValue = int.Parse(value.Span, NumberStyles, FormatProvider);
 			return parsedValue;
 		}
 #else
-		protected override int DeserializeFromString(string value)
+		protected override int? DeserializeFromString(string value)
 		{
-			int parsedValue;
+			int? parsedValue = default;
 
-			if(AllowEmpty && string.IsNullOrEmpty(value))
-				parsedValue = ValueForEmpty;
-			else
+			if(!string.IsNullOrEmpty(value))
 				parsedValue = int.Parse(value, NumberStyles, FormatProvider);
 			return parsedValue;
 		}

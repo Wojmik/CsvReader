@@ -9,49 +9,46 @@ using WojciechMikołajewicz.CsvReader.CsvNodes;
 
 namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 {
-	sealed class CellIntDeserializer :
+	sealed class CellTimeSpanDeserializer :
 #if NETSTANDARD2_1_OR_GREATER
-		CellDeserializerFromMemoryBase<int>
+		CellDeserializerFromMemoryBase<TimeSpan>
 #else
-		CellDeserializerFromStringBase<int>
+		CellDeserializerFromStringBase<TimeSpan>
 #endif
 	{
-		private readonly NumberStyles NumberStyles;
-
 		private readonly IFormatProvider FormatProvider;
 
 		private readonly bool AllowEmpty;
 
-		private readonly int ValueForEmpty;
+		private readonly TimeSpan ValueForEmpty;
 
-		public CellIntDeserializer(NumberStyles numberStyles, IFormatProvider formatProvider, bool allowEmpty, int valueForEmpty)
+		public CellTimeSpanDeserializer(IFormatProvider formatProvider, bool allowEmpty, TimeSpan valueForEmpty)
 		{
-			NumberStyles = numberStyles;
 			FormatProvider = formatProvider;
 			AllowEmpty = allowEmpty;
 			ValueForEmpty = valueForEmpty;
 		}
 
 #if NETSTANDARD2_1_OR_GREATER
-		protected override int DeserializeFromMemory(in ReadOnlyMemory<char> value)
+		protected override TimeSpan DeserializeFromMemory(in ReadOnlyMemory<char> value)
 		{
-			int parsedValue;
+			TimeSpan parsedValue;
 
 			if(AllowEmpty && value.IsEmpty)
 				parsedValue = ValueForEmpty;
 			else
-				parsedValue = int.Parse(value.Span, NumberStyles, FormatProvider);
+				parsedValue = TimeSpan.Parse(value.Span, FormatProvider);
 			return parsedValue;
 		}
 #else
-		protected override int DeserializeFromString(string value)
+		protected override TimeSpan DeserializeFromString(string value)
 		{
-			int parsedValue;
+			TimeSpan parsedValue;
 
 			if(AllowEmpty && string.IsNullOrEmpty(value))
 				parsedValue = ValueForEmpty;
 			else
-				parsedValue = int.Parse(value, NumberStyles, FormatProvider);
+				parsedValue = TimeSpan.Parse(value, FormatProvider);
 			return parsedValue;
 		}
 #endif

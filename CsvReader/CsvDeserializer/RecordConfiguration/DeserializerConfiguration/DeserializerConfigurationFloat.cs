@@ -8,19 +8,19 @@ using WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.Bindin
 
 namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration
 {
-	public class DeserializerConfigurationInt<TRecord> : DeserializerConfigurationNumberStyleFormatProviderBase<TRecord, int, DeserializerConfigurationInt<TRecord>>
+	public class DeserializerConfigurationFloat<TRecord> : DeserializerConfigurationNumberStyleFormatProviderBase<TRecord, float, DeserializerConfigurationFloat<TRecord>>
 	{
-		public DeserializerConfigurationInt(PropertyConfigurationBase<TRecord, int> propertyConfiguration)
-			: base(propertyConfiguration, NumberStyles.Integer)
+		public DeserializerConfigurationFloat(PropertyConfigurationBase<TRecord, float> propertyConfiguration)
+			: base(propertyConfiguration, NumberStyles.AllowThousands|NumberStyles.Float)
 		{ }
 
 		internal override bool TryBuild(
 #if NETSTANDARD2_1_OR_GREATER
 			[NotNullWhen(true)]
 #endif
-			out CellDeserializerBase<int>? cellDeserializer)
+			out CellDeserializerBase<float>? cellDeserializer)
 		{
-			cellDeserializer = new CellIntDeserializer(NumberStyles, FormatProvider, AllowEmpty, ValueForEmpty);
+			cellDeserializer = new CellFloatDeserializer(NumberStyles, FormatProvider, AllowEmpty, ValueForEmpty);
 			return true;
 		}
 	}

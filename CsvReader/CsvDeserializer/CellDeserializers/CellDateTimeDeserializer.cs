@@ -9,49 +9,49 @@ using WojciechMikołajewicz.CsvReader.CsvNodes;
 
 namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 {
-	sealed class CellIntDeserializer :
+	sealed class CellDateTimeDeserializer :
 #if NETSTANDARD2_1_OR_GREATER
-		CellDeserializerFromMemoryBase<int>
+		CellDeserializerFromMemoryBase<DateTime>
 #else
-		CellDeserializerFromStringBase<int>
+		CellDeserializerFromStringBase<DateTime>
 #endif
 	{
-		private readonly NumberStyles NumberStyles;
-
 		private readonly IFormatProvider FormatProvider;
+
+		private readonly DateTimeStyles DateTimeStyles;
 
 		private readonly bool AllowEmpty;
 
-		private readonly int ValueForEmpty;
+		private readonly DateTime ValueForEmpty;
 
-		public CellIntDeserializer(NumberStyles numberStyles, IFormatProvider formatProvider, bool allowEmpty, int valueForEmpty)
+		public CellDateTimeDeserializer(IFormatProvider formatProvider, DateTimeStyles dateTimeStyles, bool allowEmpty, DateTime valueForEmpty)
 		{
-			NumberStyles = numberStyles;
 			FormatProvider = formatProvider;
+			DateTimeStyles = dateTimeStyles;
 			AllowEmpty = allowEmpty;
 			ValueForEmpty = valueForEmpty;
 		}
 
 #if NETSTANDARD2_1_OR_GREATER
-		protected override int DeserializeFromMemory(in ReadOnlyMemory<char> value)
+		protected override DateTime DeserializeFromMemory(in ReadOnlyMemory<char> value)
 		{
-			int parsedValue;
+			DateTime parsedValue;
 
 			if(AllowEmpty && value.IsEmpty)
 				parsedValue = ValueForEmpty;
 			else
-				parsedValue = int.Parse(value.Span, NumberStyles, FormatProvider);
+				parsedValue = DateTime.Parse(value.Span, FormatProvider, DateTimeStyles);
 			return parsedValue;
 		}
 #else
-		protected override int DeserializeFromString(string value)
+		protected override DateTime DeserializeFromString(string value)
 		{
-			int parsedValue;
+			DateTime parsedValue;
 
 			if(AllowEmpty && string.IsNullOrEmpty(value))
 				parsedValue = ValueForEmpty;
 			else
-				parsedValue = int.Parse(value, NumberStyles, FormatProvider);
+				parsedValue = DateTime.Parse(value, FormatProvider, DateTimeStyles);
 			return parsedValue;
 		}
 #endif

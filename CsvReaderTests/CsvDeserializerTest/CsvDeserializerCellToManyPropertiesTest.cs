@@ -1,31 +1,31 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WojciechMikołajewicz.CsvReader;
+using WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration;
 
 namespace WojciechMikołajewicz.CsvReaderTests.CsvDeserializerTest
 {
 	[TestClass]
-	public class CsvDeserializerTest
+	public class CsvDeserializerCellToManyPropertiesTest
 	{
 		static IEnumerable<object[]> GetSampleData()
 		{
 			yield return new object[]
 			{
-				@"Id,Text1,Text2,DayOfWeek,DayOfWeekNullable
-7,Abcd,Efgh,Saturday,Friday
-8,,,1,
+				@"Id
+A5d2fb0283c36a01
+452b82C32251F82d
 ",
 				new TestItem[]
 				{
-					new TestItem(){ Id=7, Text1="Abcd", Text2="Efgh", DayOfWeek=DayOfWeek.Saturday, DayOfWeekNullable=DayOfWeek.Friday, },
-#pragma warning disable CS8625
-					new TestItem(){ Id=8, Text1=null, Text2=null, DayOfWeek=(DayOfWeek)1, DayOfWeekNullable=null, },
-#pragma warning restore CS8625
+					new TestItem(){ Id=-6497855324123076095, IdText="A5d2fb0283c36a01", FromBase64=new byte[] { 3, 151, 118, 125, 189, 54, 243, 119, 55, 233, 173, 53, }, FromHex=new byte[] { 165, 210, 251, 2, 131, 195, 106, 1, }, },
+					new TestItem(){ Id=4984221187221616685, IdText="452b82C32251F82d", FromBase64=new byte[] { 227, 157, 155, 243, 96, 183, 219, 110, 117, 23, 205, 157, }, FromHex=new byte[] { 69, 43, 130, 195, 34, 81, 248, 45, }, },
 				}
 			};
 		}
@@ -72,45 +72,50 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvDeserializerTest
 		{
 			public void Configure(RecordConfiguration<TestItem> recordConfiguration)
 			{
-				//recordConfiguration
-				//	.Property(rec => rec.Text)
-				//	.BindToColumn(nameof(TestItem.Text))
-				//	.ConfigureDeserializer(deserializer =>
-				//	{
-				//	});
-				//recordConfiguration
-				//	.Property(bec => bec.Text)
-				//	.BindToColumn(nameof(TestItem.Text))
-				//	.ConfigureDeserializer(deserializer =>
-				//	{
-				//	});
+				recordConfiguration
+					.Property(rec => rec.Id)
+					.BindToColumn(nameof(TestItem.Id))
+					.ConfigureDeserializer(deserializer =>
+					{
+						deserializer.SetNumberStyles(NumberStyles.HexNumber);
+					});
 
-				//recordConfiguration
-				//	.Property(rec => rec.Id)
-				//	.BindToColumn(nameof(TestItem.Id))
-				//	.ConfigureDeserializer(deserializer =>
-				//	{
-				//	});
+				recordConfiguration
+					.Property(rec => rec.IdText)
+					.BindToColumn(nameof(TestItem.Id))
+					.ConfigureDeserializer(deserializer =>
+					{
+					});
+
+				recordConfiguration
+					.Property(rec => rec.FromBase64)
+					.BindToColumn(nameof(TestItem.Id))
+					.ConfigureDeserializer(deserializer =>
+					{
+						deserializer.SetByteArrayEncoding(ByteArrayEncoding.Base64);
+					});
+
+				recordConfiguration
+					.Property(rec => rec.FromHex)
+					.BindToColumn(nameof(TestItem.Id))
+					.ConfigureDeserializer(deserializer =>
+					{
+						deserializer.SetByteArrayEncoding(ByteArrayEncoding.Hex);
+					});
 			}
 		}
 
 		public class TestItem
 		{
-			public int Id { get; set; }
+			public long Id { get; set; }
 
 #pragma warning disable CS8618
-			public string Text1 { get; set; }
+			public string IdText { get; set; }
+
+			public byte[] FromBase64 { get; set; }
+
+			public byte[] FromHex { get; set; }
 #pragma warning restore CS8618
-
-#if NETCOREAPP3_0_OR_GREATER
-			public string? Text2 { get; set; }
-#else
-			public string Text2 { get; set; }
-#endif
-
-			public DayOfWeek DayOfWeek { get; set; }
-
-			public DayOfWeek? DayOfWeekNullable { get; set; }
 		}
 
 		class TestItemEqualityComparer : IEqualityComparer<TestItem>
@@ -125,10 +130,9 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvDeserializerTest
 					(x==null && y==null) ||
 					(x!=null && y!=null
 					&& x.Id==y.Id
-					&& x.Text1==y.Text1
-					&& x.Text2==y.Text2
-					&& x.DayOfWeek==y.DayOfWeek
-					&& Nullable.Equals(x.DayOfWeekNullable, y.DayOfWeekNullable)
+					&& x.IdText==y.IdText
+					&& Enumerable.SequenceEqual(x.FromBase64, y.FromBase64)
+					&& Enumerable.SequenceEqual(x.FromHex, y.FromHex)
 					);
 			}
 
@@ -142,12 +146,13 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvDeserializerTest
 				if(obj!=null)
 				{
 					hashCode=hashCode*-1521134295+obj.Id.GetHashCode();
-					hashCode=hashCode*-1521134295+EqualityComparer<string>.Default.GetHashCode(obj.Text1);
-#pragma warning disable CS8604
-					hashCode=hashCode*-1521134295+EqualityComparer<string>.Default.GetHashCode(obj.Text2);
-#pragma warning restore CS8604
-					hashCode=hashCode*-1521134295+obj.DayOfWeek.GetHashCode();
-					hashCode=hashCode*-1521134295+obj.DayOfWeekNullable.GetHashCode();
+					hashCode=hashCode*-1521134295+EqualityComparer<string>.Default.GetHashCode(obj.IdText);
+					if(obj.FromBase64!=null)
+						foreach(var bt in obj.FromBase64)
+							hashCode=hashCode*-1521134295+bt.GetHashCode();
+					if(obj.FromHex!=null)
+						foreach(var bt in obj.FromHex)
+							hashCode=hashCode*-1521134295+bt.GetHashCode();
 				}
 				return hashCode;
 			}

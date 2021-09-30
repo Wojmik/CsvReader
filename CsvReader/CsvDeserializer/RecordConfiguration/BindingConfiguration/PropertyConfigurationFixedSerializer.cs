@@ -47,8 +47,7 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.Bi
 
 		public void Ignore()
 		{
-			ColumnName = null;
-			ColumnIndex = -1;
+			IgnoreInternal();
 		}
 
 		protected override bool TryBuildDeserializer(
