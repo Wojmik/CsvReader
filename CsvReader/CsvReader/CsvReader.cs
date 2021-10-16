@@ -48,6 +48,8 @@ namespace WojciechMikołajewicz.CsvReader
 
 		public long Position { get => this.CharMemorySequence.CurrentPosition.AbsolutePosition + NewCurrentOffset; }
 
+		private long LoadedChars;
+
 		private readonly bool LeaveOpen;
 
 		private char[]? TempCellArray;
@@ -411,6 +413,32 @@ namespace WojciechMikołajewicz.CsvReader
 			return properLineEnding;
 		}
 
+		//private async ValueTask<ReadCharResult> GetCharAsync(MemorySequenceSegment<char> currentSegment, long position, CancellationToken cancellationToken)
+		//{
+		//	int positionInSegment = (int)(position - currentSegment.RunningIndex);
+
+		//	while(currentSegment.Memory.Length<=positionInSegment)
+		//	{
+		//		if(LoadedChars<=position)
+		//		{
+		//			var readSpan = await ReadChunkAsync(cancellationToken)
+		//			.ConfigureAwait(false);
+
+		//			//Check end of stream
+		//			if(readSpan.Length<=0)
+		//				return new ReadCharResult(new MemorySequencePosition<char>(readSpan.Segment, readSpan.Start), default, true);
+		//		}
+
+		//		if(currentSegment.Array.Length<=currentSegment.Memory.Length)
+		//		{
+		//			positionInSegment -= currentSegment.Memory.Length;
+		//			currentSegment = currentSegment.NextInternal!;
+		//		}
+		//	}
+
+		//	return new ReadCharResult(new MemorySequencePosition<char>(currentSegment, positionInSegment), currentSegment.Array[positionInSegment], false);
+		//}
+
 		private async ValueTask<ReadCharResult> GetCharAsync(MemorySequencePosition<char> currentPosition, int offset, CancellationToken cancellationToken)
 		{
 			MemorySequenceSegment<char> currentSegment = currentPosition.InternalSequenceSegment;
@@ -421,16 +449,22 @@ namespace WojciechMikołajewicz.CsvReader
 			//If current position isn't loaded, load it
 			while(currentSegment.Memory.Length<=readingPositionInSegment)
 			{
-				var readSpan = await ReadChunkAsync(cancellationToken)
-					.ConfigureAwait(false);
+				if(LoadedChars<=currentSegment.RunningIndex+readingPositionInSegment)
+				{
+					var readSpan = await ReadChunkAsync(cancellationToken)
+						.ConfigureAwait(false);
 
-				//Check end of stream
-				if(readSpan.Length<=0)
-					return new ReadCharResult(new MemorySequencePosition<char>(readSpan.Segment, readSpan.Start), default, true);
+					//Check end of stream
+					if(readSpan.Length<=0)
+						return new ReadCharResult(new MemorySequencePosition<char>(readSpan.Segment, readSpan.Start), default, true);
+				}
 
 				//If segment has changed, substract length of previous segment
-				readingPositionInSegment -= (int)(readSpan.Segment.RunningIndex-currentSegment.RunningIndex);
-				currentSegment = readSpan.Segment;
+				if(currentSegment.Memory.Length<=readingPositionInSegment && currentSegment.Array.Length<=currentSegment.Memory.Length)
+				{
+					readingPositionInSegment -= currentSegment.Memory.Length;
+					currentSegment = currentSegment.NextInternal!;
+				}
 			}
 
 			return new ReadCharResult(new MemorySequencePosition<char>(currentSegment, readingPositionInSegment), currentSegment.Array[readingPositionInSegment], false);
@@ -496,6 +530,7 @@ namespace WojciechMikołajewicz.CsvReader
 			if(0<charsRead)
 			{
 				this.CurrentlyLoadingSegment.Count += charsRead;
+				this.LoadedChars += charsRead;
 
 				//Change segment if there is no free space in current segment
 				if(this.CurrentlyLoadingSegment.Array.Length<=this.CurrentlyLoadingSegment.Memory.Length)
