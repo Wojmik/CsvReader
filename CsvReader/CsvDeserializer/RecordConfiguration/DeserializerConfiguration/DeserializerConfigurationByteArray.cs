@@ -7,32 +7,55 @@ using WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.Bindin
 
 namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration
 {
-	public class DeserializerConfigurationByteArray<TRecord> : DeserializerConfigurationBase<TRecord, byte[]?>
+	/// <summary>
+	/// Deserializer configurator for <see cref="byte"/> <see cref="Array"/> type
+	/// </summary>
+	public class DeserializerConfigurationByteArray : DeserializerConfigurationBase<byte[]?>
 	{
 		private bool? _EmptyAsNull;
-		public bool EmptyAsNull { get => _EmptyAsNull??RecordConfiguration.EmptyAsNull; }
+		/// <summary>
+		/// Treat empty csv cell as null
+		/// </summary>
+		public bool EmptyAsNull { get => _EmptyAsNull??RecordConfiguration.DefaultEmptyAsNull; }
 
 		private ByteArrayEncoding? _ByteArrayEncoding;
-		public ByteArrayEncoding ByteArrayEncoding { get => _ByteArrayEncoding??RecordConfiguration.ByteArrayEncoding; }
+		/// <summary>
+		/// Byte array encoding
+		/// </summary>
+		public ByteArrayEncoding ByteArrayEncoding { get => _ByteArrayEncoding??RecordConfiguration.DefaultByteArrayEncoding; }
 
-		public DeserializerConfigurationByteArray(PropertyConfigurationBase<TRecord, byte[]?> propertyConfiguration)
-			: base(propertyConfiguration)
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="bindingConfiguration">Binding to column configuration object</param>
+		public DeserializerConfigurationByteArray(BindingConfigurationBase bindingConfiguration)
+			: base(bindingConfiguration)
 		{ }
 
-		public DeserializerConfigurationByteArray<TRecord> SetEmptyBehavior(bool emptyAsNull)
+		/// <summary>
+		/// Sets empty csv cell behavior
+		/// </summary>
+		/// <param name="emptyAsNull">True to return null for empty csv cell, false to return empty array</param>
+		/// <returns>This configuration object for methods chaining</returns>
+		public DeserializerConfigurationByteArray SetEmptyBehavior(bool emptyAsNull)
 		{
 			_EmptyAsNull = emptyAsNull;
 			return this;
 		}
 
-		public DeserializerConfigurationByteArray<TRecord> SetByteArrayEncoding(ByteArrayEncoding byteArrayEncoding)
+		/// <summary>
+		/// Sets <see cref="byte"/> <see cref="Array"/> encoding
+		/// </summary>
+		/// <param name="byteArrayEncoding">Byte array encoding to set</param>
+		/// <returns>This configuration object for methods chaining</returns>
+		public DeserializerConfigurationByteArray SetByteArrayEncoding(ByteArrayEncoding byteArrayEncoding)
 		{
 			_ByteArrayEncoding = byteArrayEncoding;
 			return this;
 		}
 
 		internal override bool TryBuild(
-#if NETSTANDARD2_1_OR_GREATER
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_0_OR_GREATER
 			[NotNullWhen(true)]
 #endif
 			out CellDeserializerBase<byte[]?>? cellDeserializer)

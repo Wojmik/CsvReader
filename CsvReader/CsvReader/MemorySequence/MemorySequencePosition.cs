@@ -5,14 +5,27 @@ using System.Text;
 
 namespace WojciechMikołajewicz.CsvReader.MemorySequence
 {
+	/// <summary>
+	/// Position in memory sequence
+	/// </summary>
+	/// <typeparam name="T">Type of elements in memory sequence</typeparam>
 	public readonly struct MemorySequencePosition<T> : IEquatable<MemorySequencePosition<T>>
 	{
 		internal readonly MemorySequenceSegment<T> InternalSequenceSegment;
 
+		/// <summary>
+		/// Memory sequence segment
+		/// </summary>
 		public ReadOnlySequenceSegment<T> SequenceSegment { get => InternalSequenceSegment; }
 
+		/// <summary>
+		/// Position in <see cref="SequenceSegment"/>
+		/// </summary>
 		public readonly int PositionInSegment;
 
+		/// <summary>
+		/// Absolute position in whole memory sequence
+		/// </summary>
 		public long AbsolutePosition { get => this.SequenceSegment.RunningIndex+this.PositionInSegment; }
 
 		internal MemorySequencePosition(MemorySequenceSegment<T> sequenceSegment, int positionInSegment)
@@ -21,6 +34,12 @@ namespace WojciechMikołajewicz.CsvReader.MemorySequence
 			this.PositionInSegment=positionInSegment;
 		}
 
+		/// <summary>
+		/// Adds offset to current <see cref="MemorySequencePosition{T}"/>
+		/// </summary>
+		/// <param name="offset">Offset</param>
+		/// <returns>New <see cref="MemorySequencePosition{T}"/></returns>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="offset"/> is negative or leave outside filled area</exception>
 		public MemorySequencePosition<T> AddOffset(int offset)
 		{
 			var currentSegment = InternalSequenceSegment;
@@ -48,11 +67,21 @@ namespace WojciechMikołajewicz.CsvReader.MemorySequence
 			return new MemorySequencePosition<T>(currentSegment, newPositionInSegment);
 		}
 
+		/// <summary>
+		/// Check equality of current <see cref="MemorySequencePosition{T}"/> and <paramref name="obj"/>
+		/// </summary>
+		/// <param name="obj">Object to compare</param>
+		/// <returns>True if objects are equal, false otherwise</returns>
 		public override bool Equals(object obj)
 		{
 			return obj is MemorySequencePosition<T> position && Equals(position);
 		}
 
+		/// <summary>
+		/// Check equality of current <see cref="MemorySequencePosition{T}"/> and <paramref name="other"/>
+		/// </summary>
+		/// <param name="other"><see cref="MemorySequencePosition{T}"/> to compare</param>
+		/// <returns>True if objects are equal, false otherwise</returns>
 		public bool Equals(MemorySequencePosition<T> other)
 		{
 			return other!=null
@@ -61,9 +90,13 @@ namespace WojciechMikołajewicz.CsvReader.MemorySequence
 				//&& SequenceSegment.Memory.Equals(other.SequenceSegment.Memory);
 		}
 
+		/// <summary>
+		/// Returns has code of the current <see cref="MemorySequencePosition{T}"/>
+		/// </summary>
+		/// <returns>Hash code</returns>
 		public override int GetHashCode()
 		{
-#if NETSTANDARD2_1_OR_GREATER
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
 			HashCode hashCode = new HashCode();
 			hashCode.Add(InternalSequenceSegment.Array);
 			//hashCode.Add(SequenceSegment.Memory);
@@ -78,16 +111,34 @@ namespace WojciechMikołajewicz.CsvReader.MemorySequence
 #endif
 		}
 
+		/// <summary>
+		/// Equality operator
+		/// </summary>
+		/// <param name="left">Left</param>
+		/// <param name="right">Right</param>
+		/// <returns>Are <paramref name="left"/> and <paramref name="right"/> equal</returns>
 		public static bool operator ==(MemorySequencePosition<T> left, MemorySequencePosition<T> right)
 		{
 			return left.Equals(right);
 		}
 
+		/// <summary>
+		/// Inequality operator
+		/// </summary>
+		/// <param name="left">Left</param>
+		/// <param name="right">Right</param>
+		/// <returns>Are <paramref name="left"/> and <paramref name="right"/> not equal</returns>
 		public static bool operator !=(MemorySequencePosition<T> left, MemorySequencePosition<T> right)
 		{
 			return !(left==right);
 		}
 
+		/// <summary>
+		/// Add <paramref name="offset"/> to <paramref name="position"/> operator
+		/// </summary>
+		/// <param name="position">Position</param>
+		/// <param name="offset">Offset</param>
+		/// <returns>New <see cref="MemorySequencePosition{T}"/></returns>
 		public static MemorySequencePosition<T> operator +(MemorySequencePosition<T> position, int offset)
 		{
 			return position.AddOffset(offset);

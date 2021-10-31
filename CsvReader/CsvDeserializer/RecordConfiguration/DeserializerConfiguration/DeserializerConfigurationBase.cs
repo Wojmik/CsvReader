@@ -7,19 +7,33 @@ using WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.Bindin
 
 namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration
 {
-	public abstract class DeserializerConfigurationBase<TRecord, TDeserialized>
+	/// <summary>
+	/// Base class for cell to <typeparamref name="TDeserialized"/> deserializer configurators
+	/// </summary>
+	/// <typeparam name="TDeserialized">Type deserializer deserializes to</typeparam>
+	public abstract class DeserializerConfigurationBase<TDeserialized>
 	{
-		protected RecordConfiguration<TRecord> RecordConfiguration { get => PropertyConfiguration.RecordConfiguration; }
+		/// <summary>
+		/// Record deserializing configuration object
+		/// </summary>
+		protected WojciechMikołajewicz.CsvReader.RecordConfiguration RecordConfiguration { get => BindingConfiguration.RecordConfiguration; }
 		
-		protected PropertyConfigurationBase<TRecord, TDeserialized> PropertyConfiguration { get; }
+		/// <summary>
+		/// Binding to column configuration object
+		/// </summary>
+		protected BindingConfigurationBase BindingConfiguration { get; }
 
-		public DeserializerConfigurationBase(PropertyConfigurationBase<TRecord, TDeserialized> propertyConfiguration)
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="bindingConfiguration">Binding to column configuration object</param>
+		protected DeserializerConfigurationBase(BindingConfigurationBase bindingConfiguration)
 		{
-			this.PropertyConfiguration = propertyConfiguration;
+			this.BindingConfiguration = bindingConfiguration;
 		}
 
 		internal abstract bool TryBuild(
-#if NETSTANDARD2_1_OR_GREATER
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_0_OR_GREATER
 			[NotNullWhen(true)]
 #endif
 			out CellDeserializerBase<TDeserialized>? cellDeserializer);

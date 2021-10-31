@@ -8,19 +8,29 @@ using WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.Bindin
 
 namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration
 {
-	public class DeserializerConfigurationDateTime<TRecord> : DeserializerConfigurationDateTimeStyleFormatProviderBase<TRecord, DateTime, DeserializerConfigurationDateTime<TRecord>>
+	/// <summary>
+	/// Deserializer configurator for <see cref="DateTime"/> type
+	/// </summary>
+	public class DeserializerConfigurationDateTime : DeserializerConfigurationDateTimeStyleFormatProviderBase<DateTime, DeserializerConfigurationDateTime>
 	{
-		public DeserializerConfigurationDateTime(PropertyConfigurationBase<TRecord, DateTime> propertyConfiguration)
-			: base(propertyConfiguration, DateTimeStyles.None)
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="bindingConfiguration">Binding to column configuration object</param>
+		public DeserializerConfigurationDateTime(BindingConfigurationBase bindingConfiguration)
+			: base(bindingConfiguration)
 		{ }
 
 		internal override bool TryBuild(
-#if NETSTANDARD2_1_OR_GREATER
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_0_OR_GREATER
 			[NotNullWhen(true)]
 #endif
 			out CellDeserializerBase<DateTime>? cellDeserializer)
 		{
-			cellDeserializer = new CellDateTimeDeserializer(FormatProvider, DateTimeStyles, AllowEmpty, ValueForEmpty);
+			if(Format!=null)
+				cellDeserializer = new CellDateTimeFormattedDeserializer(Format, FormatProvider, DateTimeStyles, AllowEmpty, ValueForEmpty);
+			else
+				cellDeserializer = new CellDateTimeDeserializer(FormatProvider, DateTimeStyles, AllowEmpty, ValueForEmpty);
 			return true;
 		}
 	}

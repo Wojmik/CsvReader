@@ -8,33 +8,57 @@ using WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.Bindin
 
 namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration
 {
-	public class DeserializerConfigurationBool<TRecord> : DeserializerConfigurationNotNullableBase<TRecord, bool, DeserializerConfigurationBool<TRecord>>
+	/// <summary>
+	/// Deserializer configurator for <see cref="bool"/> type
+	/// </summary>
+	public class DeserializerConfigurationBool : DeserializerConfigurationNotNullableBase<bool, DeserializerConfigurationBool>
 	{
-		public string TrueString { get; private set; }
+		private string? _TrueString;
+		/// <summary>
+		/// Csv cell value that is interpreted as true value
+		/// </summary>
+		public string TrueString { get => _TrueString??RecordConfiguration.DefaultBoolTrueString; }
 
-		public string FalseString { get; private set; }
+		private string? _FalseString;
+		/// <summary>
+		/// Csv cell value that is interpreted as false value
+		/// </summary>
+		public string FalseString { get => _FalseString??RecordConfiguration.DefaultBoolFalseString; }
 
-		public DeserializerConfigurationBool(PropertyConfigurationBase<TRecord, bool> propertyConfiguration)
-			: base(propertyConfiguration)
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="bindingConfiguration">Binding to column configuration object</param>
+		public DeserializerConfigurationBool(BindingConfigurationBase bindingConfiguration)
+			: base(bindingConfiguration)
+		{ }
+
+		/// <summary>
+		/// Sets string that will be interpreted as true value
+		/// </summary>
+		/// <param name="trueString">Csv cell value that will be interpreted as true value</param>
+		/// <returns>This configuration object for methods chaining</returns>
+		/// <exception cref="ArgumentNullException"><paramref name="trueString"/> is null</exception>
+		public DeserializerConfigurationBool SetTrueString(string trueString)
 		{
-			TrueString = bool.TrueString;
-			FalseString = bool.FalseString;
-		}
-
-		public DeserializerConfigurationBool<TRecord> SetTrueString(string trueString)
-		{
-			TrueString = trueString??throw new ArgumentNullException(nameof(trueString));
+			_TrueString = trueString??throw new ArgumentNullException(nameof(trueString));
 			return this;
 		}
 
-		public DeserializerConfigurationBool<TRecord> SetFalseString(string falseString)
+		/// <summary>
+		/// Sets string that will be interpreted as false value
+		/// </summary>
+		/// <param name="falseString">Csv cell value that will be interpreted as false value</param>
+		/// <returns>This configuration object for methods chaining</returns>
+		/// <exception cref="ArgumentNullException"><paramref name="falseString"/> is null</exception>
+		public DeserializerConfigurationBool SetFalseString(string falseString)
 		{
-			FalseString = falseString??throw new ArgumentNullException(nameof(falseString));
+			_FalseString = falseString??throw new ArgumentNullException(nameof(falseString));
 			return this;
 		}
 
 		internal override bool TryBuild(
-#if NETSTANDARD2_1_OR_GREATER
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_0_OR_GREATER
 			[NotNullWhen(true)]
 #endif
 			out CellDeserializerBase<bool>? cellDeserializer)

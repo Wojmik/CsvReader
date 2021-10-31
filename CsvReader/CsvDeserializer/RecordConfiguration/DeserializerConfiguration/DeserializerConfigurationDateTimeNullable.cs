@@ -8,19 +8,29 @@ using WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.Bindin
 
 namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration
 {
-	public class DeserializerConfigurationDateTimeNullable<TRecord> : DeserializerConfigurationDateTimeStyleFormatProviderNullableBase<TRecord, DateTime, DeserializerConfigurationDateTimeNullable<TRecord>>
+	/// <summary>
+	/// Deserializer configurator for nullable <see cref="DateTime"/> type
+	/// </summary>
+	public class DeserializerConfigurationDateTimeNullable : DeserializerConfigurationDateTimeStyleFormatProviderNullableBase<DateTime, DeserializerConfigurationDateTimeNullable>
 	{
-		public DeserializerConfigurationDateTimeNullable(PropertyConfigurationBase<TRecord, DateTime?> propertyConfiguration)
-			: base(propertyConfiguration, DateTimeStyles.None)
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="bindingConfiguration">Binding to column configuration object</param>
+		public DeserializerConfigurationDateTimeNullable(BindingConfigurationBase bindingConfiguration)
+			: base(bindingConfiguration)
 		{ }
 
 		internal override bool TryBuild(
-#if NETSTANDARD2_1_OR_GREATER
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_0_OR_GREATER
 			[NotNullWhen(true)]
 #endif
 			out CellDeserializerBase<DateTime?>? cellDeserializer)
 		{
-			cellDeserializer = new CellDateTimeNullableDeserializer(FormatProvider, DateTimeStyles);
+			if(Format!=null)
+				cellDeserializer = new CellDateTimeFormattedNullableDeserializer(Format, FormatProvider, DateTimeStyles);
+			else
+				cellDeserializer = new CellDateTimeNullableDeserializer(FormatProvider, DateTimeStyles);
 			return true;
 		}
 	}

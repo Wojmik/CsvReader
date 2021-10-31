@@ -3,7 +3,6 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.IO.Pipelines;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,18 +11,36 @@ using WojciechMikołajewicz.CsvReader.MemorySequence;
 
 namespace WojciechMikołajewicz.CsvReader
 {
+	/// <summary>
+	/// Low level csv reader. This object returns individual csv nodes in one of three maner
+	/// </summary>
 	public class CsvReader : IDisposable
 	{
 		private TextReader TextReader { get; }
 
+		/// <summary>
+		/// Escape character
+		/// </summary>
 		public char EscapeChar { get; }
 
+		/// <summary>
+		/// Delimiter character
+		/// </summary>
 		public char DelimiterChar { get; }
 
+		/// <summary>
+		/// Line ending
+		/// </summary>
 		public LineEnding LineEnding { get; private set; }
 
+		/// <summary>
+		/// Can csv cells be escaped
+		/// </summary>
 		public bool CanEscape { get; }
 
+		/// <summary>
+		/// Permits empty line at the end of the csv stream
+		/// </summary>
 		public bool PermitEmptyLineAtEnd { get; }
 
 		private readonly ReadOnlyMemory<char> EscapeCharArray;
@@ -36,7 +53,7 @@ namespace WojciechMikołajewicz.CsvReader
 
 		private MemorySequenceSegment<char>? CurrentlyLoadingSegment;
 
-#if NETSTANDARD2_1_OR_GREATER
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
 		ValueTask<int> LoadingTask;
 #else
 		Task<int>? LoadingTask;
@@ -46,6 +63,9 @@ namespace WojciechMikołajewicz.CsvReader
 
 		private int BufferSizeInChars { get; }
 
+		/// <summary>
+		/// Current position in cvs stream
+		/// </summary>
 		public long Position { get => this.CharMemorySequence.CurrentPosition.AbsolutePosition + NewCurrentOffset; }
 
 		private long LoadedChars;
@@ -56,10 +76,22 @@ namespace WojciechMikołajewicz.CsvReader
 
 		private bool NextNodeIsCell;
 
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="textReader">Text reader to read csv nodes from</param>
+		/// <exception cref="ArgumentNullException"><paramref name="textReader"/> is null</exception>
 		public CsvReader(TextReader textReader)
 			: this(textReader: textReader, options: new CsvReaderOptions())
 		{ }
 
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="textReader">Text reader to read csv nodes from</param>
+		/// <param name="options">Options object</param>
+		/// <exception cref="ArgumentNullException"><paramref name="textReader"/> or <paramref name="options"/> is null</exception>
+		/// <exception cref="ArgumentOutOfRangeException">Buffer size in chars is too small</exception>
 		public CsvReader(TextReader textReader, CsvReaderOptions options)
 		{
 			const int minBufferSize = 1;
@@ -142,7 +174,7 @@ namespace WojciechMikołajewicz.CsvReader
 			var charsCount = memorySequenceSpan.CharsCount;
 			if(0<charsCount)
 			{
-#if NETSTANDARD2_1_OR_GREATER
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
 				str = string.Create(charsCount, memorySequenceSpan, (destination, msn) => msn.CopyDataTo(destination));
 #else
 				var memory = MemorySequenceAsMemory(memorySequenceSpan);
@@ -173,8 +205,8 @@ namespace WojciechMikołajewicz.CsvReader
 		}
 
 		/// <summary>
-		/// Method process <paramref name="memorySequenceSpan"/> to continous memory region and returns <see cref="ReadOnlyMemory{char}"/>.
-		/// Returned <see cref="ReadOnlyMemory{char}"/> is valid only till next ReadNextNodeAsXxx call.
+		/// Method process <paramref name="memorySequenceSpan"/> to continous memory region and returns <see cref="ReadOnlyMemory{T}"/>.
+		/// Returned <see cref="ReadOnlyMemory{T}"/> is valid only till next ReadNextNodeAsXxx call.
 		/// </summary>
 		/// <param name="memorySequenceSpan">Memory sequence span to process</param>
 		/// <returns>Continous memory region of chars</returns>
@@ -482,17 +514,23 @@ namespace WojciechMikołajewicz.CsvReader
 			{
 				readingPositionInSegment += Math.Max(currentSegment.Memory.Length-readingPositionInSegment, 0);
 
-				//Searching chars has not been found in current chunk of data, so load next chunk
-				var readSpan = await ReadChunkAsync(cancellationToken)
-					.ConfigureAwait(false);
+				if(LoadedChars<=currentSegment.RunningIndex+readingPositionInSegment)
+				{
+					//Searching chars has not been found in current chunk of data, so load next chunk
+					var readSpan = await ReadChunkAsync(cancellationToken)
+						.ConfigureAwait(false);
 
-				//Check end of stream
-				if(readSpan.Length<=0)
-					return new ReadCharResult(new MemorySequencePosition<char>(readSpan.Segment, readSpan.Start), default, true);
+					//Check end of stream
+					if(readSpan.Length<=0)
+						return new ReadCharResult(new MemorySequencePosition<char>(readSpan.Segment, readSpan.Start), default, true);
+				}
 
 				//If segment has changed, substract length of previous segment
-				readingPositionInSegment -= (int)(readSpan.Segment.RunningIndex-currentSegment.RunningIndex);
-				currentSegment = readSpan.Segment;
+				if(currentSegment.Memory.Length<=readingPositionInSegment && currentSegment.Array.Length<=currentSegment.Memory.Length)
+				{
+					readingPositionInSegment -= currentSegment.Memory.Length;
+					currentSegment = currentSegment.NextInternal!;
+				}
 			}
 
 			//Char found
@@ -512,7 +550,7 @@ namespace WojciechMikołajewicz.CsvReader
 			{
 				//Start load data to first segment
 				this.CurrentlyLoadingSegment = this.CharMemorySequence.CurrentPosition.InternalSequenceSegment;
-#if NETSTANDARD2_1_OR_GREATER
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
 				this.LoadingTask = this.TextReader.ReadAsync(this.CurrentlyLoadingSegment.Array, cancellationToken);
 #else
 				cancellationToken.ThrowIfCancellationRequested();
@@ -544,14 +582,14 @@ namespace WojciechMikołajewicz.CsvReader
 				}
 
 				//Start read next chunk
-#if NETSTANDARD2_1_OR_GREATER
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
 				this.LoadingTask = this.TextReader.ReadAsync(this.CurrentlyLoadingSegment!.Array.AsMemory(this.CurrentlyLoadingSegment.Memory.Length), cancellationToken);
 #else
 				cancellationToken.ThrowIfCancellationRequested();
 				this.LoadingTask = this.TextReader.ReadAsync(this.CurrentlyLoadingSegment!.Array, this.CurrentlyLoadingSegment.Memory.Length, this.CurrentlyLoadingSegment.Array.Length-this.CurrentlyLoadingSegment.Memory.Length);
 #endif
 			}
-#if NETSTANDARD2_1_OR_GREATER
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
 			else
 			{
 				//ValueTask can be awaited only once so create new completed ValueTask in case of await again
@@ -562,12 +600,15 @@ namespace WojciechMikołajewicz.CsvReader
 			return segmentRead;
 		}
 
+		/// <summary>
+		/// Disposes <see cref="CsvReader"/>
+		/// </summary>
 		public void Dispose()
 		{
 			if(!LeaveOpen)
 				TextReader.Dispose();
 
-#if NETSTANDARD2_1_OR_GREATER
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
 			if(!LoadingTask.IsCompleted)
 			{
 				try

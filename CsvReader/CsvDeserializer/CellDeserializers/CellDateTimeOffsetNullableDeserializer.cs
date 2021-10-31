@@ -10,7 +10,7 @@ using WojciechMikołajewicz.CsvReader.CsvNodes;
 namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 {
 	sealed class CellDateTimeOffsetNullableDeserializer :
-#if NETSTANDARD2_1_OR_GREATER
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
 		CellDeserializerFromMemoryBase<DateTimeOffset?>
 #else
 		CellDeserializerFromStringBase<DateTimeOffset?>
@@ -26,7 +26,7 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 			DateTimeStyles = dateTimeStyles;
 		}
 
-#if NETSTANDARD2_1_OR_GREATER
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
 		protected override DateTimeOffset? DeserializeFromMemory(in ReadOnlyMemory<char> value)
 		{
 			DateTimeOffset? parsedValue = default;

@@ -15,73 +15,274 @@ using WojciechMikołajewicz.CsvReader.CsvDeserializer.Helpers;
 
 namespace WojciechMikołajewicz.CsvReader
 {
-	public class RecordConfiguration<TRecord>
+	/// <summary>
+	/// Base class for configuring csv deserialization
+	/// </summary>
+	public abstract class RecordConfiguration
 	{
-		public CultureInfo DefaultCulture { get; private set; }
-
+		/// <summary>
+		/// Has csv file header row
+		/// </summary>
 		public bool HasHeaderRow { get; }
 
-		public bool EmptyAsNull { get; private set; }
+		/// <summary>
+		/// Default <see cref="IFormatProvider"/> for parsing types
+		/// </summary>
+		public IFormatProvider DefaultCulture { get; protected set; }
 
-		public bool DeduplicateStrings { get; private set; }
+		/// <summary>
+		/// Treat empty csv cells as nulls
+		/// </summary>
+		public bool DefaultEmptyAsNull { get; protected set; }
 
-		public ByteArrayEncoding ByteArrayEncoding { get; private set; }
+		/// <summary>
+		/// Enables string deduplication feature. Equal string values are deduplicated to single string instance.
+		/// </summary>
+		public bool DefaultDeduplicateStrings { get; protected set; }
 
-		public bool EnumsIgnoreCase { get; private set; }
+		/// <summary>
+		/// Default byte array encoding
+		/// </summary>
+		public ByteArrayEncoding DefaultByteArrayEncoding { get; protected set; }
 
+		/// <summary>
+		/// Ignore case while parsing enums from text representations
+		/// </summary>
+		public bool DefaultEnumsIgnoreCase { get; protected set; }
+
+		/// <summary>
+		/// Default number styles for integer numbers
+		/// </summary>
+		public NumberStyles DefaultIntegerNumberStyles { get; protected set; }
+
+		/// <summary>
+		/// Default number styles for floating point numbers
+		/// </summary>
+		public NumberStyles DefaultFloationgPointNumberStyles { get; protected set; }
+
+		/// <summary>
+		/// Default number styles for <see cref="decimal"/> numbers
+		/// </summary>
+		public NumberStyles DefaultDecimalNumberStyles { get; protected set; }
+
+		/// <summary>
+		/// Default date styles
+		/// </summary>
+		public DateTimeStyles DefaultDateStyles { get; protected set; }
+
+		/// <summary>
+		/// Default bool true string
+		/// </summary>
+		public string DefaultBoolTrueString { get; protected set; }
+
+		/// <summary>
+		/// Default bool false string
+		/// </summary>
+		public string DefaultBoolFalseString { get; protected set; }
+
+		/// <summary>
+		/// String deduplicator
+		/// </summary>
 		public StringDeduplicator StringDeduplicator { get; }
 
+		/// <summary>
+		/// Is configuration object in building phase
+		/// </summary>
+		protected bool Building;
+
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="options">Deserializer options</param>
+		/// <param name="stringDeduplicator">String deduplicator</param>
+		protected RecordConfiguration(CsvDeserializerOptions options, StringDeduplicator stringDeduplicator)
+		{
+			DefaultCulture = options.DeserializationCulture;
+			HasHeaderRow = options.HasHeaderRow;
+			DefaultEmptyAsNull = options.EmptyAsNull;
+			DefaultDeduplicateStrings = options.DeduplicateStrings;
+			StringDeduplicator = stringDeduplicator;
+			DefaultByteArrayEncoding = ByteArrayEncoding.Base64;
+			DefaultEnumsIgnoreCase = true;
+			DefaultIntegerNumberStyles = NumberStyles.Integer;
+			DefaultFloationgPointNumberStyles = NumberStyles.AllowThousands|NumberStyles.Float;
+			DefaultDecimalNumberStyles = NumberStyles.Number;
+			DefaultDateStyles = DateTimeStyles.None;
+			DefaultBoolTrueString = bool.TrueString;
+			DefaultBoolFalseString = bool.FalseString;
+		}
+
+		/// <summary>
+		/// Method throws exception when configuration object is in building state
+		/// </summary>
+		/// <exception cref="InvalidOperationException">Object is in building state</exception>
+		protected void CheckBuildingState()
+		{
+			if(Building)
+				throw new InvalidOperationException("Cannot change configuration while building phase");
+		}
+	}
+
+	/// <summary>
+	/// Class for configuring csv deserialization to <typeparamref name="TRecord"/> type
+	/// </summary>
+	/// <typeparam name="TRecord">Type of records read from csv</typeparam>
+	public class RecordConfiguration<TRecord> : RecordConfiguration
+	{
 		private ChangeParameterNameExpressionVisitor ChangeParameterNameExpressionVisitor { get; }
 
 		private Dictionary<string, BindingConfigurationBase<TRecord>> PropertyConfigurations { get; }
 
-		private bool Building;
-
 		internal RecordConfiguration(CsvDeserializerOptions options, StringDeduplicator stringDeduplicator)
+			: base(options, stringDeduplicator)
 		{
-			DefaultCulture = options.DeserializationCulture;
-			HasHeaderRow = options.HasHeaderRow;
-			EmptyAsNull = options.EmptyAsNull;
-			DeduplicateStrings = options.DeduplicateStrings;
-			StringDeduplicator = stringDeduplicator;
-			ByteArrayEncoding = ByteArrayEncoding.Base64;
-			EnumsIgnoreCase = true;
 			ChangeParameterNameExpressionVisitor = new ChangeParameterNameExpressionVisitor("0prm0");
 			PropertyConfigurations = new Dictionary<string, BindingConfigurationBase<TRecord>>(StringComparer.Ordinal);
 		}
 
-		public RecordConfiguration<TRecord> SetDefaultCulture(CultureInfo defaultCulture)
+		/// <summary>
+		/// Sets default <see cref="IFormatProvider"/> for parsing types
+		/// </summary>
+		/// <param name="defaultCulture"><see cref="IFormatProvider"/> for parsing types</param>
+		/// <returns>This configuration object for methods chaining</returns>
+		/// <exception cref="InvalidOperationException">Object is in building state, configuration cannot be changed anymore</exception>
+		/// <exception cref="ArgumentNullException"><paramref name="defaultCulture"/> is null</exception>
+		public RecordConfiguration<TRecord> SetDefaultCulture(IFormatProvider defaultCulture)
 		{
 			CheckBuildingState();
 			DefaultCulture = defaultCulture??throw new ArgumentNullException(nameof(defaultCulture));
 			return this;
 		}
 
-		public RecordConfiguration<TRecord> SetEmptyBehavior(bool emptyAsNull)
+		/// <summary>
+		/// Sets default empty csv cell behavior
+		/// </summary>
+		/// <param name="emptyAsNull">True to return nulls for empty csv cells, false to return empty objects</param>
+		/// <returns>This configuration object for methods chaining</returns>
+		/// <exception cref="InvalidOperationException">Object is in building state, configuration cannot be changed anymore</exception>
+		public RecordConfiguration<TRecord> SetDefaultEmptyBehavior(bool emptyAsNull)
 		{
 			CheckBuildingState();
-			EmptyAsNull = emptyAsNull;
+			DefaultEmptyAsNull = emptyAsNull;
 			return this;
 		}
 
-		public RecordConfiguration<TRecord> SetStringsDeduplicationgBehavior(bool deduplicateStrings)
+		/// <summary>
+		/// Sets default duplicated strings behavior
+		/// </summary>
+		/// <param name="deduplicateStrings">True to turn on equal strings deduplication, false to turn it off</param>
+		/// <returns>This configuration object for methods chaining</returns>
+		/// <exception cref="InvalidOperationException">Object is in building state, configuration cannot be changed anymore</exception>
+		public RecordConfiguration<TRecord> SetDefaultStringsDeduplicationgBehavior(bool deduplicateStrings)
 		{
 			CheckBuildingState();
-			DeduplicateStrings = deduplicateStrings;
+			DefaultDeduplicateStrings = deduplicateStrings;
 			return this;
 		}
 
-		public RecordConfiguration<TRecord> SetByteArrayEncoding(ByteArrayEncoding byteArrayEncoding)
+		/// <summary>
+		/// Sets default byte arrays encoding
+		/// </summary>
+		/// <param name="byteArrayEncoding">Default byte arrays encoding to set</param>
+		/// <returns>This configuration object for methods chaining</returns>
+		/// <exception cref="InvalidOperationException">Object is in building state, configuration cannot be changed anymore</exception>
+		public RecordConfiguration<TRecord> SetDefaultByteArrayEncoding(ByteArrayEncoding byteArrayEncoding)
 		{
 			CheckBuildingState();
-			ByteArrayEncoding = byteArrayEncoding;
+			DefaultByteArrayEncoding = byteArrayEncoding;
 			return this;
 		}
 
-		public RecordConfiguration<TRecord> SetEnumsIgnoreCaseBehavior(bool enumsIgnoreCase)
+		/// <summary>
+		/// Sets default case sensitiveness while parsing enums from text representations
+		/// </summary>
+		/// <param name="enumsIgnoreCase">True to ignore case while parsing enums, false for exact matching</param>
+		/// <returns>This configuration object for methods chaining</returns>
+		/// <exception cref="InvalidOperationException">Object is in building state, configuration cannot be changed anymore</exception>
+		public RecordConfiguration<TRecord> SetDefaultEnumsIgnoreCaseBehavior(bool enumsIgnoreCase)
 		{
 			CheckBuildingState();
-			EnumsIgnoreCase = enumsIgnoreCase;
+			DefaultEnumsIgnoreCase = enumsIgnoreCase;
+			return this;
+		}
+
+		/// <summary>
+		/// Sets default number styles for integer numbers
+		/// </summary>
+		/// <param name="defaultNumberStyles">Number styles to set as default</param>
+		/// <returns>This configuration object for methods chaining</returns>
+		/// <exception cref="InvalidOperationException">Object is in building state, configuration cannot be changed anymore</exception>
+		public RecordConfiguration<TRecord> SetDefaultIntegerNumberStyles(NumberStyles defaultNumberStyles)
+		{
+			CheckBuildingState();
+			DefaultIntegerNumberStyles = defaultNumberStyles;
+			return this;
+		}
+
+		/// <summary>
+		/// Sets default number styles for floating point numbers
+		/// </summary>
+		/// <param name="defaultNumberStyles">Number styles to set as default</param>
+		/// <returns>This configuration object for methods chaining</returns>
+		/// <exception cref="InvalidOperationException">Object is in building state, configuration cannot be changed anymore</exception>
+		public RecordConfiguration<TRecord> SetDefaultFloationgPointNumberStyles(NumberStyles defaultNumberStyles)
+		{
+			CheckBuildingState();
+			DefaultFloationgPointNumberStyles = defaultNumberStyles;
+			return this;
+		}
+
+		/// <summary>
+		/// Sets default number styles for <see cref="decimal"/> numbers
+		/// </summary>
+		/// <param name="defaultNumberStyles">Number styles to set as default</param>
+		/// <returns>This configuration object for methods chaining</returns>
+		/// <exception cref="InvalidOperationException">Object is in building state, configuration cannot be changed anymore</exception>
+		public RecordConfiguration<TRecord> SetDefaultDecimalNumberStyles(NumberStyles defaultNumberStyles)
+		{
+			CheckBuildingState();
+			DefaultDecimalNumberStyles = defaultNumberStyles;
+			return this;
+		}
+
+		/// <summary>
+		/// Sets default date styles
+		/// </summary>
+		/// <param name="defaultDateStyles">Date styles to set as default</param>
+		/// <returns>This configuration object for methods chaining</returns>
+		/// <exception cref="InvalidOperationException">Object is in building state, configuration cannot be changed anymore</exception>
+		public RecordConfiguration<TRecord> SetDefaultDecimalNumberStyles(DateTimeStyles defaultDateStyles)
+		{
+			CheckBuildingState();
+			DefaultDateStyles = defaultDateStyles;
+			return this;
+		}
+
+		/// <summary>
+		/// Sets default bool true string
+		/// </summary>
+		/// <param name="defaultTrueString">String to set as default true string</param>
+		/// <returns>This configuration object for methods chaining</returns>
+		/// <exception cref="InvalidOperationException">Object is in building state, configuration cannot be changed anymore</exception>
+		/// <exception cref="ArgumentNullException"><paramref name="defaultTrueString"/> is null</exception>
+		public RecordConfiguration<TRecord> SetDefaultBoolTrueString(string defaultTrueString)
+		{
+			CheckBuildingState();
+			DefaultBoolTrueString = defaultTrueString??throw new ArgumentNullException(nameof(defaultTrueString));
+			return this;
+		}
+
+		/// <summary>
+		/// Sets default bool false string
+		/// </summary>
+		/// <param name="defaultFalseString">String to set as default false string</param>
+		/// <returns>This configuration object for methods chaining</returns>
+		/// <exception cref="InvalidOperationException">Object is in building state, configuration cannot be changed anymore</exception>
+		/// <exception cref="ArgumentNullException"><paramref name="defaultFalseString"/> is null</exception>
+		public RecordConfiguration<TRecord> SetDefaultBoolFalseString(string defaultFalseString)
+		{
+			CheckBuildingState();
+			DefaultBoolFalseString = defaultFalseString??throw new ArgumentNullException(nameof(defaultFalseString));
 			return this;
 		}
 
@@ -92,12 +293,6 @@ namespace WojciechMikołajewicz.CsvReader
 			foreach(var property in PropertyConfigurations)
 				if(property.Value.TryBuild(out var binding))
 					yield return binding!;
-		}
-
-		private void CheckBuildingState()
-		{
-			if(Building)
-				throw new InvalidOperationException("Cannot change configuration while building phase");
 		}
 
 		/// <summary>
@@ -116,7 +311,11 @@ namespace WojciechMikołajewicz.CsvReader
 			return stringRepresentation;
 		}
 
-		public RecordConfiguration<TRecord> ClearAlBindings()
+		/// <summary>
+		/// Clears all binding configurations. After call this method no record's property would be deserialized. Bindings have to be set manually for record's properties to be deserialized.
+		/// </summary>
+		/// <returns>This configuration object for methods chaining</returns>
+		public RecordConfiguration<TRecord> ClearAllBindings()
 		{
 			foreach(var property in PropertyConfigurations)
 				property.Value.IgnoreInternal();
@@ -174,6 +373,8 @@ namespace WojciechMikołajewicz.CsvReader
 				bindingConfigurationBase = Property((Expression<Func<TRecord, TimeSpan>>)selectorLambdaExpression);
 			else if(propertyType==typeof(DateTimeOffset))
 				bindingConfigurationBase = Property((Expression<Func<TRecord, DateTimeOffset>>)selectorLambdaExpression);
+			else if(propertyType==typeof(Guid))
+				bindingConfigurationBase = Property((Expression<Func<TRecord, Guid>>)selectorLambdaExpression);
 			else if(propertyType==typeof(byte[]))
 				bindingConfigurationBase = Property((Expression<Func<TRecord, byte[]?>>)selectorLambdaExpression);
 			else if(propertyType==typeof(bool?))
@@ -206,9 +407,17 @@ namespace WojciechMikołajewicz.CsvReader
 				bindingConfigurationBase = Property((Expression<Func<TRecord, TimeSpan?>>)selectorLambdaExpression);
 			else if(propertyType==typeof(DateTimeOffset?))
 				bindingConfigurationBase = Property((Expression<Func<TRecord, DateTimeOffset?>>)selectorLambdaExpression);
+			else if(propertyType==typeof(Guid?))
+				bindingConfigurationBase = Property((Expression<Func<TRecord, Guid?>>)selectorLambdaExpression);
+#if NET5_0_OR_GREATER
+			else if(propertyType==typeof(Half))
+				bindingConfigurationBase = Property((Expression<Func<TRecord, Half>>)selectorLambdaExpression);
+			else if(propertyType==typeof(Half?))
+				bindingConfigurationBase = Property((Expression<Func<TRecord, Half?>>)selectorLambdaExpression);
+#endif
 			else if(propertyType.IsEnum)
 			{
-				Func<Expression<Func<TRecord, int>>, PropertyConfigurationFixedSerializer<TRecord, int, DeserializerConfigurationEnum<TRecord, int>>> func = PropertyEnum;
+				Func<Expression<Func<TRecord, int>>, PropertyConfigurationFixedSerializer<TRecord, int, DeserializerConfigurationEnum<int>>> func = PropertyEnum;
 				var genericMethodDefinition = func.Method.GetGenericMethodDefinition();
 				var methodInfo = genericMethodDefinition.MakeGenericMethod(propertyType);
 				var restult = methodInfo.Invoke(this, new object[] { selectorLambdaExpression, });
@@ -216,7 +425,7 @@ namespace WojciechMikołajewicz.CsvReader
 			}
 			else if((underlyingType=Nullable.GetUnderlyingType(propertyType))!=null && underlyingType.IsEnum)
 			{
-				Func<Expression<Func<TRecord, int?>>, PropertyConfigurationFixedSerializer<TRecord, int?, DeserializerConfigurationEnumNullable<TRecord, int>>> func = PropertyEnum;
+				Func<Expression<Func<TRecord, int?>>, PropertyConfigurationFixedSerializer<TRecord, int?, DeserializerConfigurationEnumNullable<int>>> func = PropertyEnum;
 				var genericMethodDefinition = func.Method.GetGenericMethodDefinition();
 				var methodInfo = genericMethodDefinition.MakeGenericMethod(underlyingType);
 				var restult = methodInfo.Invoke(this, new object[] { selectorLambdaExpression, });
@@ -228,166 +437,375 @@ namespace WojciechMikołajewicz.CsvReader
 		}
 		#endregion
 		#region Property
-		public PropertyConfigurationFixedSerializer<TRecord, string?, DeserializerConfigurationString<TRecord>> Property(Expression<Func<TRecord, string?>> selector)
+		/// <summary>
+		/// Enables configuring of selected record's property
+		/// </summary>
+		/// <param name="selector">Record's property selector</param>
+		/// <returns>Configuration object for selected property</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, string?, DeserializerConfigurationString> Property(Expression<Func<TRecord, string?>> selector)
 		{
-			return PropertyWithCustomDeserializer<string?, DeserializerConfigurationString<TRecord>>(selector, propConf => new DeserializerConfigurationString<TRecord>(propConf));
+			return PropertyWithCustomDeserializer<string?, DeserializerConfigurationString>(selector, propConf => new DeserializerConfigurationString(propConf));
 		}
 
-		public PropertyConfigurationFixedSerializer<TRecord, bool, DeserializerConfigurationBool<TRecord>> Property(Expression<Func<TRecord, bool>> selector)
+		/// <summary>
+		/// Enables configuring of selected record's property
+		/// </summary>
+		/// <param name="selector">Record's property selector</param>
+		/// <returns>Configuration object for selected property</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, bool, DeserializerConfigurationBool> Property(Expression<Func<TRecord, bool>> selector)
 		{
-			return PropertyWithCustomDeserializer<bool, DeserializerConfigurationBool<TRecord>>(selector, propConf => new DeserializerConfigurationBool<TRecord>(propConf));
+			return PropertyWithCustomDeserializer<bool, DeserializerConfigurationBool>(selector, propConf => new DeserializerConfigurationBool(propConf));
 		}
 
-		public PropertyConfigurationFixedSerializer<TRecord, byte, DeserializerConfigurationByte<TRecord>> Property(Expression<Func<TRecord, byte>> selector)
+		/// <summary>
+		/// Enables configuring of selected record's property
+		/// </summary>
+		/// <param name="selector">Record's property selector</param>
+		/// <returns>Configuration object for selected property</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, byte, DeserializerConfigurationByte> Property(Expression<Func<TRecord, byte>> selector)
 		{
-			return PropertyWithCustomDeserializer<byte, DeserializerConfigurationByte<TRecord>>(selector, propConf => new DeserializerConfigurationByte<TRecord>(propConf));
+			return PropertyWithCustomDeserializer<byte, DeserializerConfigurationByte>(selector, propConf => new DeserializerConfigurationByte(propConf));
 		}
 
-		public PropertyConfigurationFixedSerializer<TRecord, sbyte, DeserializerConfigurationSByte<TRecord>> Property(Expression<Func<TRecord, sbyte>> selector)
+		/// <summary>
+		/// Enables configuring of selected record's property
+		/// </summary>
+		/// <param name="selector">Record's property selector</param>
+		/// <returns>Configuration object for selected property</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, sbyte, DeserializerConfigurationSByte> Property(Expression<Func<TRecord, sbyte>> selector)
 		{
-			return PropertyWithCustomDeserializer<sbyte, DeserializerConfigurationSByte<TRecord>>(selector, propConf => new DeserializerConfigurationSByte<TRecord>(propConf));
+			return PropertyWithCustomDeserializer<sbyte, DeserializerConfigurationSByte>(selector, propConf => new DeserializerConfigurationSByte(propConf));
 		}
 
-		public PropertyConfigurationFixedSerializer<TRecord, short, DeserializerConfigurationShort<TRecord>> Property(Expression<Func<TRecord, short>> selector)
+		/// <summary>
+		/// Enables configuring of selected record's property
+		/// </summary>
+		/// <param name="selector">Record's property selector</param>
+		/// <returns>Configuration object for selected property</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, short, DeserializerConfigurationShort> Property(Expression<Func<TRecord, short>> selector)
 		{
-			return PropertyWithCustomDeserializer<short, DeserializerConfigurationShort<TRecord>>(selector, propConf => new DeserializerConfigurationShort<TRecord>(propConf));
+			return PropertyWithCustomDeserializer<short, DeserializerConfigurationShort>(selector, propConf => new DeserializerConfigurationShort(propConf));
 		}
 
-		public PropertyConfigurationFixedSerializer<TRecord, ushort, DeserializerConfigurationUShort<TRecord>> Property(Expression<Func<TRecord, ushort>> selector)
+		/// <summary>
+		/// Enables configuring of selected record's property
+		/// </summary>
+		/// <param name="selector">Record's property selector</param>
+		/// <returns>Configuration object for selected property</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, ushort, DeserializerConfigurationUShort> Property(Expression<Func<TRecord, ushort>> selector)
 		{
-			return PropertyWithCustomDeserializer<ushort, DeserializerConfigurationUShort<TRecord>>(selector, propConf => new DeserializerConfigurationUShort<TRecord>(propConf));
+			return PropertyWithCustomDeserializer<ushort, DeserializerConfigurationUShort>(selector, propConf => new DeserializerConfigurationUShort(propConf));
 		}
 
-		public PropertyConfigurationFixedSerializer<TRecord, int, DeserializerConfigurationInt<TRecord>> Property(Expression<Func<TRecord, int>> selector)
+		/// <summary>
+		/// Enables configuring of selected record's property
+		/// </summary>
+		/// <param name="selector">Record's property selector</param>
+		/// <returns>Configuration object for selected property</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, int, DeserializerConfigurationInt> Property(Expression<Func<TRecord, int>> selector)
 		{
-			return PropertyWithCustomDeserializer<int, DeserializerConfigurationInt<TRecord>>(selector, propConf => new DeserializerConfigurationInt<TRecord>(propConf));
+			return PropertyWithCustomDeserializer<int, DeserializerConfigurationInt>(selector, propConf => new DeserializerConfigurationInt(propConf));
 		}
 
-		public PropertyConfigurationFixedSerializer<TRecord, uint, DeserializerConfigurationUInt<TRecord>> Property(Expression<Func<TRecord, uint>> selector)
+		/// <summary>
+		/// Enables configuring of selected record's property
+		/// </summary>
+		/// <param name="selector">Record's property selector</param>
+		/// <returns>Configuration object for selected property</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, uint, DeserializerConfigurationUInt> Property(Expression<Func<TRecord, uint>> selector)
 		{
-			return PropertyWithCustomDeserializer<uint, DeserializerConfigurationUInt<TRecord>>(selector, propConf => new DeserializerConfigurationUInt<TRecord>(propConf));
+			return PropertyWithCustomDeserializer<uint, DeserializerConfigurationUInt>(selector, propConf => new DeserializerConfigurationUInt(propConf));
 		}
 
-		public PropertyConfigurationFixedSerializer<TRecord, long, DeserializerConfigurationLong<TRecord>> Property(Expression<Func<TRecord, long>> selector)
+		/// <summary>
+		/// Enables configuring of selected record's property
+		/// </summary>
+		/// <param name="selector">Record's property selector</param>
+		/// <returns>Configuration object for selected property</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, long, DeserializerConfigurationLong> Property(Expression<Func<TRecord, long>> selector)
 		{
-			return PropertyWithCustomDeserializer<long, DeserializerConfigurationLong<TRecord>>(selector, propConf => new DeserializerConfigurationLong<TRecord>(propConf));
+			return PropertyWithCustomDeserializer<long, DeserializerConfigurationLong>(selector, propConf => new DeserializerConfigurationLong(propConf));
 		}
 
-		public PropertyConfigurationFixedSerializer<TRecord, ulong, DeserializerConfigurationULong<TRecord>> Property(Expression<Func<TRecord, ulong>> selector)
+		/// <summary>
+		/// Enables configuring of selected record's property
+		/// </summary>
+		/// <param name="selector">Record's property selector</param>
+		/// <returns>Configuration object for selected property</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, ulong, DeserializerConfigurationULong> Property(Expression<Func<TRecord, ulong>> selector)
 		{
-			return PropertyWithCustomDeserializer<ulong, DeserializerConfigurationULong<TRecord>>(selector, propConf => new DeserializerConfigurationULong<TRecord>(propConf));
+			return PropertyWithCustomDeserializer<ulong, DeserializerConfigurationULong>(selector, propConf => new DeserializerConfigurationULong(propConf));
 		}
 
-		public PropertyConfigurationFixedSerializer<TRecord, float, DeserializerConfigurationFloat<TRecord>> Property(Expression<Func<TRecord, float>> selector)
+		/// <summary>
+		/// Enables configuring of selected record's property
+		/// </summary>
+		/// <param name="selector">Record's property selector</param>
+		/// <returns>Configuration object for selected property</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, float, DeserializerConfigurationFloat> Property(Expression<Func<TRecord, float>> selector)
 		{
-			return PropertyWithCustomDeserializer<float, DeserializerConfigurationFloat<TRecord>>(selector, propConf => new DeserializerConfigurationFloat<TRecord>(propConf));
+			return PropertyWithCustomDeserializer<float, DeserializerConfigurationFloat>(selector, propConf => new DeserializerConfigurationFloat(propConf));
 		}
 
-		public PropertyConfigurationFixedSerializer<TRecord, double, DeserializerConfigurationDouble<TRecord>> Property(Expression<Func<TRecord, double>> selector)
+		/// <summary>
+		/// Enables configuring of selected record's property
+		/// </summary>
+		/// <param name="selector">Record's property selector</param>
+		/// <returns>Configuration object for selected property</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, double, DeserializerConfigurationDouble> Property(Expression<Func<TRecord, double>> selector)
 		{
-			return PropertyWithCustomDeserializer<double, DeserializerConfigurationDouble<TRecord>>(selector, propConf => new DeserializerConfigurationDouble<TRecord>(propConf));
+			return PropertyWithCustomDeserializer<double, DeserializerConfigurationDouble>(selector, propConf => new DeserializerConfigurationDouble(propConf));
 		}
 
-		public PropertyConfigurationFixedSerializer<TRecord, decimal, DeserializerConfigurationDecimal<TRecord>> Property(Expression<Func<TRecord, decimal>> selector)
+		/// <summary>
+		/// Enables configuring of selected record's property
+		/// </summary>
+		/// <param name="selector">Record's property selector</param>
+		/// <returns>Configuration object for selected property</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, decimal, DeserializerConfigurationDecimal> Property(Expression<Func<TRecord, decimal>> selector)
 		{
-			return PropertyWithCustomDeserializer<decimal, DeserializerConfigurationDecimal<TRecord>>(selector, propConf => new DeserializerConfigurationDecimal<TRecord>(propConf));
+			return PropertyWithCustomDeserializer<decimal, DeserializerConfigurationDecimal>(selector, propConf => new DeserializerConfigurationDecimal(propConf));
 		}
 
-		public PropertyConfigurationFixedSerializer<TRecord, DateTime, DeserializerConfigurationDateTime<TRecord>> Property(Expression<Func<TRecord, DateTime>> selector)
+		/// <summary>
+		/// Enables configuring of selected record's property
+		/// </summary>
+		/// <param name="selector">Record's property selector</param>
+		/// <returns>Configuration object for selected property</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, DateTime, DeserializerConfigurationDateTime> Property(Expression<Func<TRecord, DateTime>> selector)
 		{
-			return PropertyWithCustomDeserializer<DateTime, DeserializerConfigurationDateTime<TRecord>>(selector, propConf => new DeserializerConfigurationDateTime<TRecord>(propConf));
+			return PropertyWithCustomDeserializer<DateTime, DeserializerConfigurationDateTime>(selector, propConf => new DeserializerConfigurationDateTime(propConf));
 		}
 
-		public PropertyConfigurationFixedSerializer<TRecord, TimeSpan, DeserializerConfigurationTimeSpan<TRecord>> Property(Expression<Func<TRecord, TimeSpan>> selector)
+		/// <summary>
+		/// Enables configuring of selected record's property
+		/// </summary>
+		/// <param name="selector">Record's property selector</param>
+		/// <returns>Configuration object for selected property</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, TimeSpan, DeserializerConfigurationTimeSpan> Property(Expression<Func<TRecord, TimeSpan>> selector)
 		{
-			return PropertyWithCustomDeserializer<TimeSpan, DeserializerConfigurationTimeSpan<TRecord>>(selector, propConf => new DeserializerConfigurationTimeSpan<TRecord>(propConf));
+			return PropertyWithCustomDeserializer<TimeSpan, DeserializerConfigurationTimeSpan>(selector, propConf => new DeserializerConfigurationTimeSpan(propConf));
 		}
 
-		public PropertyConfigurationFixedSerializer<TRecord, DateTimeOffset, DeserializerConfigurationDateTimeOffset<TRecord>> Property(Expression<Func<TRecord, DateTimeOffset>> selector)
+		/// <summary>
+		/// Enables configuring of selected record's property
+		/// </summary>
+		/// <param name="selector">Record's property selector</param>
+		/// <returns>Configuration object for selected property</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, DateTimeOffset, DeserializerConfigurationDateTimeOffset> Property(Expression<Func<TRecord, DateTimeOffset>> selector)
 		{
-			return PropertyWithCustomDeserializer<DateTimeOffset, DeserializerConfigurationDateTimeOffset<TRecord>>(selector, propConf => new DeserializerConfigurationDateTimeOffset<TRecord>(propConf));
+			return PropertyWithCustomDeserializer<DateTimeOffset, DeserializerConfigurationDateTimeOffset>(selector, propConf => new DeserializerConfigurationDateTimeOffset(propConf));
 		}
 
-		public PropertyConfigurationFixedSerializer<TRecord, byte[]?, DeserializerConfigurationByteArray<TRecord>> Property(Expression<Func<TRecord, byte[]?>> selector)
+		/// <summary>
+		/// Enables configuring of selected record's property
+		/// </summary>
+		/// <param name="selector">Record's property selector</param>
+		/// <returns>Configuration object for selected property</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, Guid, DeserializerConfigurationGuid> Property(Expression<Func<TRecord, Guid>> selector)
 		{
-			return PropertyWithCustomDeserializer<byte[]?, DeserializerConfigurationByteArray<TRecord>>(selector, propConf => new DeserializerConfigurationByteArray<TRecord>(propConf));
+			return PropertyWithCustomDeserializer<Guid, DeserializerConfigurationGuid>(selector, propConf => new DeserializerConfigurationGuid(propConf));
 		}
 
-		public PropertyConfigurationFixedSerializer<TRecord, bool?, DeserializerConfigurationBoolNullable<TRecord>> Property(Expression<Func<TRecord, bool?>> selector)
+		/// <summary>
+		/// Enables configuring of selected record's property
+		/// </summary>
+		/// <param name="selector">Record's property selector</param>
+		/// <returns>Configuration object for selected property</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, byte[]?, DeserializerConfigurationByteArray> Property(Expression<Func<TRecord, byte[]?>> selector)
 		{
-			return PropertyWithCustomDeserializer<bool?, DeserializerConfigurationBoolNullable<TRecord>>(selector, propConf => new DeserializerConfigurationBoolNullable<TRecord>(propConf));
+			return PropertyWithCustomDeserializer<byte[]?, DeserializerConfigurationByteArray>(selector, propConf => new DeserializerConfigurationByteArray(propConf));
 		}
 
-		public PropertyConfigurationFixedSerializer<TRecord, byte?, DeserializerConfigurationByteNullable<TRecord>> Property(Expression<Func<TRecord, byte?>> selector)
+		/// <summary>
+		/// Enables configuring of selected record's property
+		/// </summary>
+		/// <param name="selector">Record's property selector</param>
+		/// <returns>Configuration object for selected property</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, bool?, DeserializerConfigurationBoolNullable> Property(Expression<Func<TRecord, bool?>> selector)
 		{
-			return PropertyWithCustomDeserializer<byte?, DeserializerConfigurationByteNullable<TRecord>>(selector, propConf => new DeserializerConfigurationByteNullable<TRecord>(propConf));
+			return PropertyWithCustomDeserializer<bool?, DeserializerConfigurationBoolNullable>(selector, propConf => new DeserializerConfigurationBoolNullable(propConf));
 		}
 
-		public PropertyConfigurationFixedSerializer<TRecord, sbyte?, DeserializerConfigurationSByteNullable<TRecord>> Property(Expression<Func<TRecord, sbyte?>> selector)
+		/// <summary>
+		/// Enables configuring of selected record's property
+		/// </summary>
+		/// <param name="selector">Record's property selector</param>
+		/// <returns>Configuration object for selected property</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, byte?, DeserializerConfigurationByteNullable> Property(Expression<Func<TRecord, byte?>> selector)
 		{
-			return PropertyWithCustomDeserializer<sbyte?, DeserializerConfigurationSByteNullable<TRecord>>(selector, propConf => new DeserializerConfigurationSByteNullable<TRecord>(propConf));
+			return PropertyWithCustomDeserializer<byte?, DeserializerConfigurationByteNullable>(selector, propConf => new DeserializerConfigurationByteNullable(propConf));
 		}
 
-		public PropertyConfigurationFixedSerializer<TRecord, short?, DeserializerConfigurationShortNullable<TRecord>> Property(Expression<Func<TRecord, short?>> selector)
+		/// <summary>
+		/// Enables configuring of selected record's property
+		/// </summary>
+		/// <param name="selector">Record's property selector</param>
+		/// <returns>Configuration object for selected property</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, sbyte?, DeserializerConfigurationSByteNullable> Property(Expression<Func<TRecord, sbyte?>> selector)
 		{
-			return PropertyWithCustomDeserializer<short?, DeserializerConfigurationShortNullable<TRecord>>(selector, propConf => new DeserializerConfigurationShortNullable<TRecord>(propConf));
+			return PropertyWithCustomDeserializer<sbyte?, DeserializerConfigurationSByteNullable>(selector, propConf => new DeserializerConfigurationSByteNullable(propConf));
 		}
 
-		public PropertyConfigurationFixedSerializer<TRecord, ushort?, DeserializerConfigurationUShortNullable<TRecord>> Property(Expression<Func<TRecord, ushort?>> selector)
+		/// <summary>
+		/// Enables configuring of selected record's property
+		/// </summary>
+		/// <param name="selector">Record's property selector</param>
+		/// <returns>Configuration object for selected property</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, short?, DeserializerConfigurationShortNullable> Property(Expression<Func<TRecord, short?>> selector)
 		{
-			return PropertyWithCustomDeserializer<ushort?, DeserializerConfigurationUShortNullable<TRecord>>(selector, propConf => new DeserializerConfigurationUShortNullable<TRecord>(propConf));
+			return PropertyWithCustomDeserializer<short?, DeserializerConfigurationShortNullable>(selector, propConf => new DeserializerConfigurationShortNullable(propConf));
 		}
 
-		public PropertyConfigurationFixedSerializer<TRecord, int?, DeserializerConfigurationIntNullable<TRecord>> Property(Expression<Func<TRecord, int?>> selector)
+		/// <summary>
+		/// Enables configuring of selected record's property
+		/// </summary>
+		/// <param name="selector">Record's property selector</param>
+		/// <returns>Configuration object for selected property</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, ushort?, DeserializerConfigurationUShortNullable> Property(Expression<Func<TRecord, ushort?>> selector)
 		{
-			return PropertyWithCustomDeserializer<int?, DeserializerConfigurationIntNullable<TRecord>>(selector, propConf => new DeserializerConfigurationIntNullable<TRecord>(propConf));
+			return PropertyWithCustomDeserializer<ushort?, DeserializerConfigurationUShortNullable>(selector, propConf => new DeserializerConfigurationUShortNullable(propConf));
 		}
 
-		public PropertyConfigurationFixedSerializer<TRecord, uint?, DeserializerConfigurationUIntNullable<TRecord>> Property(Expression<Func<TRecord, uint?>> selector)
+		/// <summary>
+		/// Enables configuring of selected record's property
+		/// </summary>
+		/// <param name="selector">Record's property selector</param>
+		/// <returns>Configuration object for selected property</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, int?, DeserializerConfigurationIntNullable> Property(Expression<Func<TRecord, int?>> selector)
 		{
-			return PropertyWithCustomDeserializer<uint?, DeserializerConfigurationUIntNullable<TRecord>>(selector, propConf => new DeserializerConfigurationUIntNullable<TRecord>(propConf));
+			return PropertyWithCustomDeserializer<int?, DeserializerConfigurationIntNullable>(selector, propConf => new DeserializerConfigurationIntNullable(propConf));
 		}
 
-		public PropertyConfigurationFixedSerializer<TRecord, long?, DeserializerConfigurationLongNullable<TRecord>> Property(Expression<Func<TRecord, long?>> selector)
+		/// <summary>
+		/// Enables configuring of selected record's property
+		/// </summary>
+		/// <param name="selector">Record's property selector</param>
+		/// <returns>Configuration object for selected property</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, uint?, DeserializerConfigurationUIntNullable> Property(Expression<Func<TRecord, uint?>> selector)
 		{
-			return PropertyWithCustomDeserializer<long?, DeserializerConfigurationLongNullable<TRecord>>(selector, propConf => new DeserializerConfigurationLongNullable<TRecord>(propConf));
+			return PropertyWithCustomDeserializer<uint?, DeserializerConfigurationUIntNullable>(selector, propConf => new DeserializerConfigurationUIntNullable(propConf));
 		}
 
-		public PropertyConfigurationFixedSerializer<TRecord, ulong?, DeserializerConfigurationULongNullable<TRecord>> Property(Expression<Func<TRecord, ulong?>> selector)
+		/// <summary>
+		/// Enables configuring of selected record's property
+		/// </summary>
+		/// <param name="selector">Record's property selector</param>
+		/// <returns>Configuration object for selected property</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, long?, DeserializerConfigurationLongNullable> Property(Expression<Func<TRecord, long?>> selector)
 		{
-			return PropertyWithCustomDeserializer<ulong?, DeserializerConfigurationULongNullable<TRecord>>(selector, propConf => new DeserializerConfigurationULongNullable<TRecord>(propConf));
+			return PropertyWithCustomDeserializer<long?, DeserializerConfigurationLongNullable>(selector, propConf => new DeserializerConfigurationLongNullable(propConf));
 		}
 
-		public PropertyConfigurationFixedSerializer<TRecord, float?, DeserializerConfigurationFloatNullable<TRecord>> Property(Expression<Func<TRecord, float?>> selector)
+		/// <summary>
+		/// Enables configuring of selected record's property
+		/// </summary>
+		/// <param name="selector">Record's property selector</param>
+		/// <returns>Configuration object for selected property</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, ulong?, DeserializerConfigurationULongNullable> Property(Expression<Func<TRecord, ulong?>> selector)
 		{
-			return PropertyWithCustomDeserializer<float?, DeserializerConfigurationFloatNullable<TRecord>>(selector, propConf => new DeserializerConfigurationFloatNullable<TRecord>(propConf));
+			return PropertyWithCustomDeserializer<ulong?, DeserializerConfigurationULongNullable>(selector, propConf => new DeserializerConfigurationULongNullable(propConf));
 		}
 
-		public PropertyConfigurationFixedSerializer<TRecord, double?, DeserializerConfigurationDoubleNullable<TRecord>> Property(Expression<Func<TRecord, double?>> selector)
+		/// <summary>
+		/// Enables configuring of selected record's property
+		/// </summary>
+		/// <param name="selector">Record's property selector</param>
+		/// <returns>Configuration object for selected property</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, float?, DeserializerConfigurationFloatNullable> Property(Expression<Func<TRecord, float?>> selector)
 		{
-			return PropertyWithCustomDeserializer<double?, DeserializerConfigurationDoubleNullable<TRecord>>(selector, propConf => new DeserializerConfigurationDoubleNullable<TRecord>(propConf));
+			return PropertyWithCustomDeserializer<float?, DeserializerConfigurationFloatNullable>(selector, propConf => new DeserializerConfigurationFloatNullable(propConf));
 		}
 
-		public PropertyConfigurationFixedSerializer<TRecord, decimal?, DeserializerConfigurationDecimalNullable<TRecord>> Property(Expression<Func<TRecord, decimal?>> selector)
+		/// <summary>
+		/// Enables configuring of selected record's property
+		/// </summary>
+		/// <param name="selector">Record's property selector</param>
+		/// <returns>Configuration object for selected property</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, double?, DeserializerConfigurationDoubleNullable> Property(Expression<Func<TRecord, double?>> selector)
 		{
-			return PropertyWithCustomDeserializer<decimal?, DeserializerConfigurationDecimalNullable<TRecord>>(selector, propConf => new DeserializerConfigurationDecimalNullable<TRecord>(propConf));
+			return PropertyWithCustomDeserializer<double?, DeserializerConfigurationDoubleNullable>(selector, propConf => new DeserializerConfigurationDoubleNullable(propConf));
 		}
 
-		public PropertyConfigurationFixedSerializer<TRecord, DateTime?, DeserializerConfigurationDateTimeNullable<TRecord>> Property(Expression<Func<TRecord, DateTime?>> selector)
+		/// <summary>
+		/// Enables configuring of selected record's property
+		/// </summary>
+		/// <param name="selector">Record's property selector</param>
+		/// <returns>Configuration object for selected property</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, decimal?, DeserializerConfigurationDecimalNullable> Property(Expression<Func<TRecord, decimal?>> selector)
 		{
-			return PropertyWithCustomDeserializer<DateTime?, DeserializerConfigurationDateTimeNullable<TRecord>>(selector, propConf => new DeserializerConfigurationDateTimeNullable<TRecord>(propConf));
+			return PropertyWithCustomDeserializer<decimal?, DeserializerConfigurationDecimalNullable>(selector, propConf => new DeserializerConfigurationDecimalNullable(propConf));
 		}
 
-		public PropertyConfigurationFixedSerializer<TRecord, TimeSpan?, DeserializerConfigurationTimeSpanNullable<TRecord>> Property(Expression<Func<TRecord, TimeSpan?>> selector)
+		/// <summary>
+		/// Enables configuring of selected record's property
+		/// </summary>
+		/// <param name="selector">Record's property selector</param>
+		/// <returns>Configuration object for selected property</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, DateTime?, DeserializerConfigurationDateTimeNullable> Property(Expression<Func<TRecord, DateTime?>> selector)
 		{
-			return PropertyWithCustomDeserializer<TimeSpan?, DeserializerConfigurationTimeSpanNullable<TRecord>>(selector, propConf => new DeserializerConfigurationTimeSpanNullable<TRecord>(propConf));
+			return PropertyWithCustomDeserializer<DateTime?, DeserializerConfigurationDateTimeNullable>(selector, propConf => new DeserializerConfigurationDateTimeNullable(propConf));
 		}
 
-		public PropertyConfigurationFixedSerializer<TRecord, DateTimeOffset?, DeserializerConfigurationDateTimeOffsetNullable<TRecord>> Property(Expression<Func<TRecord, DateTimeOffset?>> selector)
+		/// <summary>
+		/// Enables configuring of selected record's property
+		/// </summary>
+		/// <param name="selector">Record's property selector</param>
+		/// <returns>Configuration object for selected property</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, TimeSpan?, DeserializerConfigurationTimeSpanNullable> Property(Expression<Func<TRecord, TimeSpan?>> selector)
 		{
-			return PropertyWithCustomDeserializer<DateTimeOffset?, DeserializerConfigurationDateTimeOffsetNullable<TRecord>>(selector, propConf => new DeserializerConfigurationDateTimeOffsetNullable<TRecord>(propConf));
+			return PropertyWithCustomDeserializer<TimeSpan?, DeserializerConfigurationTimeSpanNullable>(selector, propConf => new DeserializerConfigurationTimeSpanNullable(propConf));
 		}
 
+		/// <summary>
+		/// Enables configuring of selected record's property
+		/// </summary>
+		/// <param name="selector">Record's property selector</param>
+		/// <returns>Configuration object for selected property</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, DateTimeOffset?, DeserializerConfigurationDateTimeOffsetNullable> Property(Expression<Func<TRecord, DateTimeOffset?>> selector)
+		{
+			return PropertyWithCustomDeserializer<DateTimeOffset?, DeserializerConfigurationDateTimeOffsetNullable>(selector, propConf => new DeserializerConfigurationDateTimeOffsetNullable(propConf));
+		}
+
+		/// <summary>
+		/// Enables configuring of selected record's property
+		/// </summary>
+		/// <param name="selector">Record's property selector</param>
+		/// <returns>Configuration object for selected property</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, Guid?, DeserializerConfigurationGuidNullable> Property(Expression<Func<TRecord, Guid?>> selector)
+		{
+			return PropertyWithCustomDeserializer<Guid?, DeserializerConfigurationGuidNullable>(selector, propConf => new DeserializerConfigurationGuidNullable(propConf));
+		}
+
+#if NET5_0_OR_GREATER
+		/// <summary>
+		/// Enables configuring of selected record's property
+		/// </summary>
+		/// <param name="selector">Record's property selector</param>
+		/// <returns>Configuration object for selected property</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, Half, DeserializerConfigurationHalf> Property(Expression<Func<TRecord, Half>> selector)
+		{
+			return PropertyWithCustomDeserializer<Half, DeserializerConfigurationHalf>(selector, propConf => new DeserializerConfigurationHalf(propConf));
+		}
+
+		/// <summary>
+		/// Enables configuring of selected record's property
+		/// </summary>
+		/// <param name="selector">Record's property selector</param>
+		/// <returns>Configuration object for selected property</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, Half?, DeserializerConfigurationHalfNullable> Property(Expression<Func<TRecord, Half?>> selector)
+		{
+			return PropertyWithCustomDeserializer<Half?, DeserializerConfigurationHalfNullable>(selector, propConf => new DeserializerConfigurationHalfNullable(propConf));
+		}
+#endif
+
+		/// <summary>
+		/// Enables configuring of selected record's property
+		/// </summary>
+		/// <typeparam name="TProperty">Type of record's property</typeparam>
+		/// <param name="selector">Record's property selector</param>
+		/// <returns>Configuration object for selected property</returns>
+		/// <exception cref="InvalidOperationException">Serializer for selected property is not defined. Use one of PropertyWithCustomDeserializer method to cereate one</exception>
 		public PropertyConfigurationBase<TRecord, TProperty> Property<TProperty>(Expression<Func<TRecord, TProperty>> selector)
 		{
 			var selectorString = GetSelectorString(selector);
@@ -402,28 +820,50 @@ namespace WojciechMikołajewicz.CsvReader
 			throw new InvalidOperationException($"Property binding \"{selectorString}\" doesn't exist. Use {nameof(PropertyWithCustomDeserializer)} method to create one");
 		}
 
-		public PropertyConfigurationFixedSerializer<TRecord, TEnum, DeserializerConfigurationEnum<TRecord, TEnum>> PropertyEnum<TEnum>(Expression<Func<TRecord, TEnum>> selector)
+		/// <summary>
+		/// Enables configuring of selected record's enum property
+		/// </summary>
+		/// <typeparam name="TEnum">Type of enum</typeparam>
+		/// <param name="selector">Record's enum property selector</param>
+		/// <returns>Configuration object for selected enum property</returns>
+		/// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not enum type</exception>
+		public PropertyConfigurationFixedSerializer<TRecord, TEnum, DeserializerConfigurationEnum<TEnum>> PropertyEnum<TEnum>(Expression<Func<TRecord, TEnum>> selector)
 			where TEnum : struct
 		{
 			if(!typeof(TEnum).IsEnum)
 				throw new ArgumentException($"{typeof(TEnum)} is not an Enum type");
-			return PropertyWithCustomDeserializer<TEnum, DeserializerConfigurationEnum<TRecord, TEnum>>(selector, propConf => new DeserializerConfigurationEnum<TRecord, TEnum>(propConf));
+			return PropertyWithCustomDeserializer<TEnum, DeserializerConfigurationEnum<TEnum>>(selector, propConf => new DeserializerConfigurationEnum<TEnum>(propConf));
 		}
 
-		public PropertyConfigurationFixedSerializer<TRecord, TEnum?, DeserializerConfigurationEnumNullable<TRecord, TEnum>> PropertyEnum<TEnum>(Expression<Func<TRecord, TEnum?>> selector)
+		/// <summary>
+		/// Enables configuring of selected record's enum property
+		/// </summary>
+		/// <typeparam name="TEnum">Type of enum</typeparam>
+		/// <param name="selector">Record's enum property selector</param>
+		/// <returns>Configuration object for selected enum property</returns>
+		/// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not enum type</exception>
+		public PropertyConfigurationFixedSerializer<TRecord, TEnum?, DeserializerConfigurationEnumNullable<TEnum>> PropertyEnum<TEnum>(Expression<Func<TRecord, TEnum?>> selector)
 			where TEnum : struct
 		{
 			if(!typeof(TEnum).IsEnum)
 				throw new ArgumentException($"{typeof(TEnum)} is not an Enum type");
-			return PropertyWithCustomDeserializer<TEnum?, DeserializerConfigurationEnumNullable<TRecord, TEnum>>(selector, propConf => new DeserializerConfigurationEnumNullable<TRecord, TEnum>(propConf));
+			return PropertyWithCustomDeserializer<TEnum?, DeserializerConfigurationEnumNullable<TEnum>>(selector, propConf => new DeserializerConfigurationEnumNullable<TEnum>(propConf));
 		}
 		#endregion
 		#region PropertyWithCustomDeserializer
+		/// <summary>
+		/// Enables configuring of selected record's property with custom deserializer configurator
+		/// </summary>
+		/// <typeparam name="TProperty">Type of record's property</typeparam>
+		/// <typeparam name="TDeserializerConfigurator">Type of deserializer configuration object</typeparam>
+		/// <param name="selector">Record's property selector</param>
+		/// <param name="createCustomDeserializerConfiguratorMethod">Delegate for creating custom deserializer configuration object</param>
+		/// <returns>Configuration object for selected property</returns>
 		public PropertyConfigurationFixedSerializer<TRecord, TProperty, TDeserializerConfigurator> PropertyWithCustomDeserializer<TProperty, TDeserializerConfigurator>(
 			Expression<Func<TRecord, TProperty>> selector,
 			Func<PropertyConfigurationFixedSerializer<TRecord, TProperty, TDeserializerConfigurator>, TDeserializerConfigurator> createCustomDeserializerConfiguratorMethod
 			)
-			where TDeserializerConfigurator : DeserializerConfigurationBase<TRecord, TProperty>
+			where TDeserializerConfigurator : DeserializerConfigurationBase<TProperty>
 		{
 			var selectorString = GetSelectorString(selector);
 			PropertyConfigurationFixedSerializer<TRecord, TProperty, TDeserializerConfigurator> propertyConfiguration;
@@ -452,37 +892,79 @@ namespace WojciechMikołajewicz.CsvReader
 			return propertyConfiguration;
 		}
 
-		public PropertyConfigurationFixedSerializer<TRecord, TProperty, DeserializerConfigurationCustom<TRecord, TProperty>> PropertyWithCustomDeserializer<TProperty>(Expression<Func<TRecord, TProperty>> selector, CellDeserializerFromMemorySequenceBase<TProperty> deserializer)
+		/// <summary>
+		/// Enables configuring of selected record's property with custom deserializer
+		/// </summary>
+		/// <typeparam name="TProperty">Type of record's property</typeparam>
+		/// <param name="selector">Record's property selector</param>
+		/// <param name="deserializer">Deserialization object, from <see cref="MemorySequenceSpan"/> to <typeparamref name="TProperty"/> type</param>
+		/// <returns>Configuration object for selected property</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, TProperty, DeserializerConfigurationCustom<TProperty>> PropertyWithCustomDeserializer<TProperty>(Expression<Func<TRecord, TProperty>> selector, CellDeserializerFromMemorySequenceBase<TProperty> deserializer)
 		{
-			return PropertyWithCustomDeserializer<TProperty, DeserializerConfigurationCustom<TRecord, TProperty>>(selector, propConf => new DeserializerConfigurationCustom<TRecord, TProperty>(propConf, deserializer));
+			return PropertyWithCustomDeserializer<TProperty, DeserializerConfigurationCustom<TProperty>>(selector, propConf => new DeserializerConfigurationCustom<TProperty>(propConf, deserializer));
 		}
 
-		public PropertyConfigurationFixedSerializer<TRecord, TProperty, DeserializerConfigurationCustom<TRecord, TProperty>> PropertyWithCustomDeserializer<TProperty>(Expression<Func<TRecord, TProperty>> selector, CellDeserializerFromMemoryBase<TProperty> deserializer)
+		/// <summary>
+		/// Enables configuring of selected record's property with custom deserializer
+		/// </summary>
+		/// <typeparam name="TProperty">Type of record's property</typeparam>
+		/// <param name="selector">Record's property selector</param>
+		/// <param name="deserializer">Deserialization object, from <see cref="ReadOnlyMemory{T}"/> to <typeparamref name="TProperty"/> type</param>
+		/// <returns>Configuration object for selected property</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, TProperty, DeserializerConfigurationCustom<TProperty>> PropertyWithCustomDeserializer<TProperty>(Expression<Func<TRecord, TProperty>> selector, CellDeserializerFromMemoryBase<TProperty> deserializer)
 		{
-			return PropertyWithCustomDeserializer<TProperty, DeserializerConfigurationCustom<TRecord, TProperty>>(selector, propConf => new DeserializerConfigurationCustom<TRecord, TProperty>(propConf, deserializer));
+			return PropertyWithCustomDeserializer<TProperty, DeserializerConfigurationCustom<TProperty>>(selector, propConf => new DeserializerConfigurationCustom<TProperty>(propConf, deserializer));
 		}
 
-		public PropertyConfigurationFixedSerializer<TRecord, TProperty, DeserializerConfigurationCustom<TRecord, TProperty>> PropertyWithCustomDeserializer<TProperty>(Expression<Func<TRecord, TProperty>> selector, CellDeserializerFromStringBase<TProperty> deserializer)
+		/// <summary>
+		/// Enables configuring of selected record's property with custom deserializer
+		/// </summary>
+		/// <typeparam name="TProperty">Type of record's property</typeparam>
+		/// <param name="selector">Record's property selector</param>
+		/// <param name="deserializer">Deserialization object, from <see cref="string"/> to <typeparamref name="TProperty"/> type</param>
+		/// <returns>Configuration object for selected property</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, TProperty, DeserializerConfigurationCustom<TProperty>> PropertyWithCustomDeserializer<TProperty>(Expression<Func<TRecord, TProperty>> selector, CellDeserializerFromStringBase<TProperty> deserializer)
 		{
-			return PropertyWithCustomDeserializer<TProperty, DeserializerConfigurationCustom<TRecord, TProperty>>(selector, propConf => new DeserializerConfigurationCustom<TRecord, TProperty>(propConf, deserializer));
+			return PropertyWithCustomDeserializer<TProperty, DeserializerConfigurationCustom<TProperty>>(selector, propConf => new DeserializerConfigurationCustom<TProperty>(propConf, deserializer));
 		}
 
-		public PropertyConfigurationFixedSerializer<TRecord, TProperty, DeserializerConfigurationCustom<TRecord, TProperty>> PropertyWithCustomDeserializer<TProperty>(Expression<Func<TRecord, TProperty>> selector, Func<MemorySequenceSpan, TProperty> deserializeMethod)
+		/// <summary>
+		/// Enables configuring of selected record's property with custom deserialization method
+		/// </summary>
+		/// <typeparam name="TProperty">Type of record's property</typeparam>
+		/// <param name="selector">Record's property selector</param>
+		/// <param name="deserializeMethod">Deserialization method, from <see cref="MemorySequenceSpan"/> to <typeparamref name="TProperty"/> type</param>
+		/// <returns>Configuration object for selected property</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, TProperty, DeserializerConfigurationCustom<TProperty>> PropertyWithCustomDeserializer<TProperty>(Expression<Func<TRecord, TProperty>> selector, Func<MemorySequenceSpan, TProperty> deserializeMethod)
 		{
 			var deserializer = new CellDeserializerFromMemorySequence<TProperty>(deserializeMethod);
-			return PropertyWithCustomDeserializer<TProperty, DeserializerConfigurationCustom<TRecord, TProperty>>(selector, propConf => new DeserializerConfigurationCustom<TRecord, TProperty>(propConf, deserializer));
+			return PropertyWithCustomDeserializer<TProperty, DeserializerConfigurationCustom<TProperty>>(selector, propConf => new DeserializerConfigurationCustom<TProperty>(propConf, deserializer));
 		}
 
-		public PropertyConfigurationFixedSerializer<TRecord, TProperty, DeserializerConfigurationCustom<TRecord, TProperty>> PropertyWithCustomDeserializer<TProperty>(Expression<Func<TRecord, TProperty>> selector, Func<ReadOnlyMemory<char>, TProperty> deserializeMethod)
+		/// <summary>
+		/// Enables configuring of selected record's property with custom deserialization method
+		/// </summary>
+		/// <typeparam name="TProperty">Type of record's property</typeparam>
+		/// <param name="selector">Record's property selector</param>
+		/// <param name="deserializeMethod">Deserialization method, from <see cref="ReadOnlyMemory{T}"/> to <typeparamref name="TProperty"/> type</param>
+		/// <returns>Configuration object for selected property</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, TProperty, DeserializerConfigurationCustom<TProperty>> PropertyWithCustomDeserializer<TProperty>(Expression<Func<TRecord, TProperty>> selector, Func<ReadOnlyMemory<char>, TProperty> deserializeMethod)
 		{
 			var deserializer = new CellDeserializerFromMemory<TProperty>(deserializeMethod);
-			return PropertyWithCustomDeserializer<TProperty, DeserializerConfigurationCustom<TRecord, TProperty>>(selector, propConf => new DeserializerConfigurationCustom<TRecord, TProperty>(propConf, deserializer));
+			return PropertyWithCustomDeserializer<TProperty, DeserializerConfigurationCustom<TProperty>>(selector, propConf => new DeserializerConfigurationCustom<TProperty>(propConf, deserializer));
 		}
 
-		public PropertyConfigurationFixedSerializer<TRecord, TProperty, DeserializerConfigurationCustom<TRecord, TProperty>> PropertyWithCustomDeserializer<TProperty>(Expression<Func<TRecord, TProperty>> selector, Func<string, TProperty> deserializeMethod)
+		/// <summary>
+		/// Enables configuring of selected record's property with custom deserialization method
+		/// </summary>
+		/// <typeparam name="TProperty">Type of record's property</typeparam>
+		/// <param name="selector">Record's property selector</param>
+		/// <param name="deserializeMethod">Deserialization method, from <see cref="string"/> to <typeparamref name="TProperty"/> type</param>
+		/// <returns>Configuration object for selected property</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, TProperty, DeserializerConfigurationCustom<TProperty>> PropertyWithCustomDeserializer<TProperty>(Expression<Func<TRecord, TProperty>> selector, Func<string, TProperty> deserializeMethod)
 		{
 			var deserializer = new CellDeserializerFromString<TProperty>(deserializeMethod);
-			return PropertyWithCustomDeserializer<TProperty, DeserializerConfigurationCustom<TRecord, TProperty>>(selector, propConf => new DeserializerConfigurationCustom<TRecord, TProperty>(propConf, deserializer));
+			return PropertyWithCustomDeserializer<TProperty, DeserializerConfigurationCustom<TProperty>>(selector, propConf => new DeserializerConfigurationCustom<TProperty>(propConf, deserializer));
 		}
 		#endregion
 	}

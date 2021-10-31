@@ -8,11 +8,24 @@ using WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.Column
 
 namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration
 {
+	/// <summary>
+	/// Base class for configuring property
+	/// </summary>
+	/// <typeparam name="TRecord">Type of records read from csv</typeparam>
+	/// <typeparam name="TProperty">Type of record's property</typeparam>
 	public abstract class PropertyConfigurationBase<TRecord, TProperty> : BindingConfigurationBase<TRecord>
 	{
+		/// <summary>
+		/// Expression pointing to the record's property
+		/// </summary>
 		protected internal Expression<Func<TRecord, TProperty>> PropertySelector { get; private set; }
 
-		protected PropertyConfigurationBase(RecordConfiguration<TRecord> recordConfiguration, Expression<Func<TRecord, TProperty>> selector)
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="recordConfiguration">Record configuration object</param>
+		/// <param name="selector">Expression pointing to the record's property</param>
+		protected PropertyConfigurationBase(WojciechMikołajewicz.CsvReader.RecordConfiguration recordConfiguration, Expression<Func<TRecord, TProperty>> selector)
 			: base(recordConfiguration)
 		{
 			PropertySelector = selector;
@@ -23,6 +36,10 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.Bi
 			PropertySelector = propertySelector;
 		}
 
+		/// <summary>
+		/// Returns a delegate storing value to a record property pointed by <see cref="PropertySelector"/>
+		/// </summary>
+		/// <returns>Delegate that stores value to a record property pointed by <see cref="PropertySelector"/></returns>
 		protected Action<TRecord, TProperty> GetSetPropertyDelegate()
 		{
 			var exprParameter = Expression.Parameter(PropertySelector.Body.Type);
@@ -33,7 +50,7 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.Bi
 		}
 
 		internal sealed override bool TryBuild(
-#if NETSTANDARD2_1_OR_GREATER
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_0_OR_GREATER
 			[NotNullWhen(true)]
 #endif
 			out ColumnBinding<TRecord>? columnBinding)
@@ -49,8 +66,13 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.Bi
 			return true;
 		}
 
+		/// <summary>
+		/// Tries build cell deserializer to property's type
+		/// </summary>
+		/// <param name="cellDeserializer">Cell deserializer</param>
+		/// <returns>Did building succeed</returns>
 		protected abstract bool TryBuildDeserializer(
-#if NETSTANDARD2_1_OR_GREATER
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_0_OR_GREATER
 			[NotNullWhen(true)]
 # endif
 			out CellDeserializerBase<TProperty>? cellDeserializer);

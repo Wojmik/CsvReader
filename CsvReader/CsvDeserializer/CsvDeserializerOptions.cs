@@ -28,7 +28,7 @@ namespace WojciechMikołajewicz.CsvReader
 		/// <summary>
 		/// Culture used for parsing values from csv file. Default is <see cref="CultureInfo.InvariantCulture"/>
 		/// </summary>
-		public CultureInfo DeserializationCulture { get; set; }
+		public IFormatProvider DeserializationCulture { get; set; }
 
 		/// <summary>
 		/// If empty strings should be converted to nulls. Default is true

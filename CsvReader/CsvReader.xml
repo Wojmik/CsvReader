@@ -1,0 +1,2331 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CsvReader</name>
+    </assembly>
+    <members>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers.CellDeserializerBase`1">
+            <summary>
+            Base class for cell deserializers
+            </summary>
+            <typeparam name="TDeserialized">Type of data to deserialize cell to</typeparam>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers.CellDeserializerBase`1.DeserializeFromMemorySequence(WojciechMikołajewicz.CsvReader.CsvNodes.MemorySequenceSpan@)">
+            <summary>
+            Deserialize cell from <see cref="T:WojciechMikołajewicz.CsvReader.CsvNodes.MemorySequenceSpan"/>
+            </summary>
+            <param name="value">Cell read from csv in <see cref="T:WojciechMikołajewicz.CsvReader.CsvNodes.MemorySequenceSpan"/> manner</param>
+            <returns>Deserialized value</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers.CellDeserializerBase`1.DeserializeFromMemory(System.ReadOnlyMemory{System.Char}@)">
+            <summary>
+            Deserialize cell from <see cref="T:System.ReadOnlyMemory`1"/>
+            </summary>
+            <param name="value">Cell read from csv in <see cref="T:System.ReadOnlyMemory`1"/> manner</param>
+            <returns>Deserialized value</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers.CellDeserializerBase`1.DeserializeFromString(System.String)">
+            <summary>
+            Deserialize cell from <see cref="T:System.String"/>
+            </summary>
+            <param name="value">Cell read from csv in <see cref="T:System.String"/> manner</param>
+            <returns>Deserialized value</returns>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers.CellDeserializerFromMemoryBase`1">
+            <summary>
+            Base class for cell deserializers from <see cref="T:System.ReadOnlyMemory`1"/> read from csv
+            </summary>
+            <typeparam name="TDeserialized">Type of data to deserialize cell to</typeparam>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers.CellDeserializerFromMemoryBase`1.DeserializeFromMemorySequence(WojciechMikołajewicz.CsvReader.CsvNodes.MemorySequenceSpan@)">
+            <summary>
+            Throws <see cref="T:System.NotSupportedException"/>. This override is dead end. This method would not be called.
+            </summary>
+            <param name="value">Cell read from csv in <see cref="T:WojciechMikołajewicz.CsvReader.CsvNodes.MemorySequenceSpan"/> manner</param>
+            <returns>Always throws <see cref="T:System.NotSupportedException"/></returns>
+            <exception cref="T:System.NotSupportedException">Always throws</exception>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers.CellDeserializerFromMemoryBase`1.DeserializeFromString(System.String)">
+            <summary>
+            Throws <see cref="T:System.NotSupportedException"/>. This override is dead end. This method would not be called.
+            </summary>
+            <param name="value">Cell read from csv in <see cref="T:System.String"/> manner</param>
+            <returns>Always throws <see cref="T:System.NotSupportedException"/></returns>
+            <exception cref="T:System.NotSupportedException">Always throws</exception>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers.CellDeserializerFromMemorySequenceBase`1">
+            <summary>
+            Base class for cell deserializers from <see cref="T:WojciechMikołajewicz.CsvReader.CsvNodes.MemorySequenceSpan"/> read from csv
+            </summary>
+            <typeparam name="TDeserialized">Type of data to deserialize cell to</typeparam>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers.CellDeserializerFromMemorySequenceBase`1.DeserializeFromMemory(System.ReadOnlyMemory{System.Char}@)">
+            <summary>
+            Throws <see cref="T:System.NotSupportedException"/>. This override is dead end. This method would not be called.
+            </summary>
+            <param name="value">Cell read from csv in <see cref="T:System.ReadOnlyMemory`1"/> manner</param>
+            <returns>Always throws <see cref="T:System.NotSupportedException"/></returns>
+            <exception cref="T:System.NotSupportedException">Always throws</exception>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers.CellDeserializerFromMemorySequenceBase`1.DeserializeFromString(System.String)">
+            <summary>
+            Throws <see cref="T:System.NotSupportedException"/>. This override is dead end. This method would not be called.
+            </summary>
+            <param name="value">Cell read from csv in <see cref="T:System.String"/> manner</param>
+            <returns>Always throws <see cref="T:System.NotSupportedException"/></returns>
+            <exception cref="T:System.NotSupportedException">Always throws</exception>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers.CellDeserializerFromStringBase`1">
+            <summary>
+            Base class for cell deserializers from <see cref="T:System.String"/> read from csv
+            </summary>
+            <typeparam name="TDeserialized">Type of data to deserialize cell to</typeparam>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers.CellDeserializerFromStringBase`1.DeserializeFromMemorySequence(WojciechMikołajewicz.CsvReader.CsvNodes.MemorySequenceSpan@)">
+            <summary>
+            Throws <see cref="T:System.NotSupportedException"/>. This override is dead end. This method would not be called.
+            </summary>
+            <param name="value">Cell read from csv in <see cref="T:WojciechMikołajewicz.CsvReader.CsvNodes.MemorySequenceSpan"/> manner</param>
+            <returns>Always throws <see cref="T:System.NotSupportedException"/></returns>
+            <exception cref="T:System.NotSupportedException">Always throws</exception>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers.CellDeserializerFromStringBase`1.DeserializeFromMemory(System.ReadOnlyMemory{System.Char}@)">
+            <summary>
+            Throws <see cref="T:System.NotSupportedException"/>. This override is dead end. This method would not be called.
+            </summary>
+            <param name="value">Cell read from csv in <see cref="T:System.ReadOnlyMemory`1"/> manner</param>
+            <returns>Always throws <see cref="T:System.NotSupportedException"/></returns>
+            <exception cref="T:System.NotSupportedException">Always throws</exception>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers.NodeContainerType">
+            <summary>
+            Node container type
+            </summary>
+        </member>
+        <member name="F:WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers.NodeContainerType.Empty">
+            <summary>
+            Empty
+            </summary>
+        </member>
+        <member name="F:WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers.NodeContainerType.MemorySequence">
+            <summary>
+            Csv cell read as <see cref="T:WojciechMikołajewicz.CsvReader.CsvNodes.MemorySequenceSpan"/>
+            </summary>
+        </member>
+        <member name="F:WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers.NodeContainerType.Memory">
+            <summary>
+            Csv cell read as <see cref="T:System.ReadOnlyMemory`1"/>
+            </summary>
+        </member>
+        <member name="F:WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers.NodeContainerType.String">
+            <summary>
+            Csv cell read as <see cref="T:System.String"/>
+            </summary>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase">
+            <summary>
+            Base class for configuring binding property to a csv column
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase.RecordConfiguration">
+            <summary>
+            Record configuration object
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase.ColumnName">
+            <summary>
+            Name of the column property is bind to
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase.ColumnIndex">
+            <summary>
+            Zero based index of the column property is bind to
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase.#ctor(WojciechMikołajewicz.CsvReader.RecordConfiguration)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="recordConfiguration">Record configuration object</param>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase.BindToColumnInternal(System.String)">
+            <summary>
+            Sets property bindings to a column by name
+            </summary>
+            <param name="columnName">Name of the column property will be bind to</param>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase.BindToColumnInternal(System.Int32)">
+            <summary>
+            Sets property bindings to a column by zero based column index
+            </summary>
+            <param name="columnIndex">Zero based column index property will be bind to</param>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase.IgnoreInternal">
+            <summary>
+            Clears property binding which means property will be ignored during deserialization because lack of binding to a csv column
+            </summary>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase`1">
+            <summary>
+            Base class for configuring binding property to a csv column
+            </summary>
+            <typeparam name="TRecord">Type of records read from csv</typeparam>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase`1.#ctor(WojciechMikołajewicz.CsvReader.RecordConfiguration)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="recordConfiguration">Record configuration object</param>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.PropertyConfigurationBase`2">
+            <summary>
+            Base class for configuring property
+            </summary>
+            <typeparam name="TRecord">Type of records read from csv</typeparam>
+            <typeparam name="TProperty">Type of record's property</typeparam>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.PropertyConfigurationBase`2.PropertySelector">
+            <summary>
+            Expression pointing to the record's property
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.PropertyConfigurationBase`2.#ctor(WojciechMikołajewicz.CsvReader.RecordConfiguration,System.Linq.Expressions.Expression{System.Func{`0,`1}})">
+            <summary>
+            Constructor
+            </summary>
+            <param name="recordConfiguration">Record configuration object</param>
+            <param name="selector">Expression pointing to the record's property</param>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.PropertyConfigurationBase`2.GetSetPropertyDelegate">
+            <summary>
+            Returns a delegate storing value to a record property pointed by <see cref="P:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.PropertyConfigurationBase`2.PropertySelector"/>
+            </summary>
+            <returns>Delegate that stores value to a record property pointed by <see cref="P:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.PropertyConfigurationBase`2.PropertySelector"/></returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.PropertyConfigurationBase`2.TryBuildDeserializer(WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers.CellDeserializerBase{`1}@)">
+            <summary>
+            Tries build cell deserializer to property's type
+            </summary>
+            <param name="cellDeserializer">Cell deserializer</param>
+            <returns>Did building succeed</returns>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.PropertyConfigurationFixedSerializer`3">
+            <summary>
+            Property serializer with fixed deserializer
+            </summary>
+            <typeparam name="TRecord">Type of records read from csv</typeparam>
+            <typeparam name="TProperty">Type of property</typeparam>
+            <typeparam name="TSerializerConfigurator">Type of deserializer configurator</typeparam>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.PropertyConfigurationFixedSerializer`3.ConfigureDeserializer(System.Action{`2})">
+            <summary>
+            Exposes ability of configuring deserializer
+            </summary>
+            <param name="configureSerializerMethod">Deserializer configuration delegate</param>
+            <returns>This configuration object for methods chaining</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.PropertyConfigurationFixedSerializer`3.BindToColumn(System.String)">
+            <summary>
+            Binds record's property to csv column by column name
+            </summary>
+            <param name="columnName">Csv column name</param>
+            <returns>This configuration object for methods chaining</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="columnName"/> is null</exception>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.PropertyConfigurationFixedSerializer`3.BindToColumn(System.Int32)">
+            <summary>
+            Binds record's property to zero based csv column number
+            </summary>
+            <param name="columnIndex">Zero based csv column number</param>
+            <returns>This configuration object for methods chaining</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="columnIndex"/> is less than zero</exception>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.PropertyConfigurationFixedSerializer`3.Ignore">
+            <summary>
+            Stets to ignore this record's property during csv deserialization. This property won't be set during deserialization.
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.PropertyConfigurationFixedSerializer`3.TryBuildDeserializer(WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers.CellDeserializerBase{`1}@)">
+            <summary>
+            Tries build cell deserializer to property's type
+            </summary>
+            <param name="cellDeserializer">Cell deserializer</param>
+            <returns>Did building succeed</returns>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.PropertyConfigurationSettableSerializer`2">
+            <summary>
+            Class for configuring property bindig to a csv column
+            </summary>
+            <typeparam name="TRecord">Type of records read from csv</typeparam>
+            <typeparam name="TProperty">Type of record's property</typeparam>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.PropertyConfigurationSettableSerializer`2.ConfigureDeserializer``1(System.Func{``0},System.Action{``0})">
+            <summary>
+            Constructor
+            </summary>
+            <typeparam name="TSerializerConfigurator">Type of deserializer configurator</typeparam>
+            <param name="createSerializer">Method providing instance of deserializer configurator</param>
+            <param name="configureSerializerMethod">Method for configuring deserializer configurator</param>
+            <returns></returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.PropertyConfigurationSettableSerializer`2.BindToColumn(System.String)">
+            <summary>
+            Sets property bindings to a column by name
+            </summary>
+            <param name="columnName">Name of the column property will be bind to</param>
+            <returns>This property binding configurator for methods chaining</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.PropertyConfigurationSettableSerializer`2.BindToColumn(System.Int32)">
+            <summary>
+            Sets property bindings to a column by zero based column index
+            </summary>
+            <param name="columnIndex">Zero based column index property will be bind to</param>
+            <returns>This property binding configurator for methods chaining</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.PropertyConfigurationSettableSerializer`2.Ignore">
+            <summary>
+            Clears property binding which means property will be ignored during deserialization because lack of binding to a csv column
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.PropertyConfigurationSettableSerializer`2.TryBuildDeserializer(WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers.CellDeserializerBase{`1}@)">
+            <summary>
+            Tries build cell deserializer to property's type
+            </summary>
+            <param name="cellDeserializer">Cell deserializer</param>
+            <returns></returns>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.ByteArrayEncoding">
+            <summary>
+            <see cref="T:System.Byte"/> <see cref="T:System.Array"/> encoding type
+            </summary>
+        </member>
+        <member name="F:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.ByteArrayEncoding.Base64">
+            <summary>
+            Base64 encoding
+            </summary>
+        </member>
+        <member name="F:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.ByteArrayEncoding.Hex">
+            <summary>
+            Hex encoding
+            </summary>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationBase`1">
+            <summary>
+            Base class for cell to <typeparamref name="TDeserialized"/> deserializer configurators
+            </summary>
+            <typeparam name="TDeserialized">Type deserializer deserializes to</typeparam>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationBase`1.RecordConfiguration">
+            <summary>
+            Record deserializing configuration object
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationBase`1.BindingConfiguration">
+            <summary>
+            Binding to column configuration object
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationBase`1.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="bindingConfiguration">Binding to column configuration object</param>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationBool">
+            <summary>
+            Deserializer configurator for <see cref="T:System.Boolean"/> type
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationBool.TrueString">
+            <summary>
+            Csv cell value that is interpreted as true value
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationBool.FalseString">
+            <summary>
+            Csv cell value that is interpreted as false value
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationBool.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="bindingConfiguration">Binding to column configuration object</param>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationBool.SetTrueString(System.String)">
+            <summary>
+            Sets string that will be interpreted as true value
+            </summary>
+            <param name="trueString">Csv cell value that will be interpreted as true value</param>
+            <returns>This configuration object for methods chaining</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="trueString"/> is null</exception>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationBool.SetFalseString(System.String)">
+            <summary>
+            Sets string that will be interpreted as false value
+            </summary>
+            <param name="falseString">Csv cell value that will be interpreted as false value</param>
+            <returns>This configuration object for methods chaining</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="falseString"/> is null</exception>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationBoolNullable">
+            <summary>
+            Deserializer configurator for nullable <see cref="T:System.Boolean"/> type
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationBoolNullable.TrueString">
+            <summary>
+            Csv cell value that is interpreted as true value
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationBoolNullable.FalseString">
+            <summary>
+            Csv cell value that is interpreted as false value
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationBoolNullable.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="bindingConfiguration">Binding to column configuration object</param>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationBoolNullable.SetTrueString(System.String)">
+            <summary>
+            Sets string that will be interpreted as true value
+            </summary>
+            <param name="trueString">Csv cell value that will be interpreted as true value</param>
+            <returns>This configuration object for methods chaining</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationBoolNullable.SetFalseString(System.String)">
+            <summary>
+            Sets string that will be interpreted as false value
+            </summary>
+            <param name="falseString">Csv cell value that will be interpreted as false value</param>
+            <returns>This configuration object for methods chaining</returns>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationByte">
+            <summary>
+            Deserializer configurator for <see cref="T:System.Byte"/> type
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationByte.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="bindingConfiguration">Binding to column configuration object</param>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationByteArray">
+            <summary>
+            Deserializer configurator for <see cref="T:System.Byte"/> <see cref="T:System.Array"/> type
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationByteArray.EmptyAsNull">
+            <summary>
+            Treat empty csv cell as null
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationByteArray.ByteArrayEncoding">
+            <summary>
+            Byte array encoding
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationByteArray.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="bindingConfiguration">Binding to column configuration object</param>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationByteArray.SetEmptyBehavior(System.Boolean)">
+            <summary>
+            Sets empty csv cell behavior
+            </summary>
+            <param name="emptyAsNull">True to return null for empty csv cell, false to return empty array</param>
+            <returns>This configuration object for methods chaining</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationByteArray.SetByteArrayEncoding(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.ByteArrayEncoding)">
+            <summary>
+            Sets <see cref="T:System.Byte"/> <see cref="T:System.Array"/> encoding
+            </summary>
+            <param name="byteArrayEncoding">Byte array encoding to set</param>
+            <returns>This configuration object for methods chaining</returns>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationByteNullable">
+            <summary>
+            Deserializer configurator for nullable <see cref="T:System.Byte"/> type
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationByteNullable.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="bindingConfiguration">Binding to column configuration object</param>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationCustom`1">
+            <summary>
+            Class for custom cell to <typeparamref name="TDeserialized"/> deserializer configurators
+            </summary>
+            <typeparam name="TDeserialized">>Type deserializer deserializes to</typeparam>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationCustom`1.CellDeserializer">
+            <summary>
+            Custom cell to <typeparamref name="TDeserialized"/> deserializer
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationCustom`1.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase,WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers.CellDeserializerBase{`0})">
+            <summary>
+            Constructor
+            </summary>
+            <param name="bindingConfiguration">Binding to column configuration object</param>
+            <param name="cellDeserializer">Custom cell to <typeparamref name="TDeserialized"/> deserializer</param>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationDateTime">
+            <summary>
+            Deserializer configurator for <see cref="T:System.DateTime"/> type
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationDateTime.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="bindingConfiguration">Binding to column configuration object</param>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationDateTimeNullable">
+            <summary>
+            Deserializer configurator for nullable <see cref="T:System.DateTime"/> type
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationDateTimeNullable.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="bindingConfiguration">Binding to column configuration object</param>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationDateTimeOffset">
+            <summary>
+            Deserializer configurator for <see cref="T:System.DateTimeOffset"/> type
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationDateTimeOffset.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="bindingConfiguration">Binding to column configuration object</param>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationDateTimeOffsetNullable">
+            <summary>
+            Deserializer configurator for nullable <see cref="T:System.DateTimeOffset"/> type
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationDateTimeOffsetNullable.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="bindingConfiguration">Binding to column configuration object</param>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationDateTimeStyleFormatProviderBase`2">
+            <summary>
+            Base deserializer configurator for date types
+            </summary>
+            <typeparam name="TDeserialized">Type deserializer deserializes to</typeparam>
+            <typeparam name="TDeserializerConfigurator">Type of deserializer configurator</typeparam>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationDateTimeStyleFormatProviderBase`2.DateTimeStyles">
+            <summary>
+            Date styles used during parsing cell value to a date
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationDateTimeStyleFormatProviderBase`2.FormatProvider">
+            <summary>
+            Format provider used during parsing cell value to target type
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationDateTimeStyleFormatProviderBase`2.Format">
+            <summary>
+            Format used during parsing cell value to target type. If null, standard formats are used.
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationDateTimeStyleFormatProviderBase`2.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="bindingConfiguration">Binding to column configuration object</param>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationDateTimeStyleFormatProviderBase`2.SetDateTimeStyles(System.Globalization.DateTimeStyles)">
+            <summary>
+            Sets date styles used during parsing cell value to a date
+            </summary>
+            <param name="dateTimeStyles">Desired date styles for parsing cell value to a date</param>
+            <returns>This configuration object for methods chaining</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationDateTimeStyleFormatProviderBase`2.SetFormatProvider(System.IFormatProvider)">
+            <summary>
+            Sets format provider used during parsing cell value to <typeparamref name="TDeserialized"/> type. If null, <see cref="P:WojciechMikołajewicz.CsvReader.RecordConfiguration.DefaultCulture"/> is used.
+            </summary>
+            <param name="formatProvider">Desired format provider for parsing cell value to <typeparamref name="TDeserialized"/> type</param>
+            <returns>This configuration object for methods chaining</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationDateTimeStyleFormatProviderBase`2.SetFormat(System.String)">
+            <summary>
+            Sets format used during parsing cell value to <typeparamref name="TDeserialized"/> type. If null, standard formats are used.
+            </summary>
+            <param name="format">Desired format for parsing cell value to <typeparamref name="TDeserialized"/> type</param>
+            <returns>This configuration object for methods chaining</returns>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationDateTimeStyleFormatProviderNullableBase`2">
+            <summary>
+            Base deserializer configurator for nullable date types
+            </summary>
+            <typeparam name="TDeserialized">Type deserializer deserializes to</typeparam>
+            <typeparam name="TDeserializerConfigurator">Type of deserializer configurator</typeparam>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationDateTimeStyleFormatProviderNullableBase`2.DateTimeStyles">
+            <summary>
+            Date styles used during parsing cell value to a date
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationDateTimeStyleFormatProviderNullableBase`2.FormatProvider">
+            <summary>
+            Format provider used during parsing cell value to target type
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationDateTimeStyleFormatProviderNullableBase`2.Format">
+            <summary>
+            Format used during parsing cell value to target type. If null, standard formats are used.
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationDateTimeStyleFormatProviderNullableBase`2.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="bindingConfiguration">Binding to column configuration object</param>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationDateTimeStyleFormatProviderNullableBase`2.SetDateTimeStyles(System.Globalization.DateTimeStyles)">
+            <summary>
+            Sets date styles used during parsing cell value to a date
+            </summary>
+            <param name="dateTimeStyles">Desired date styles for parsing cell value to a date</param>
+            <returns>This configuration object for methods chaining</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationDateTimeStyleFormatProviderNullableBase`2.SetFormatProvider(System.IFormatProvider)">
+            <summary>
+            Sets format provider used during parsing cell value to <typeparamref name="TDeserialized"/> type. If null, <see cref="P:WojciechMikołajewicz.CsvReader.RecordConfiguration.DefaultCulture"/> is used.
+            </summary>
+            <param name="formatProvider">Desired format provider for parsing cell value to <typeparamref name="TDeserialized"/> type</param>
+            <returns>This configuration object for methods chaining</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationDateTimeStyleFormatProviderNullableBase`2.SetFormat(System.String)">
+            <summary>
+            Sets format used during parsing cell value to <typeparamref name="TDeserialized"/> type. If null, standard formats are used.
+            </summary>
+            <param name="format">Desired format for parsing cell value to <typeparamref name="TDeserialized"/> type</param>
+            <returns>This configuration object for methods chaining</returns>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationDecimal">
+            <summary>
+            Deserializer configurator for <see cref="T:System.Decimal"/> type
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationDecimal.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="bindingConfiguration">Binding to column configuration object</param>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationDecimalNullable">
+            <summary>
+            Deserializer configurator for nullable <see cref="T:System.Decimal"/> type
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationDecimalNullable.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="bindingConfiguration">Binding to column configuration object</param>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationDouble">
+            <summary>
+            Deserializer configurator for <see cref="T:System.Double"/> type
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationDouble.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="bindingConfiguration">Binding to column configuration object</param>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationDoubleNullable">
+            <summary>
+            Deserializer configurator for nullable <see cref="T:System.Double"/> type
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationDoubleNullable.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="bindingConfiguration">Binding to column configuration object</param>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationEnum`1">
+            <summary>
+            Deserializer configurator for enum types
+            </summary>
+            <typeparam name="TEnum">Type of enum</typeparam>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationEnum`1.IgnoreCase">
+            <summary>
+            Is casing ignoring during enum parsing from text representation
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationEnum`1.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="bindingConfiguration">Binding to column configuration object</param>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationEnum`1.SetIgnoreCase(System.Boolean)">
+            <summary>
+            Sets ignore case behavior during enum parsing from text representation
+            </summary>
+            <param name="ignoreCase">True to ignore case, false otherwise</param>
+            <returns>This configuration object for methods chaining</returns>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationEnumNullable`1">
+            <summary>
+            Deserializer configurator for nullable enum types
+            </summary>
+            <typeparam name="TEnum">Type of enum</typeparam>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationEnumNullable`1.IgnoreCase">
+            <summary>
+            Is casing ignoring during enum parsing from text representation
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationEnumNullable`1.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="bindingConfiguration">Binding to column configuration object</param>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationEnumNullable`1.SetIgnoreCase(System.Boolean)">
+            <summary>
+            Sets ignore case behavior during enum parsing from text representation
+            </summary>
+            <param name="ignoreCase">True to ignore case, false otherwise</param>
+            <returns>This configuration object for methods chaining</returns>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationFloat">
+            <summary>
+            Deserializer configurator for <see cref="T:System.Single"/> type
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationFloat.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="bindingConfiguration">Binding to column configuration object</param>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationFloatNullable">
+            <summary>
+            Deserializer configurator for nullable <see cref="T:System.Single"/> type
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationFloatNullable.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="bindingConfiguration">Binding to column configuration object</param>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationFormatProviderBase`2">
+            <summary>
+            Base deserializer configurator for <see cref="T:System.IFormatProvider"/> aware types
+            </summary>
+            <typeparam name="TDeserialized">Type deserializer deserializes to</typeparam>
+            <typeparam name="TDeserializerConfigurator">Type of deserializer configurator</typeparam>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationFormatProviderBase`2.FormatProvider">
+            <summary>
+            Format provider used during parsing cell value to target type
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationFormatProviderBase`2.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="bindingConfiguration">Binding to column configuration object</param>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationFormatProviderBase`2.SetFormatProvider(System.IFormatProvider)">
+            <summary>
+            Sets format provider used during parsing cell value to <typeparamref name="TDeserialized"/> type. If null, <see cref="P:WojciechMikołajewicz.CsvReader.RecordConfiguration.DefaultCulture"/> is used.
+            </summary>
+            <param name="formatProvider">Desired format provider for parsing cell value to <typeparamref name="TDeserialized"/> type</param>
+            <returns>This configuration object for methods chaining</returns>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationFormatProviderNullableBase`2">
+            <summary>
+            Base deserializer configurator for nullable <see cref="T:System.IFormatProvider"/> aware types
+            </summary>
+            <typeparam name="TDeserialized">Type deserializer deserializes to</typeparam>
+            <typeparam name="TDeserializerConfigurator">Type of deserializer configurator</typeparam>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationFormatProviderNullableBase`2.FormatProvider">
+            <summary>
+            Format provider used during parsing cell value to target type
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationFormatProviderNullableBase`2.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="bindingConfiguration">Binding to column configuration object</param>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationFormatProviderNullableBase`2.SetFormatProvider(System.IFormatProvider)">
+            <summary>
+            Sets format provider used during parsing cell value to <typeparamref name="TDeserialized"/> type. If null, <see cref="P:WojciechMikołajewicz.CsvReader.RecordConfiguration.DefaultCulture"/> is used.
+            </summary>
+            <param name="formatProvider">Desired format provider for parsing cell value to <typeparamref name="TDeserialized"/> type</param>
+            <returns>This configuration object for methods chaining</returns>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationGuid">
+            <summary>
+            Deserializer configurator for <see cref="T:System.Guid"/> type
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationGuid.Format">
+            <summary>
+            Format used during parsing cell value to target type. If null, standard formats are used.
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationGuid.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="bindingConfiguration">Binding to column configuration object</param>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationGuid.SetFormat(System.String)">
+            <summary>
+            Sets format used during parsing cell value to <typeparamref name="TDeserialized"/> type. If null, standard formats are used.
+            </summary>
+            <param name="format">Desired format for parsing cell value to <typeparamref name="TDeserialized"/> type</param>
+            <returns>This configuration object for methods chaining</returns>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationGuidNullable">
+            <summary>
+            Deserializer configurator for nullable <see cref="T:System.Guid"/> type
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationGuidNullable.Format">
+            <summary>
+            Format used during parsing cell value to target type. If null, standard formats are used.
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationGuidNullable.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="bindingConfiguration">Binding to column configuration object</param>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationGuidNullable.SetFormat(System.String)">
+            <summary>
+            Sets format used during parsing cell value to <typeparamref name="TDeserialized"/> type. If null, standard formats are used.
+            </summary>
+            <param name="format">Desired format for parsing cell value to <typeparamref name="TDeserialized"/> type</param>
+            <returns>This configuration object for methods chaining</returns>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationInt">
+            <summary>
+            Deserializer configurator for <see cref="T:System.Int32"/> type
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationInt.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="bindingConfiguration">Binding to column configuration object</param>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationIntNullable">
+            <summary>
+            Deserializer configurator for nullable <see cref="T:System.Int32"/> type
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationIntNullable.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="bindingConfiguration">Binding to column configuration object</param>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationLong">
+            <summary>
+            Deserializer configurator for <see cref="T:System.Int64"/> type
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationLong.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="bindingConfiguration">Binding to column configuration object</param>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationLongNullable">
+            <summary>
+            Deserializer configurator for nullable <see cref="T:System.Int64"/> type
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationLongNullable.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="bindingConfiguration">Binding to column configuration object</param>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationNotNullableBase`2">
+            <summary>
+            Base class for cell to not nullable <typeparamref name="TDeserialized"/> deserializers
+            </summary>
+            <typeparam name="TDeserialized">Type deserializer deserializes to</typeparam>
+            <typeparam name="TDeserializerConfigurator">Type of deserializer configurator</typeparam>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationNotNullableBase`2.AllowEmpty">
+            <summary>
+            Is empty cell allowed
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationNotNullableBase`2.ValueForEmpty">
+            <summary>
+            <typeparamref name="TDeserialized"/> value for empty cell
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationNotNullableBase`2.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="bindingConfiguration">Binding to column configuration object</param>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationNotNullableBase`2.AllowEmptyValue(System.Boolean,`0)">
+            <summary>
+            Sets allowness of empty cell
+            </summary>
+            <param name="allowEmpty">Allow empty cells or not</param>
+            <param name="valueForEmpty">Empty cell equivalent value</param>
+            <returns>This configuration object for methods chaining</returns>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationNumberStyleFormatProviderBase`2">
+            <summary>
+            Base deserializer configurator for number types
+            </summary>
+            <typeparam name="TDeserialized">Type deserializer deserializes to</typeparam>
+            <typeparam name="TDeserializerConfigurator">Type of deserializer configurator</typeparam>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationNumberStyleFormatProviderBase`2.NumberStyles">
+            <summary>
+            Number styles used during parsing cell value to a number
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationNumberStyleFormatProviderBase`2.FormatProvider">
+            <summary>
+            Format provider used during parsing cell value to target type
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationNumberStyleFormatProviderBase`2.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase,WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.RecordConfigurationNumberStylesChooser)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="bindingConfiguration">Binding to column configuration object</param>
+            <param name="recordConfigurationNumberStylesChooser">Points out <see cref="T:WojciechMikołajewicz.CsvReader.RecordConfiguration"/> property of default number styles</param>
+            <exception cref="T:System.NotSupportedException">Invalid value of <paramref name="recordConfigurationNumberStylesChooser"/></exception>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationNumberStyleFormatProviderBase`2.SetNumberStyles(System.Globalization.NumberStyles)">
+            <summary>
+            Sets number styles used during parsing cell value to a number
+            </summary>
+            <param name="numberStyles">Desired number styles for parsing cell value to a number</param>
+            <returns>This configuration object for methods chaining</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationNumberStyleFormatProviderBase`2.SetFormatProvider(System.IFormatProvider)">
+            <summary>
+            Sets format provider used during parsing cell value to <typeparamref name="TDeserialized"/> type. If null, <see cref="P:WojciechMikołajewicz.CsvReader.RecordConfiguration.DefaultCulture"/> is used.
+            </summary>
+            <param name="formatProvider">Desired format provider for parsing cell value to <typeparamref name="TDeserialized"/> type</param>
+            <returns>This configuration object for methods chaining</returns>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationNumberStyleFormatProviderNullableBase`2">
+            <summary>
+            Base deserializer configurator for nullable number types
+            </summary>
+            <typeparam name="TDeserialized">Type deserializer deserializes to</typeparam>
+            <typeparam name="TDeserializerConfigurator">Type of deserializer configurator</typeparam>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationNumberStyleFormatProviderNullableBase`2.NumberStyles">
+            <summary>
+            Number styles used during parsing cell value to a number
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationNumberStyleFormatProviderNullableBase`2.FormatProvider">
+            <summary>
+            Format provider used during parsing cell value to target type
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationNumberStyleFormatProviderNullableBase`2.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase,WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.RecordConfigurationNumberStylesChooser)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="bindingConfiguration">Binding to column configuration object</param>
+            <param name="recordConfigurationNumberStylesChooser">Points out <see cref="T:WojciechMikołajewicz.CsvReader.RecordConfiguration"/> property of default number styles</param>
+            <exception cref="T:System.NotSupportedException">Invalid value of <paramref name="recordConfigurationNumberStylesChooser"/></exception>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationNumberStyleFormatProviderNullableBase`2.SetNumberStyles(System.Globalization.NumberStyles)">
+            <summary>
+            Sets number styles used during parsing cell value to a number
+            </summary>
+            <param name="numberStyles">Desired number styles for parsing cell value to a number</param>
+            <returns>This configuration object for methods chaining</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationNumberStyleFormatProviderNullableBase`2.SetFormatProvider(System.IFormatProvider)">
+            <summary>
+            Sets format provider used during parsing cell value to <typeparamref name="TDeserialized"/> type. If null, <see cref="P:WojciechMikołajewicz.CsvReader.RecordConfiguration.DefaultCulture"/> is used.
+            </summary>
+            <param name="formatProvider">Desired format provider for parsing cell value to <typeparamref name="TDeserialized"/> type</param>
+            <returns>This configuration object for methods chaining</returns>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationSByte">
+            <summary>
+            Deserializer configurator for <see cref="T:System.SByte"/> type
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationSByte.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="bindingConfiguration">Binding to column configuration object</param>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationSByteNullable">
+            <summary>
+            Deserializer configurator for nullable <see cref="T:System.SByte"/> type
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationSByteNullable.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="bindingConfiguration">Binding to column configuration object</param>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationShort">
+            <summary>
+            Deserializer configurator for <see cref="T:System.Int16"/> type
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationShort.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="bindingConfiguration">Binding to column configuration object</param>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationShortNullable">
+            <summary>
+            Deserializer configurator for nullable <see cref="T:System.Int16"/> type
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationShortNullable.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="bindingConfiguration">Binding to column configuration object</param>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationString">
+            <summary>
+            Deserializer configurator for <see cref="T:System.String"/> type
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationString.EmptyAsNull">
+            <summary>
+            Treat empty csv cell as null
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationString.DeduplicateStrings">
+            <summary>
+            Deduplicate strings with the same value
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationString.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="bindingConfiguration">Binding to column configuration object</param>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationString.SetEmptyStringBehavior(System.Boolean)">
+            <summary>
+            Sets empty csv cell behavior
+            </summary>
+            <param name="emptyAsNull">True to return null for empty csv cell, false to return empty string</param>
+            <returns>This configuration object for methods chaining</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationString.SetStringsDeduplicatingBehavior(System.Boolean)">
+            <summary>
+            Sets string deduplication behavior
+            </summary>
+            <param name="deduplicateStrings">True to deduplicate strings with the same value, false otherwise</param>
+            <returns>This configuration object for methods chaining</returns>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationTimeSpan">
+            <summary>
+            Deserializer configurator for <see cref="T:System.TimeSpan"/> type
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationTimeSpan.Format">
+            <summary>
+            Format used during parsing cell value to target type. If null, standard formats are used.
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationTimeSpan.TimeSpanStyles">
+            <summary>
+            <see cref="T:System.TimeSpan"/> styles used during parsing cell value to a date
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationTimeSpan.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="bindingConfiguration">Binding to column configuration object</param>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationTimeSpan.SetFormatAndStyles(System.String,System.Globalization.TimeSpanStyles)">
+            <summary>
+            Sets format and <see cref="T:System.TimeSpan"/> styles used during parsing cell value to <typeparamref name="TDeserialized"/> type
+            </summary>
+            <param name="format">Desired format for parsing cell value to <typeparamref name="TDeserialized"/> type</param>
+            <param name="timeSpanStyles"><see cref="T:System.TimeSpan"/> styles used during parsing cell value</param>
+            <returns>This configuration object for methods chaining</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="format"/> is null</exception>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationTimeSpan.ClearFormatAndStyles">
+            <summary>
+            Clears format and sets <see cref="T:System.TimeSpan"/> styles to <see cref="F:System.Globalization.TimeSpanStyles.None"/>. Those values will be used during parsing cell value to <typeparamref name="TDeserialized"/> type.
+            </summary>
+            <returns>This configuration object for methods chaining</returns>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationTimeSpanNullable">
+            <summary>
+            Deserializer configurator for nullable <see cref="T:System.TimeSpan"/> type
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationTimeSpanNullable.Format">
+            <summary>
+            Format used during parsing cell value to target type. If null, standard formats are used.
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationTimeSpanNullable.TimeSpanStyles">
+            <summary>
+            <see cref="T:System.TimeSpan"/> styles used during parsing cell value to a date
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationTimeSpanNullable.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="bindingConfiguration">Binding to column configuration object</param>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationTimeSpanNullable.SetFormatAndStyles(System.String,System.Globalization.TimeSpanStyles)">
+            <summary>
+            Sets format and <see cref="T:System.TimeSpan"/> styles used during parsing cell value to <typeparamref name="TDeserialized"/> type
+            </summary>
+            <param name="format">Desired format for parsing cell value to <typeparamref name="TDeserialized"/> type</param>
+            <param name="timeSpanStyles"><see cref="T:System.TimeSpan"/> styles used during parsing cell value</param>
+            <returns>This configuration object for methods chaining</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="format"/> is null</exception>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationTimeSpanNullable.ClearFormatAndStyles">
+            <summary>
+            Clears format and sets <see cref="T:System.TimeSpan"/> styles to <see cref="F:System.Globalization.TimeSpanStyles.None"/>. Those values will be used during parsing cell value to <typeparamref name="TDeserialized"/> type.
+            </summary>
+            <returns>This configuration object for methods chaining</returns>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationUInt">
+            <summary>
+            Deserializer configurator for <see cref="T:System.UInt32"/> type
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationUInt.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="bindingConfiguration">Binding to column configuration object</param>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationUIntNullable">
+            <summary>
+            Deserializer configurator for nullable <see cref="T:System.UInt32"/> type
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationUIntNullable.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="bindingConfiguration">Binding to column configuration object</param>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationULong">
+            <summary>
+            Deserializer configurator for <see cref="T:System.UInt64"/> type
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationULong.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="bindingConfiguration">Binding to column configuration object</param>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationULongNullable">
+            <summary>
+            Deserializer configurator for nullable <see cref="T:System.UInt64"/> type
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationULongNullable.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="bindingConfiguration">Binding to column configuration object</param>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationUShort">
+            <summary>
+            Deserializer configurator for <see cref="T:System.UInt16"/> type
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationUShort.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="bindingConfiguration">Binding to column configuration object</param>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationUShortNullable">
+            <summary>
+            Deserializer configurator for nullable <see cref="T:System.UInt16"/> type
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationUShortNullable.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="bindingConfiguration">Binding to column configuration object</param>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.RecordConfigurationNumberStylesChooser">
+            <summary>
+            Choosing property of <see cref="T:WojciechMikołajewicz.CsvReader.RecordConfiguration"/> for default <see cref="T:System.Globalization.NumberStyles"/>
+            </summary>
+        </member>
+        <member name="F:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.RecordConfigurationNumberStylesChooser.IntegerNumberStyles">
+            <summary>
+            Default integer number styles property
+            </summary>
+        </member>
+        <member name="F:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.RecordConfigurationNumberStylesChooser.FloatingPointNumberStyles">
+            <summary>
+            Default floating point number styles property
+            </summary>
+        </member>
+        <member name="F:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.RecordConfigurationNumberStylesChooser.DecimalNumberStyles">
+            <summary>
+            Default <see cref="T:System.Decimal"/> number styles property
+            </summary>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer`1">
+            <summary>
+            Csv deserializer to <typeparamref name="TRecord"/> objects
+            </summary>
+            <typeparam name="TRecord">Type of csv record (row)</typeparam>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializer`1.HasHeaderRow">
+            <summary>
+            Does csv contain header row
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializer`1.HeaderRowColumnNamesComparer">
+            <summary>
+            Comparer of column names in header row
+            </summary>
+        </member>
+        <member name="F:WojciechMikołajewicz.CsvReader.CsvDeserializer`1.CheckColumnsCountConsistency">
+            <summary>
+            Check if columns count is equal in every row
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializer`1.CsvReader">
+            <summary>
+            Low level csv reader
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer`1.#ctor(System.IO.TextReader,WojciechMikołajewicz.CsvReader.CsvDeserializerOptions,WojciechMikołajewicz.CsvReader.ICsvRecordTypeConfiguration{`0})">
+            <summary>
+            Constructor
+            </summary>
+            <param name="textReader">Text reader</param>
+            <param name="options">Options</param>
+            <param name="recordConfiguration"><typeparamref name="TRecord"/> type configuration</param>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer`1.#ctor(WojciechMikołajewicz.CsvReader.CsvReader,WojciechMikołajewicz.CsvReader.CsvDeserializerOptions,WojciechMikołajewicz.CsvReader.ICsvRecordTypeConfiguration{`0})">
+            <summary>
+            Constructor
+            </summary>
+            <param name="csvReader">Low level csv reader</param>
+            <param name="options">Options</param>
+            <param name="recordConfiguration"><typeparamref name="TRecord"/> type configuration</param>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer`1.Read">
+            <summary>
+            Enumerates records from csv
+            </summary>
+            <returns>Enumerable of <typeparamref name="TRecord"/></returns>
+            <exception cref="T:System.Runtime.Serialization.SerializationException">
+            <para>Csv not well formated.</para>
+            <list type="bullet">
+            <item>Unexpected character after escaped cell</item>
+            <item>Unexpected end of stream inside escaped cell</item>
+            <item>Inconsistent number of columns in rows when <see cref="P:WojciechMikołajewicz.CsvReader.CsvDeserializerOptions.CheckColumnsCountConsistency"/> set to true</item>
+            </list>
+            </exception>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer`1.Dispose">
+            <summary>
+            Disposes <see cref="T:WojciechMikołajewicz.CsvReader.CsvDeserializer`1"/>
+            </summary>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializerOptions">
+            <summary>
+            <see cref="T:WojciechMikołajewicz.CsvReader.CsvDeserializer`1"/> options
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializerOptions.HasHeaderRow">
+            <summary>
+            Does csv contain header row. Default is true
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializerOptions.HeaderRowColumnNamesComparer">
+            <summary>
+            Comparer of column names in header row. Default is <see cref="P:System.StringComparer.OrdinalIgnoreCase"/>
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializerOptions.DeserializationCulture">
+            <summary>
+            Culture used for parsing values from csv file. Default is <see cref="P:System.Globalization.CultureInfo.InvariantCulture"/>
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializerOptions.EmptyAsNull">
+            <summary>
+            If empty strings should be converted to nulls. Default is true
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializerOptions.DeduplicateStrings">
+            <summary>
+            If strings with the same value should be deduplicated. Default is true
+            </summary>
+            <remarks>
+            Set it to true if you want to store all records in memory at once - it will reduce memory consumption.
+            Set it to false if you want to read, process and forget records one by one.
+            </remarks>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializerOptions.CheckColumnsCountConsistency">
+            <summary>
+            Check if columns count is equal in every row. Default is true
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializerOptions.#ctor">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.Helpers.StringDeduplicator">
+            <summary>
+            Class providing string deduplication capability
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.Helpers.StringDeduplicator.Create">
+            <summary>
+            Creates string deduplicator
+            </summary>
+            <returns>String deduplicator</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.Helpers.StringDeduplicator.Deduplicate(System.String)">
+            <summary>
+            Deduplicates string
+            </summary>
+            <param name="value">String to deduplicate</param>
+            <returns>String instance that is already in string deduplicator container or <paramref name="value"/> if it wasn't exist yiet in the container</returns>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.ICsvRecordTypeConfiguration`1">
+            <summary>
+            Configures record deserialization
+            </summary>
+            <typeparam name="TRecord">Type of record</typeparam>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.ICsvRecordTypeConfiguration`1.Configure(WojciechMikołajewicz.CsvReader.RecordConfiguration{`0})">
+            <summary>
+            Configures record deserialization
+            </summary>
+            <param name="recordConfiguration">Record configuration builder</param>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.RecordConfiguration">
+            <summary>
+            Base class for configuring csv deserialization
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.RecordConfiguration.HasHeaderRow">
+            <summary>
+            Has csv file header row
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.RecordConfiguration.DefaultCulture">
+            <summary>
+            Default <see cref="T:System.IFormatProvider"/> for parsing types
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.RecordConfiguration.DefaultEmptyAsNull">
+            <summary>
+            Treat empty csv cells as nulls
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.RecordConfiguration.DefaultDeduplicateStrings">
+            <summary>
+            Enables string deduplication feature. Equal string values are deduplicated to single string instance.
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.RecordConfiguration.DefaultByteArrayEncoding">
+            <summary>
+            Default byte array encoding
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.RecordConfiguration.DefaultEnumsIgnoreCase">
+            <summary>
+            Ignore case while parsing enums from text representations
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.RecordConfiguration.DefaultIntegerNumberStyles">
+            <summary>
+            Default number styles for integer numbers
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.RecordConfiguration.DefaultFloationgPointNumberStyles">
+            <summary>
+            Default number styles for floating point numbers
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.RecordConfiguration.DefaultDecimalNumberStyles">
+            <summary>
+            Default number styles for <see cref="T:System.Decimal"/> numbers
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.RecordConfiguration.DefaultDateStyles">
+            <summary>
+            Default date styles
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.RecordConfiguration.DefaultBoolTrueString">
+            <summary>
+            Default bool true string
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.RecordConfiguration.DefaultBoolFalseString">
+            <summary>
+            Default bool false string
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.RecordConfiguration.StringDeduplicator">
+            <summary>
+            String deduplicator
+            </summary>
+        </member>
+        <member name="F:WojciechMikołajewicz.CsvReader.RecordConfiguration.Building">
+            <summary>
+            Is configuration object in building phase
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializerOptions,WojciechMikołajewicz.CsvReader.Helpers.StringDeduplicator)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="options">Deserializer options</param>
+            <param name="stringDeduplicator">String deduplicator</param>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration.CheckBuildingState">
+            <summary>
+            Method throws exception when configuration object is in building state
+            </summary>
+            <exception cref="T:System.InvalidOperationException">Object is in building state</exception>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.RecordConfiguration`1">
+            <summary>
+            Class for configuring csv deserialization to <typeparamref name="TRecord"/> type
+            </summary>
+            <typeparam name="TRecord">Type of records read from csv</typeparam>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.SetDefaultCulture(System.IFormatProvider)">
+            <summary>
+            Sets default <see cref="T:System.IFormatProvider"/> for parsing types
+            </summary>
+            <param name="defaultCulture"><see cref="T:System.IFormatProvider"/> for parsing types</param>
+            <returns>This configuration object for methods chaining</returns>
+            <exception cref="T:System.InvalidOperationException">Object is in building state, configuration cannot be changed anymore</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="defaultCulture"/> is null</exception>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.SetDefaultEmptyBehavior(System.Boolean)">
+            <summary>
+            Sets default empty csv cell behavior
+            </summary>
+            <param name="emptyAsNull">True to return nulls for empty csv cells, false to return empty objects</param>
+            <returns>This configuration object for methods chaining</returns>
+            <exception cref="T:System.InvalidOperationException">Object is in building state, configuration cannot be changed anymore</exception>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.SetDefaultStringsDeduplicationgBehavior(System.Boolean)">
+            <summary>
+            Sets default duplicated strings behavior
+            </summary>
+            <param name="deduplicateStrings">True to turn on equal strings deduplication, false to turn it off</param>
+            <returns>This configuration object for methods chaining</returns>
+            <exception cref="T:System.InvalidOperationException">Object is in building state, configuration cannot be changed anymore</exception>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.SetDefaultByteArrayEncoding(WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.ByteArrayEncoding)">
+            <summary>
+            Sets default byte arrays encoding
+            </summary>
+            <param name="byteArrayEncoding">Default byte arrays encoding to set</param>
+            <returns>This configuration object for methods chaining</returns>
+            <exception cref="T:System.InvalidOperationException">Object is in building state, configuration cannot be changed anymore</exception>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.SetDefaultEnumsIgnoreCaseBehavior(System.Boolean)">
+            <summary>
+            Sets default case sensitiveness while parsing enums from text representations
+            </summary>
+            <param name="enumsIgnoreCase">True to ignore case while parsing enums, false for exact matching</param>
+            <returns>This configuration object for methods chaining</returns>
+            <exception cref="T:System.InvalidOperationException">Object is in building state, configuration cannot be changed anymore</exception>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.SetDefaultIntegerNumberStyles(System.Globalization.NumberStyles)">
+            <summary>
+            Sets default number styles for integer numbers
+            </summary>
+            <param name="defaultNumberStyles">Number styles to set as default</param>
+            <returns>This configuration object for methods chaining</returns>
+            <exception cref="T:System.InvalidOperationException">Object is in building state, configuration cannot be changed anymore</exception>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.SetDefaultFloationgPointNumberStyles(System.Globalization.NumberStyles)">
+            <summary>
+            Sets default number styles for floating point numbers
+            </summary>
+            <param name="defaultNumberStyles">Number styles to set as default</param>
+            <returns>This configuration object for methods chaining</returns>
+            <exception cref="T:System.InvalidOperationException">Object is in building state, configuration cannot be changed anymore</exception>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.SetDefaultDecimalNumberStyles(System.Globalization.NumberStyles)">
+            <summary>
+            Sets default number styles for <see cref="T:System.Decimal"/> numbers
+            </summary>
+            <param name="defaultNumberStyles">Number styles to set as default</param>
+            <returns>This configuration object for methods chaining</returns>
+            <exception cref="T:System.InvalidOperationException">Object is in building state, configuration cannot be changed anymore</exception>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.SetDefaultDecimalNumberStyles(System.Globalization.DateTimeStyles)">
+            <summary>
+            Sets default date styles
+            </summary>
+            <param name="defaultDateStyles">Date styles to set as default</param>
+            <returns>This configuration object for methods chaining</returns>
+            <exception cref="T:System.InvalidOperationException">Object is in building state, configuration cannot be changed anymore</exception>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.SetDefaultBoolTrueString(System.String)">
+            <summary>
+            Sets default bool true string
+            </summary>
+            <param name="defaultTrueString">String to set as default true string</param>
+            <returns>This configuration object for methods chaining</returns>
+            <exception cref="T:System.InvalidOperationException">Object is in building state, configuration cannot be changed anymore</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="defaultTrueString"/> is null</exception>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.SetDefaultBoolFalseString(System.String)">
+            <summary>
+            Sets default bool false string
+            </summary>
+            <param name="defaultFalseString">String to set as default false string</param>
+            <returns>This configuration object for methods chaining</returns>
+            <exception cref="T:System.InvalidOperationException">Object is in building state, configuration cannot be changed anymore</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="defaultFalseString"/> is null</exception>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.GetSelectorString``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
+            <summary>
+            Gets string represenation of <paramref name="selector"/> expression with normalized name of the expression parameter.
+            </summary>
+            <typeparam name="TProperty">Type of selected property</typeparam>
+            <param name="selector">Selecting expression</param>
+            <returns>String representation of <paramref name="selector"/></returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.ClearAllBindings">
+            <summary>
+            Clears all binding configurations. After call this method no record's property would be deserialized. Bindings have to be set manually for record's properties to be deserialized.
+            </summary>
+            <returns>This configuration object for methods chaining</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.Property(System.Linq.Expressions.Expression{System.Func{`0,System.String}})">
+            <summary>
+            Enables configuring of selected record's property
+            </summary>
+            <param name="selector">Record's property selector</param>
+            <returns>Configuration object for selected property</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.Property(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
+            <summary>
+            Enables configuring of selected record's property
+            </summary>
+            <param name="selector">Record's property selector</param>
+            <returns>Configuration object for selected property</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.Property(System.Linq.Expressions.Expression{System.Func{`0,System.Byte}})">
+            <summary>
+            Enables configuring of selected record's property
+            </summary>
+            <param name="selector">Record's property selector</param>
+            <returns>Configuration object for selected property</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.Property(System.Linq.Expressions.Expression{System.Func{`0,System.SByte}})">
+            <summary>
+            Enables configuring of selected record's property
+            </summary>
+            <param name="selector">Record's property selector</param>
+            <returns>Configuration object for selected property</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.Property(System.Linq.Expressions.Expression{System.Func{`0,System.Int16}})">
+            <summary>
+            Enables configuring of selected record's property
+            </summary>
+            <param name="selector">Record's property selector</param>
+            <returns>Configuration object for selected property</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.Property(System.Linq.Expressions.Expression{System.Func{`0,System.UInt16}})">
+            <summary>
+            Enables configuring of selected record's property
+            </summary>
+            <param name="selector">Record's property selector</param>
+            <returns>Configuration object for selected property</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.Property(System.Linq.Expressions.Expression{System.Func{`0,System.Int32}})">
+            <summary>
+            Enables configuring of selected record's property
+            </summary>
+            <param name="selector">Record's property selector</param>
+            <returns>Configuration object for selected property</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.Property(System.Linq.Expressions.Expression{System.Func{`0,System.UInt32}})">
+            <summary>
+            Enables configuring of selected record's property
+            </summary>
+            <param name="selector">Record's property selector</param>
+            <returns>Configuration object for selected property</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.Property(System.Linq.Expressions.Expression{System.Func{`0,System.Int64}})">
+            <summary>
+            Enables configuring of selected record's property
+            </summary>
+            <param name="selector">Record's property selector</param>
+            <returns>Configuration object for selected property</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.Property(System.Linq.Expressions.Expression{System.Func{`0,System.UInt64}})">
+            <summary>
+            Enables configuring of selected record's property
+            </summary>
+            <param name="selector">Record's property selector</param>
+            <returns>Configuration object for selected property</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.Property(System.Linq.Expressions.Expression{System.Func{`0,System.Single}})">
+            <summary>
+            Enables configuring of selected record's property
+            </summary>
+            <param name="selector">Record's property selector</param>
+            <returns>Configuration object for selected property</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.Property(System.Linq.Expressions.Expression{System.Func{`0,System.Double}})">
+            <summary>
+            Enables configuring of selected record's property
+            </summary>
+            <param name="selector">Record's property selector</param>
+            <returns>Configuration object for selected property</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.Property(System.Linq.Expressions.Expression{System.Func{`0,System.Decimal}})">
+            <summary>
+            Enables configuring of selected record's property
+            </summary>
+            <param name="selector">Record's property selector</param>
+            <returns>Configuration object for selected property</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.Property(System.Linq.Expressions.Expression{System.Func{`0,System.DateTime}})">
+            <summary>
+            Enables configuring of selected record's property
+            </summary>
+            <param name="selector">Record's property selector</param>
+            <returns>Configuration object for selected property</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.Property(System.Linq.Expressions.Expression{System.Func{`0,System.TimeSpan}})">
+            <summary>
+            Enables configuring of selected record's property
+            </summary>
+            <param name="selector">Record's property selector</param>
+            <returns>Configuration object for selected property</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.Property(System.Linq.Expressions.Expression{System.Func{`0,System.DateTimeOffset}})">
+            <summary>
+            Enables configuring of selected record's property
+            </summary>
+            <param name="selector">Record's property selector</param>
+            <returns>Configuration object for selected property</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.Property(System.Linq.Expressions.Expression{System.Func{`0,System.Guid}})">
+            <summary>
+            Enables configuring of selected record's property
+            </summary>
+            <param name="selector">Record's property selector</param>
+            <returns>Configuration object for selected property</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.Property(System.Linq.Expressions.Expression{System.Func{`0,System.Byte[]}})">
+            <summary>
+            Enables configuring of selected record's property
+            </summary>
+            <param name="selector">Record's property selector</param>
+            <returns>Configuration object for selected property</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.Property(System.Linq.Expressions.Expression{System.Func{`0,System.Nullable{System.Boolean}}})">
+            <summary>
+            Enables configuring of selected record's property
+            </summary>
+            <param name="selector">Record's property selector</param>
+            <returns>Configuration object for selected property</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.Property(System.Linq.Expressions.Expression{System.Func{`0,System.Nullable{System.Byte}}})">
+            <summary>
+            Enables configuring of selected record's property
+            </summary>
+            <param name="selector">Record's property selector</param>
+            <returns>Configuration object for selected property</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.Property(System.Linq.Expressions.Expression{System.Func{`0,System.Nullable{System.SByte}}})">
+            <summary>
+            Enables configuring of selected record's property
+            </summary>
+            <param name="selector">Record's property selector</param>
+            <returns>Configuration object for selected property</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.Property(System.Linq.Expressions.Expression{System.Func{`0,System.Nullable{System.Int16}}})">
+            <summary>
+            Enables configuring of selected record's property
+            </summary>
+            <param name="selector">Record's property selector</param>
+            <returns>Configuration object for selected property</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.Property(System.Linq.Expressions.Expression{System.Func{`0,System.Nullable{System.UInt16}}})">
+            <summary>
+            Enables configuring of selected record's property
+            </summary>
+            <param name="selector">Record's property selector</param>
+            <returns>Configuration object for selected property</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.Property(System.Linq.Expressions.Expression{System.Func{`0,System.Nullable{System.Int32}}})">
+            <summary>
+            Enables configuring of selected record's property
+            </summary>
+            <param name="selector">Record's property selector</param>
+            <returns>Configuration object for selected property</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.Property(System.Linq.Expressions.Expression{System.Func{`0,System.Nullable{System.UInt32}}})">
+            <summary>
+            Enables configuring of selected record's property
+            </summary>
+            <param name="selector">Record's property selector</param>
+            <returns>Configuration object for selected property</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.Property(System.Linq.Expressions.Expression{System.Func{`0,System.Nullable{System.Int64}}})">
+            <summary>
+            Enables configuring of selected record's property
+            </summary>
+            <param name="selector">Record's property selector</param>
+            <returns>Configuration object for selected property</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.Property(System.Linq.Expressions.Expression{System.Func{`0,System.Nullable{System.UInt64}}})">
+            <summary>
+            Enables configuring of selected record's property
+            </summary>
+            <param name="selector">Record's property selector</param>
+            <returns>Configuration object for selected property</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.Property(System.Linq.Expressions.Expression{System.Func{`0,System.Nullable{System.Single}}})">
+            <summary>
+            Enables configuring of selected record's property
+            </summary>
+            <param name="selector">Record's property selector</param>
+            <returns>Configuration object for selected property</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.Property(System.Linq.Expressions.Expression{System.Func{`0,System.Nullable{System.Double}}})">
+            <summary>
+            Enables configuring of selected record's property
+            </summary>
+            <param name="selector">Record's property selector</param>
+            <returns>Configuration object for selected property</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.Property(System.Linq.Expressions.Expression{System.Func{`0,System.Nullable{System.Decimal}}})">
+            <summary>
+            Enables configuring of selected record's property
+            </summary>
+            <param name="selector">Record's property selector</param>
+            <returns>Configuration object for selected property</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.Property(System.Linq.Expressions.Expression{System.Func{`0,System.Nullable{System.DateTime}}})">
+            <summary>
+            Enables configuring of selected record's property
+            </summary>
+            <param name="selector">Record's property selector</param>
+            <returns>Configuration object for selected property</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.Property(System.Linq.Expressions.Expression{System.Func{`0,System.Nullable{System.TimeSpan}}})">
+            <summary>
+            Enables configuring of selected record's property
+            </summary>
+            <param name="selector">Record's property selector</param>
+            <returns>Configuration object for selected property</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.Property(System.Linq.Expressions.Expression{System.Func{`0,System.Nullable{System.DateTimeOffset}}})">
+            <summary>
+            Enables configuring of selected record's property
+            </summary>
+            <param name="selector">Record's property selector</param>
+            <returns>Configuration object for selected property</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.Property(System.Linq.Expressions.Expression{System.Func{`0,System.Nullable{System.Guid}}})">
+            <summary>
+            Enables configuring of selected record's property
+            </summary>
+            <param name="selector">Record's property selector</param>
+            <returns>Configuration object for selected property</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.Property``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
+            <summary>
+            Enables configuring of selected record's property
+            </summary>
+            <typeparam name="TProperty">Type of record's property</typeparam>
+            <param name="selector">Record's property selector</param>
+            <returns>Configuration object for selected property</returns>
+            <exception cref="T:System.InvalidOperationException">Serializer for selected property is not defined. Use one of PropertyWithCustomDeserializer method to cereate one</exception>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.PropertyEnum``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
+            <summary>
+            Enables configuring of selected record's enum property
+            </summary>
+            <typeparam name="TEnum">Type of enum</typeparam>
+            <param name="selector">Record's enum property selector</param>
+            <returns>Configuration object for selected enum property</returns>
+            <exception cref="T:System.ArgumentException"><typeparamref name="TEnum"/> is not enum type</exception>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.PropertyEnum``1(System.Linq.Expressions.Expression{System.Func{`0,System.Nullable{``0}}})">
+            <summary>
+            Enables configuring of selected record's enum property
+            </summary>
+            <typeparam name="TEnum">Type of enum</typeparam>
+            <param name="selector">Record's enum property selector</param>
+            <returns>Configuration object for selected enum property</returns>
+            <exception cref="T:System.ArgumentException"><typeparamref name="TEnum"/> is not enum type</exception>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.PropertyWithCustomDeserializer``2(System.Linq.Expressions.Expression{System.Func{`0,``0}},System.Func{WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.PropertyConfigurationFixedSerializer{`0,``0,``1},``1})">
+            <summary>
+            Enables configuring of selected record's property with custom deserializer configurator
+            </summary>
+            <typeparam name="TProperty">Type of record's property</typeparam>
+            <typeparam name="TDeserializerConfigurator">Type of deserializer configuration object</typeparam>
+            <param name="selector">Record's property selector</param>
+            <param name="createCustomDeserializerConfiguratorMethod">Delegate for creating custom deserializer configuration object</param>
+            <returns>Configuration object for selected property</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.PropertyWithCustomDeserializer``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers.CellDeserializerFromMemorySequenceBase{``0})">
+            <summary>
+            Enables configuring of selected record's property with custom deserializer
+            </summary>
+            <typeparam name="TProperty">Type of record's property</typeparam>
+            <param name="selector">Record's property selector</param>
+            <param name="deserializer">Deserialization object, from <see cref="T:WojciechMikołajewicz.CsvReader.CsvNodes.MemorySequenceSpan"/> to <typeparamref name="TProperty"/> type</param>
+            <returns>Configuration object for selected property</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.PropertyWithCustomDeserializer``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers.CellDeserializerFromMemoryBase{``0})">
+            <summary>
+            Enables configuring of selected record's property with custom deserializer
+            </summary>
+            <typeparam name="TProperty">Type of record's property</typeparam>
+            <param name="selector">Record's property selector</param>
+            <param name="deserializer">Deserialization object, from <see cref="T:System.ReadOnlyMemory`1"/> to <typeparamref name="TProperty"/> type</param>
+            <returns>Configuration object for selected property</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.PropertyWithCustomDeserializer``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers.CellDeserializerFromStringBase{``0})">
+            <summary>
+            Enables configuring of selected record's property with custom deserializer
+            </summary>
+            <typeparam name="TProperty">Type of record's property</typeparam>
+            <param name="selector">Record's property selector</param>
+            <param name="deserializer">Deserialization object, from <see cref="T:System.String"/> to <typeparamref name="TProperty"/> type</param>
+            <returns>Configuration object for selected property</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.PropertyWithCustomDeserializer``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},System.Func{WojciechMikołajewicz.CsvReader.CsvNodes.MemorySequenceSpan,``0})">
+            <summary>
+            Enables configuring of selected record's property with custom deserialization method
+            </summary>
+            <typeparam name="TProperty">Type of record's property</typeparam>
+            <param name="selector">Record's property selector</param>
+            <param name="deserializeMethod">Deserialization method, from <see cref="T:WojciechMikołajewicz.CsvReader.CsvNodes.MemorySequenceSpan"/> to <typeparamref name="TProperty"/> type</param>
+            <returns>Configuration object for selected property</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.PropertyWithCustomDeserializer``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},System.Func{System.ReadOnlyMemory{System.Char},``0})">
+            <summary>
+            Enables configuring of selected record's property with custom deserialization method
+            </summary>
+            <typeparam name="TProperty">Type of record's property</typeparam>
+            <param name="selector">Record's property selector</param>
+            <param name="deserializeMethod">Deserialization method, from <see cref="T:System.ReadOnlyMemory`1"/> to <typeparamref name="TProperty"/> type</param>
+            <returns>Configuration object for selected property</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.PropertyWithCustomDeserializer``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},System.Func{System.String,``0})">
+            <summary>
+            Enables configuring of selected record's property with custom deserialization method
+            </summary>
+            <typeparam name="TProperty">Type of record's property</typeparam>
+            <param name="selector">Record's property selector</param>
+            <param name="deserializeMethod">Deserialization method, from <see cref="T:System.String"/> to <typeparamref name="TProperty"/> type</param>
+            <returns>Configuration object for selected property</returns>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvNodes.MemoryNode">
+            <summary>
+            Csv node with data as <see cref="T:System.ReadOnlyMemory`1"/>
+            </summary>
+        </member>
+        <member name="F:WojciechMikołajewicz.CsvReader.CsvNodes.MemoryNode.Data">
+            <summary>
+            Cell value
+            </summary>
+        </member>
+        <member name="F:WojciechMikołajewicz.CsvReader.CsvNodes.MemoryNode.NodeType">
+            <summary>
+            Node type
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvNodes.MemoryNode.#ctor(System.ReadOnlyMemory{System.Char}@,WojciechMikołajewicz.CsvReader.CsvNodes.NodeType)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="data">Cell value</param>
+            <param name="nodeType">Node type</param>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvNodes.MemorySequenceNode">
+            <summary>
+            Csv node with data as <see cref="T:WojciechMikołajewicz.CsvReader.CsvNodes.MemorySequenceSpan"/>
+            </summary>
+        </member>
+        <member name="F:WojciechMikołajewicz.CsvReader.CsvNodes.MemorySequenceNode.MemorySequence">
+            <summary>
+            Cell value
+            </summary>
+        </member>
+        <member name="F:WojciechMikołajewicz.CsvReader.CsvNodes.MemorySequenceNode.NodeType">
+            <summary>
+            Node type
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvNodes.MemorySequenceNode.#ctor(WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequencePosition{System.Char}@,WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequencePosition{System.Char}@,System.Collections.Generic.IReadOnlyList{WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequencePosition{System.Char}},WojciechMikołajewicz.CsvReader.CsvNodes.NodeType)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="startPosition">Start position</param>
+            <param name="endPosition">End position</param>
+            <param name="skipCharPositions">Positions of chars to skip</param>
+            <param name="nodeType">Node type</param>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvNodes.MemorySequenceNode.#ctor(WojciechMikołajewicz.CsvReader.CsvNodes.MemorySequenceSpan@,WojciechMikołajewicz.CsvReader.CsvNodes.NodeType)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="memorySequence">Cell value</param>
+            <param name="nodeType">Node type</param>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvNodes.MemorySequenceSpan">
+            <summary>
+            Span of <see cref="T:System.Buffers.ReadOnlySequenceSegment`1"/> containing csv cell data
+            </summary>
+        </member>
+        <member name="F:WojciechMikołajewicz.CsvReader.CsvNodes.MemorySequenceSpan.StartPosition">
+            <summary>
+            Start position
+            </summary>
+        </member>
+        <member name="F:WojciechMikołajewicz.CsvReader.CsvNodes.MemorySequenceSpan.EndPosition">
+            <summary>
+            End position
+            </summary>
+        </member>
+        <member name="F:WojciechMikołajewicz.CsvReader.CsvNodes.MemorySequenceSpan.SkipCharPositions">
+            <summary>
+            Positions of chars to skip
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvNodes.MemorySequenceSpan.CharsCount">
+            <summary>
+            Number of valid chars (without skiped chars) contained in this <see cref="T:WojciechMikołajewicz.CsvReader.CsvNodes.MemorySequenceSpan"/>
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvNodes.MemorySequenceSpan.#ctor(WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequencePosition{System.Char}@,WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequencePosition{System.Char}@,System.Collections.Generic.IReadOnlyList{WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequencePosition{System.Char}})">
+            <summary>
+            Constructor
+            </summary>
+            <param name="startPosition">Start position</param>
+            <param name="endPosition">End position</param>
+            <param name="skipCharPositions">Positions of chars to skip</param>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvNodes.MemorySequenceSpan.CopyDataTo(System.Span{System.Char})">
+            <summary>
+            Copies csv cell data contained in this <see cref="T:WojciechMikołajewicz.CsvReader.CsvNodes.MemorySequenceSpan"/> to continues memory region throwing out skip characters
+            </summary>
+            <param name="destination">Destination to copy cell data contained in this <see cref="T:WojciechMikołajewicz.CsvReader.CsvNodes.MemorySequenceSpan"/> to</param>
+            <returns>Number of chars copied</returns>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvNodes.NodeType">
+            <summary>
+            Node type
+            </summary>
+        </member>
+        <member name="F:WojciechMikołajewicz.CsvReader.CsvNodes.NodeType.Cell">
+            <summary>
+            Cell
+            </summary>
+        </member>
+        <member name="F:WojciechMikołajewicz.CsvReader.CsvNodes.NodeType.NewLine">
+            <summary>
+            New line
+            </summary>
+        </member>
+        <member name="F:WojciechMikołajewicz.CsvReader.CsvNodes.NodeType.EndOfStream">
+            <summary>
+            End of stream
+            </summary>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvNodes.StringNode">
+            <summary>
+            Csv node with data as <see cref="T:System.String"/>
+            </summary>
+        </member>
+        <member name="F:WojciechMikołajewicz.CsvReader.CsvNodes.StringNode.Data">
+            <summary>
+            Cell value
+            </summary>
+        </member>
+        <member name="F:WojciechMikołajewicz.CsvReader.CsvNodes.StringNode.NodeType">
+            <summary>
+            Node type
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvNodes.StringNode.#ctor(System.String,WojciechMikołajewicz.CsvReader.CsvNodes.NodeType)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="data">Cell value</param>
+            <param name="nodeType">Node type</param>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvReader">
+            <summary>
+            Low level csv reader. This object returns individual csv nodes in one of three maner
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvReader.EscapeChar">
+            <summary>
+            Escape character
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvReader.DelimiterChar">
+            <summary>
+            Delimiter character
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvReader.LineEnding">
+            <summary>
+            Line ending
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvReader.CanEscape">
+            <summary>
+            Can csv cells be escaped
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvReader.PermitEmptyLineAtEnd">
+            <summary>
+            Permits empty line at the end of the csv stream
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvReader.Position">
+            <summary>
+            Current position in cvs stream
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvReader.#ctor(System.IO.TextReader)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="textReader">Text reader to read csv nodes from</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="textReader"/> is null</exception>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvReader.#ctor(System.IO.TextReader,WojciechMikołajewicz.CsvReader.CsvReaderOptions)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="textReader">Text reader to read csv nodes from</param>
+            <param name="options">Options object</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="textReader"/> or <paramref name="options"/> is null</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">Buffer size in chars is too small</exception>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvReader.ReadNextNodeAsStringAsync(System.Threading.CancellationToken)">
+            <summary>
+            Method reads next csv node as <see cref="T:WojciechMikołajewicz.CsvReader.CsvNodes.StringNode"/>
+            </summary>
+            <param name="cancellationToken">Cancellation token</param>
+            <exception cref="T:System.Runtime.Serialization.SerializationException">Broken csv detected. End of stream inside escaped cell or data after end of escaped cell</exception>
+            <returns>Next csv node read</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvReader.MemorySequenceToString(WojciechMikołajewicz.CsvReader.CsvNodes.MemorySequenceSpan@)">
+            <summary>
+            Method converts <paramref name="memorySequenceSpan"/> to <see cref="T:System.String"/>
+            </summary>
+            <param name="memorySequenceSpan">Memory sequence span to convert</param>
+            <returns><paramref name="memorySequenceSpan"/> converted to <see cref="T:System.String"/></returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvReader.ReadNextNodeAsMemoryAsync(System.Threading.CancellationToken)">
+            <summary>
+            Method reads next csv node as <see cref="T:WojciechMikołajewicz.CsvReader.CsvNodes.MemoryNode"/>.
+            Returned <see cref="T:WojciechMikołajewicz.CsvReader.CsvNodes.MemoryNode"/> is valid only till next ReadNextNodeAsXxx call.
+            </summary>
+            <param name="cancellationToken">Cancellation token</param>
+            <exception cref="T:System.Runtime.Serialization.SerializationException">Broken csv detected. End of stream inside escaped cell or data after end of escaped cell</exception>
+            <returns>Next csv node read</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvReader.MemorySequenceAsMemory(WojciechMikołajewicz.CsvReader.CsvNodes.MemorySequenceSpan@)">
+            <summary>
+            Method process <paramref name="memorySequenceSpan"/> to continous memory region and returns <see cref="T:System.ReadOnlyMemory`1"/>.
+            Returned <see cref="T:System.ReadOnlyMemory`1"/> is valid only till next ReadNextNodeAsXxx call.
+            </summary>
+            <param name="memorySequenceSpan">Memory sequence span to process</param>
+            <returns>Continous memory region of chars</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvReader.ReadNextNodeAsMemorySequenceAsync(System.Threading.CancellationToken)">
+            <summary>
+            Method reads next csv node as memory sequence.
+            Returned <see cref="T:WojciechMikołajewicz.CsvReader.CsvNodes.MemorySequenceNode"/> is valid only till next ReadNextNodeAsXxx call.
+            </summary>
+            <param name="cancellationToken">Cancellation token</param>
+            <exception cref="T:System.Runtime.Serialization.SerializationException">Broken csv detected. End of stream inside escaped cell or data after end of escaped cell</exception>
+            <returns>Next csv node read</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvReader.ReadChunkAsync(System.Threading.CancellationToken)">
+            <summary>
+            Method read next chunk of data
+            </summary>
+            <param name="cancellationToken">Cancellation token</param>
+            <returns>Chunk of data read</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvReader.Dispose">
+            <summary>
+            Disposes <see cref="T:WojciechMikołajewicz.CsvReader.CsvReader"/>
+            </summary>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvReaderOptions">
+            <summary>
+            <see cref="T:WojciechMikołajewicz.CsvReader.CsvReader"/> options
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvReaderOptions.CanEscape">
+            <summary>
+            Data can be enclosed with escape characters to store control characters. Default is true
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvReaderOptions.PermitEmptyLineAtEnd">
+            <summary>
+            Permits empty line at the end of the file. If false, empty line at the end of file is interpreted as record. Default is true
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvReaderOptions.EscapeChar">
+            <summary>
+            Escape character. Default is '"'
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvReaderOptions.DelimiterChar">
+            <summary>
+            Cells delimiter character. Default is ','
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvReaderOptions.LineEnding">
+            <summary>
+            Line ending. Default is <see cref="F:WojciechMikołajewicz.CsvReader.LineEnding.Auto"/>
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvReaderOptions.BufferSizeInChars">
+            <summary>
+            Minimum size of single buffer segment in chars. Default is 32768
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvReaderOptions.LeaveOpen">
+            <summary>
+            Leave underlying <see cref="T:System.IO.TextReader"/> open. Default is false
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvReaderOptions.#ctor">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.LineEnding">
+            <summary>
+            Line ending
+            </summary>
+        </member>
+        <member name="F:WojciechMikołajewicz.CsvReader.LineEnding.Auto">
+            <summary>
+            Automatic discovery based on first line
+            </summary>
+        </member>
+        <member name="F:WojciechMikołajewicz.CsvReader.LineEnding.CRLF">
+            <summary>
+            Line ending used on Windows (Carriage Return + Line Feed)
+            </summary>
+        </member>
+        <member name="F:WojciechMikołajewicz.CsvReader.LineEnding.LF">
+            <summary>
+            Line ending used on Linux (Line Feed)
+            </summary>
+        </member>
+        <member name="F:WojciechMikołajewicz.CsvReader.LineEnding.CR">
+            <summary>
+            Line ending used on old Macintosh (Carriage Return)
+            </summary>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequence`1">
+            <summary>
+            Memory sequence
+            </summary>
+            <typeparam name="T">Type of items</typeparam>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequence`1.CurrentPosition">
+            <summary>
+            Current position
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequence`1.LastSegment">
+            <summary>
+            Last segment - most ahead segment
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequence`1.MoveForward(WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequencePosition{`0}@,System.Int32)">
+            <summary>
+            Moves <see cref="P:WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequence`1.CurrentPosition"/> to <paramref name="newPosition"/> plus <paramref name="offset"/>
+            </summary>
+            <param name="newPosition">New position</param>
+            <param name="offset">Offset above <paramref name="newPosition"/></param>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequencePosition`1">
+            <summary>
+            Position in memory sequence
+            </summary>
+            <typeparam name="T">Type of elements in memory sequence</typeparam>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequencePosition`1.SequenceSegment">
+            <summary>
+            Memory sequence segment
+            </summary>
+        </member>
+        <member name="F:WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequencePosition`1.PositionInSegment">
+            <summary>
+            Position in <see cref="P:WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequencePosition`1.SequenceSegment"/>
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequencePosition`1.AbsolutePosition">
+            <summary>
+            Absolute position in whole memory sequence
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequencePosition`1.AddOffset(System.Int32)">
+            <summary>
+            Adds offset to current <see cref="T:WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequencePosition`1"/>
+            </summary>
+            <param name="offset">Offset</param>
+            <returns>New <see cref="T:WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequencePosition`1"/></returns>
+            <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="offset"/> is negative or leave outside filled area</exception>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequencePosition`1.Equals(System.Object)">
+            <summary>
+            Check equality of current <see cref="T:WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequencePosition`1"/> and <paramref name="obj"/>
+            </summary>
+            <param name="obj">Object to compare</param>
+            <returns>True if objects are equal, false otherwise</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequencePosition`1.Equals(WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequencePosition{`0})">
+            <summary>
+            Check equality of current <see cref="T:WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequencePosition`1"/> and <paramref name="other"/>
+            </summary>
+            <param name="other"><see cref="T:WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequencePosition`1"/> to compare</param>
+            <returns>True if objects are equal, false otherwise</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequencePosition`1.GetHashCode">
+            <summary>
+            Returns has code of the current <see cref="T:WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequencePosition`1"/>
+            </summary>
+            <returns>Hash code</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequencePosition`1.op_Equality(WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequencePosition{`0},WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequencePosition{`0})">
+            <summary>
+            Equality operator
+            </summary>
+            <param name="left">Left</param>
+            <param name="right">Right</param>
+            <returns>Are <paramref name="left"/> and <paramref name="right"/> equal</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequencePosition`1.op_Inequality(WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequencePosition{`0},WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequencePosition{`0})">
+            <summary>
+            Inequality operator
+            </summary>
+            <param name="left">Left</param>
+            <param name="right">Right</param>
+            <returns>Are <paramref name="left"/> and <paramref name="right"/> not equal</returns>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequencePosition`1.op_Addition(WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequencePosition{`0},System.Int32)">
+            <summary>
+            Add <paramref name="offset"/> to <paramref name="position"/> operator
+            </summary>
+            <param name="position">Position</param>
+            <param name="offset">Offset</param>
+            <returns>New <see cref="T:WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequencePosition`1"/></returns>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequenceSegment`1">
+            <summary>
+            Segment of continuest memory of <see cref="T:WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequence`1"/>
+            </summary>
+            <typeparam name="T">Type of elements</typeparam>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequenceSegment`1.Array">
+            <summary>
+            Array for data
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequenceSegment`1.Count">
+            <summary>
+            Number of elements stored in <see cref="P:WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequenceSegment`1.Array"/>
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequenceSegment`1.NextInternal">
+            <summary>
+            Next node of MemorySequenceSegment&lt;T&gt; type
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequenceSegment`1.#ctor(WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequenceSegment{`0},System.Int32)">
+            <summary>
+            Constructor - creates new <see cref="T:WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequenceSegment`1"/> and rents memory for it
+            </summary>
+            <param name="previous">Previous <see cref="T:WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequenceSegment`1"/>. This <see cref="T:WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequenceSegment`1"/> is added as <see cref="P:System.Buffers.ReadOnlySequenceSegment`1.Next"/> of <paramref name="previous"/></param>
+            <param name="minimumLength">Minimum memory size for this <see cref="T:WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequenceSegment`1"/></param>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequenceSegment`1.Reuse(WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequenceSegment{`0})">
+            <summary>
+            Reuses this <see cref="T:WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequenceSegment`1"/> as <see cref="P:System.Buffers.ReadOnlySequenceSegment`1.Next"/> of <paramref name="previous"/> <see cref="T:WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequenceSegment`1"/>
+            </summary>
+            <param name="previous">Previous <see cref="T:WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequenceSegment`1"/>. This <see cref="T:WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequenceSegment`1"/> is being set as <see cref="P:System.Buffers.ReadOnlySequenceSegment`1.Next"/> of <paramref name="previous"/> <see cref="T:WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequenceSegment`1"/></param>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequenceSegment`1.Dispose">
+            <summary>
+            Returns memory of this <see cref="T:WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequenceSegment`1"/> to the shared pool
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;net5.0</TargetFrameworks>
     <RootNamespace>WojciechMikołajewicz.CsvReader</RootNamespace>
     <Authors>Wojciech Mikołajewicz</Authors>
     <Copyright>Wojciech Mikołajewicz</Copyright>
@@ -13,16 +13,21 @@
 		<PackageTags>Csv CsvDeserializer CsvReader</PackageTags>
 		<PackageId>CsvDeserializer</PackageId>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Version>0.5.1</Version>
+		<Version>0.5.2</Version>
   </PropertyGroup>
 	
 	<!--For nullable to work with netstandard2.0-->
 	<PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
 		<LangVersion>8.0</LangVersion>
 	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.0|AnyCPU'">
+	  <DocumentationFile>CsvReader.xml</DocumentationFile>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
+	  <DocumentationFile>CsvReader.xml</DocumentationFile>
+	</PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.IO.Pipelines" Version="5.0.1" />
     <PackageReference Include="System.Memory" Version="4.5.4" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
   </ItemGroup>
