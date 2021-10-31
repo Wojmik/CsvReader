@@ -7,32 +7,55 @@ using WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.Bindin
 
 namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration
 {
-	public class DeserializerConfigurationString<TRecord> : DeserializerConfigurationBase<TRecord, string?>
+	/// <summary>
+	/// Deserializer configurator for <see cref="string"/> type
+	/// </summary>
+	public class DeserializerConfigurationString : DeserializerConfigurationBase<string?>
 	{
 		private bool? _EmptyAsNull;
-		public bool EmptyAsNull { get => _EmptyAsNull??RecordConfiguration.EmptyAsNull; }
+		/// <summary>
+		/// Treat empty csv cell as null
+		/// </summary>
+		public bool EmptyAsNull { get => _EmptyAsNull??RecordConfiguration.DefaultEmptyAsNull; }
 
 		private bool? _DeduplicateStrings;
-		public bool DeduplicateStrings { get => _DeduplicateStrings??RecordConfiguration.DeduplicateStrings; }
+		/// <summary>
+		/// Deduplicate strings with the same value
+		/// </summary>
+		public bool DeduplicateStrings { get => _DeduplicateStrings??RecordConfiguration.DefaultDeduplicateStrings; }
 
-		public DeserializerConfigurationString(PropertyConfigurationBase<TRecord, string?> propertyConfiguration)
-			: base(propertyConfiguration)
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="bindingConfiguration">Binding to column configuration object</param>
+		public DeserializerConfigurationString(BindingConfigurationBase bindingConfiguration)
+			: base(bindingConfiguration)
 		{ }
 
-		public DeserializerConfigurationString<TRecord> SetEmptyStringBehavior(bool emptyAsNull)
+		/// <summary>
+		/// Sets empty csv cell behavior
+		/// </summary>
+		/// <param name="emptyAsNull">True to return null for empty csv cell, false to return empty string</param>
+		/// <returns>This configuration object for methods chaining</returns>
+		public DeserializerConfigurationString SetEmptyStringBehavior(bool emptyAsNull)
 		{
 			_EmptyAsNull = emptyAsNull;
 			return this;
 		}
 
-		public DeserializerConfigurationString<TRecord> SetStringsDeduplicatingBehavior(bool deduplicateStrings)
+		/// <summary>
+		/// Sets string deduplication behavior
+		/// </summary>
+		/// <param name="deduplicateStrings">True to deduplicate strings with the same value, false otherwise</param>
+		/// <returns>This configuration object for methods chaining</returns>
+		public DeserializerConfigurationString SetStringsDeduplicatingBehavior(bool deduplicateStrings)
 		{
 			_DeduplicateStrings = deduplicateStrings;
 			return this;
 		}
 
 		internal override bool TryBuild(
-#if NETSTANDARD2_1_OR_GREATER
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_0_OR_GREATER
 			[NotNullWhen(true)]
 # endif
 			out CellDeserializerBase<string?>? cellDeserializer)

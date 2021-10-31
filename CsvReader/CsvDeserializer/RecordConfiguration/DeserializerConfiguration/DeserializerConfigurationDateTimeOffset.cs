@@ -8,19 +8,29 @@ using WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.Bindin
 
 namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration
 {
-	public class DeserializerConfigurationDateTimeOffset<TRecord> : DeserializerConfigurationDateTimeStyleFormatProviderBase<TRecord, DateTimeOffset, DeserializerConfigurationDateTimeOffset<TRecord>>
+	/// <summary>
+	/// Deserializer configurator for <see cref="DateTimeOffset"/> type
+	/// </summary>
+	public class DeserializerConfigurationDateTimeOffset : DeserializerConfigurationDateTimeStyleFormatProviderBase<DateTimeOffset, DeserializerConfigurationDateTimeOffset>
 	{
-		public DeserializerConfigurationDateTimeOffset(PropertyConfigurationBase<TRecord, DateTimeOffset> propertyConfiguration)
-			: base(propertyConfiguration, DateTimeStyles.None)
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="bindingConfiguration">Binding to column configuration object</param>
+		public DeserializerConfigurationDateTimeOffset(BindingConfigurationBase bindingConfiguration)
+			: base(bindingConfiguration)
 		{ }
 
 		internal override bool TryBuild(
-#if NETSTANDARD2_1_OR_GREATER
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_0_OR_GREATER
 			[NotNullWhen(true)]
 #endif
 			out CellDeserializerBase<DateTimeOffset>? cellDeserializer)
 		{
-			cellDeserializer = new CellDateTimeOffsetDeserializer(FormatProvider, DateTimeStyles, AllowEmpty, ValueForEmpty);
+			if(Format!=null)
+				cellDeserializer = new CellDateTimeOffsetFormattedDeserializer(Format, FormatProvider, DateTimeStyles, AllowEmpty, ValueForEmpty);
+			else
+				cellDeserializer = new CellDateTimeOffsetDeserializer(FormatProvider, DateTimeStyles, AllowEmpty, ValueForEmpty);
 			return true;
 		}
 	}

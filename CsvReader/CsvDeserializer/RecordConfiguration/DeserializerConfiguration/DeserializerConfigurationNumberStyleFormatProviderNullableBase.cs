@@ -7,28 +7,72 @@ using WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.Bindin
 
 namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration
 {
-	public abstract class DeserializerConfigurationNumberStyleFormatProviderNullableBase<TRecord, TDeserialized, TDeserializerConfigurator> : DeserializerConfigurationBase<TRecord, TDeserialized?>
+	/// <summary>
+	/// Base deserializer configurator for nullable number types
+	/// </summary>
+	/// <typeparam name="TDeserialized">Type deserializer deserializes to</typeparam>
+	/// <typeparam name="TDeserializerConfigurator">Type of deserializer configurator</typeparam>
+	public abstract class DeserializerConfigurationNumberStyleFormatProviderNullableBase<TDeserialized, TDeserializerConfigurator> : DeserializerConfigurationBase<TDeserialized?>
 		where TDeserialized : struct
-		where TDeserializerConfigurator : DeserializerConfigurationNumberStyleFormatProviderNullableBase<TRecord, TDeserialized, TDeserializerConfigurator>
+		where TDeserializerConfigurator : DeserializerConfigurationNumberStyleFormatProviderNullableBase<TDeserialized, TDeserializerConfigurator>
 	{
-		public NumberStyles NumberStyles { get; private set; }
+		private readonly RecordConfigurationNumberStylesChooser RecordConfigurationNumberStylesChooser;
 
-		private IFormatProvider? _FormatProvider;
-		public IFormatProvider FormatProvider { get => _FormatProvider??RecordConfiguration.DefaultCulture; }
-
-		public DeserializerConfigurationNumberStyleFormatProviderNullableBase(PropertyConfigurationBase<TRecord, TDeserialized?> propertyConfiguration, NumberStyles defaultNumberStyles)
-			: base(propertyConfiguration)
+		private NumberStyles? _NumberStyles;
+		/// <summary>
+		/// Number styles used during parsing cell value to a number
+		/// </summary>
+		public NumberStyles NumberStyles
 		{
-			NumberStyles = defaultNumberStyles;
+			get
+			{
+				return _NumberStyles??RecordConfigurationNumberStylesChooser switch
+				{
+					RecordConfigurationNumberStylesChooser.IntegerNumberStyles => RecordConfiguration.DefaultIntegerNumberStyles,
+					RecordConfigurationNumberStylesChooser.FloatingPointNumberStyles => RecordConfiguration.DefaultFloationgPointNumberStyles,
+					RecordConfigurationNumberStylesChooser.DecimalNumberStyles => RecordConfiguration.DefaultDecimalNumberStyles,
+					_ => throw new NotSupportedException($"Unsupported record configuration number styles chooser: {RecordConfigurationNumberStylesChooser}"),
+				};
+			}
 		}
 
+		private IFormatProvider? _FormatProvider;
+		/// <summary>
+		/// Format provider used during parsing cell value to target type
+		/// </summary>
+		public IFormatProvider FormatProvider { get => _FormatProvider??RecordConfiguration.DefaultCulture; }
+
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="bindingConfiguration">Binding to column configuration object</param>
+		/// <param name="recordConfigurationNumberStylesChooser">Points out <see cref="WojciechMikołajewicz.CsvReader.RecordConfiguration"/> property of default number styles</param>
+		/// <exception cref="NotSupportedException">Invalid value of <paramref name="recordConfigurationNumberStylesChooser"/></exception>
+		protected DeserializerConfigurationNumberStyleFormatProviderNullableBase(BindingConfigurationBase bindingConfiguration, RecordConfigurationNumberStylesChooser recordConfigurationNumberStylesChooser)
+			: base(bindingConfiguration)
+		{
+			if(!Enum.IsDefined(typeof(RecordConfigurationNumberStylesChooser), recordConfigurationNumberStylesChooser))
+				throw new NotSupportedException($"Unsupported record configuration number styles chooser: {recordConfigurationNumberStylesChooser}");
+			RecordConfigurationNumberStylesChooser = recordConfigurationNumberStylesChooser;
+		}
+
+		/// <summary>
+		/// Sets number styles used during parsing cell value to a number
+		/// </summary>
+		/// <param name="numberStyles">Desired number styles for parsing cell value to a number</param>
+		/// <returns>This configuration object for methods chaining</returns>
 		public TDeserializerConfigurator SetNumberStyles(NumberStyles numberStyles)
 		{
-			NumberStyles = numberStyles;
+			_NumberStyles = numberStyles;
 			return (TDeserializerConfigurator)this;
 		}
 
-		public TDeserializerConfigurator SetFormatProvider(IFormatProvider formatProvider)
+		/// <summary>
+		/// Sets format provider used during parsing cell value to <typeparamref name="TDeserialized"/> type. If null, <see cref="WojciechMikołajewicz.CsvReader.RecordConfiguration.DefaultCulture"/> is used.
+		/// </summary>
+		/// <param name="formatProvider">Desired format provider for parsing cell value to <typeparamref name="TDeserialized"/> type</param>
+		/// <returns>This configuration object for methods chaining</returns>
+		public TDeserializerConfigurator SetFormatProvider(IFormatProvider? formatProvider)
 		{
 			_FormatProvider = formatProvider;
 			return (TDeserializerConfigurator)this;

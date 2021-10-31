@@ -29,7 +29,7 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 				val = new byte[value.Length/2];
 				for(int i = 0; i<val.Length; i++)
 				{
-#if NETSTANDARD2_1_OR_GREATER
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
 					val[i] = byte.Parse(value.Span.Slice(i*2, 2), style: NumberStyles.HexNumber);
 #else
 					val[i] = byte.Parse(value.Slice(i*2, 2).ToString(), NumberStyles.HexNumber);

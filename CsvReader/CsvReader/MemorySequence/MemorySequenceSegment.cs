@@ -35,7 +35,7 @@ namespace WojciechMikołajewicz.CsvReader.MemorySequence
 		/// <summary>
 		/// Constructor - creates new <see cref="MemorySequenceSegment{T}"/> and rents memory for it
 		/// </summary>
-		/// <param name="previous">Previous <see cref="MemorySequenceSegment{T}"/>. This <see cref="MemorySequenceSegment{T}"/> is added as <see cref="Next"/> of <paramref name="previous"/></param>
+		/// <param name="previous">Previous <see cref="MemorySequenceSegment{T}"/>. This <see cref="MemorySequenceSegment{T}"/> is added as <see cref="ReadOnlySequenceSegment{T}.Next"/> of <paramref name="previous"/></param>
 		/// <param name="minimumLength">Minimum memory size for this <see cref="MemorySequenceSegment{T}"/></param>
 		internal MemorySequenceSegment(MemorySequenceSegment<T>? previous, int minimumLength)
 		{
@@ -50,9 +50,9 @@ namespace WojciechMikołajewicz.CsvReader.MemorySequence
 		}
 
 		/// <summary>
-		/// Reuses this <see cref="MemorySequenceSegment{T}"/> as <see cref="Next"/> of <paramref name="previous"/> <see cref="MemorySequenceSegment{T}"/>
+		/// Reuses this <see cref="MemorySequenceSegment{T}"/> as <see cref="ReadOnlySequenceSegment{T}.Next"/> of <paramref name="previous"/> <see cref="MemorySequenceSegment{T}"/>
 		/// </summary>
-		/// <param name="previous">Previous <see cref="MemorySequenceSegment{T}"/>. This <see cref="MemorySequenceSegment{T}"/> is being set as <see cref="Next"/> of <paramref name="previous"/> <see cref="MemorySequenceSegment{T}"/></param>
+		/// <param name="previous">Previous <see cref="MemorySequenceSegment{T}"/>. This <see cref="MemorySequenceSegment{T}"/> is being set as <see cref="ReadOnlySequenceSegment{T}.Next"/> of <paramref name="previous"/> <see cref="MemorySequenceSegment{T}"/></param>
 		internal void Reuse(MemorySequenceSegment<T> previous)
 		{
 			this.NextInternal=null;

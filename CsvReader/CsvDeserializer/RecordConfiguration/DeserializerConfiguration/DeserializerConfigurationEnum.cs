@@ -8,27 +8,43 @@ using WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.Bindin
 
 namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration
 {
-	public class DeserializerConfigurationEnum<TRecord, TEnum> : DeserializerConfigurationNotNullableBase<TRecord, TEnum, DeserializerConfigurationEnum<TRecord, TEnum>>
+	/// <summary>
+	/// Deserializer configurator for enum types
+	/// </summary>
+	/// <typeparam name="TEnum">Type of enum</typeparam>
+	public class DeserializerConfigurationEnum<TEnum> : DeserializerConfigurationNotNullableBase<TEnum, DeserializerConfigurationEnum<TEnum>>
 		where TEnum : struct
 	{
-		public bool IgnoreCase { get; private set; }
+		private bool? _IgnoreCase;
+		/// <summary>
+		/// Is casing ignoring during enum parsing from text representation
+		/// </summary>
+		public bool IgnoreCase { get => _IgnoreCase??RecordConfiguration.DefaultEnumsIgnoreCase; }
 
-		public DeserializerConfigurationEnum(PropertyConfigurationBase<TRecord, TEnum> propertyConfiguration)
-			: base(propertyConfiguration)
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="bindingConfiguration">Binding to column configuration object</param>
+		public DeserializerConfigurationEnum(BindingConfigurationBase bindingConfiguration)
+			: base(bindingConfiguration)
 		{
 			if(!typeof(TEnum).IsEnum)
 				throw new ArgumentException($"{typeof(TEnum)} is not an Enum type");
-			IgnoreCase = RecordConfiguration.EnumsIgnoreCase;
 		}
 
-		public DeserializerConfigurationEnum<TRecord, TEnum> SetIgnoreCase(bool ignoreCase)
+		/// <summary>
+		/// Sets ignore case behavior during enum parsing from text representation
+		/// </summary>
+		/// <param name="ignoreCase">True to ignore case, false otherwise</param>
+		/// <returns>This configuration object for methods chaining</returns>
+		public DeserializerConfigurationEnum<TEnum> SetIgnoreCase(bool ignoreCase)
 		{
-			IgnoreCase = ignoreCase;
+			_IgnoreCase = ignoreCase;
 			return this;
 		}
 
 		internal override bool TryBuild(
-#if NETSTANDARD2_1_OR_GREATER
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_0_OR_GREATER
 			[NotNullWhen(true)]
 #endif
 			out CellDeserializerBase<TEnum>? cellDeserializer)

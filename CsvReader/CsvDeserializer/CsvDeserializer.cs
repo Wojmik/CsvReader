@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -139,7 +140,7 @@ namespace WojciechMikołajewicz.CsvReader
 			return columnIndex;
 		}
 
-#if NETSTANDARD2_1_OR_GREATER
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_0_OR_GREATER
 		/// <summary>
 		/// Enumerates records from csv
 		/// </summary>
@@ -168,7 +169,7 @@ namespace WojciechMikołajewicz.CsvReader
 			{
 				ProcessCellParams<TRecord> data = new ProcessCellParams<TRecord>(new TRecord());
 				MemorySequenceNode node;
-				
+
 				while((node=await CsvReader.ReadNextNodeAsMemorySequenceAsync(cancellationToken).ConfigureAwait(false)).NodeType==NodeType.Cell)
 				{
 					try
@@ -294,6 +295,9 @@ namespace WojciechMikołajewicz.CsvReader
 			parameters.ColumnIndex++;
 		}
 
+		/// <summary>
+		/// Disposes <see cref="CsvDeserializer{TRecord}"/>
+		/// </summary>
 		public void Dispose()
 		{
 			this.CsvReader.Dispose();

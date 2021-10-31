@@ -27,7 +27,7 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 
 			if(!string.IsNullOrEmpty(value))
 			{
-#if NETSTANDARD2_1_OR_GREATER
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_0_OR_GREATER
 				parsedValue = Enum.Parse<TEnum>(value, IgnoreCase);
 #else
 				parsedValue = (TEnum)Enum.Parse(typeof(TEnum), value, IgnoreCase);

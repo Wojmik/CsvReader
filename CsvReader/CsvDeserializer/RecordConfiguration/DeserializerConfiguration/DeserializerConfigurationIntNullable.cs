@@ -8,14 +8,21 @@ using WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.Bindin
 
 namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration
 {
-	public class DeserializerConfigurationIntNullable<TRecord> : DeserializerConfigurationNumberStyleFormatProviderNullableBase<TRecord, int, DeserializerConfigurationIntNullable<TRecord>>
+	/// <summary>
+	/// Deserializer configurator for nullable <see cref="int"/> type
+	/// </summary>
+	public class DeserializerConfigurationIntNullable : DeserializerConfigurationNumberStyleFormatProviderNullableBase<int, DeserializerConfigurationIntNullable>
 	{
-		public DeserializerConfigurationIntNullable(PropertyConfigurationBase<TRecord, int?> propertyConfiguration)
-			: base(propertyConfiguration, NumberStyles.Integer)
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="bindingConfiguration">Binding to column configuration object</param>
+		public DeserializerConfigurationIntNullable(BindingConfigurationBase bindingConfiguration)
+			: base(bindingConfiguration, RecordConfigurationNumberStylesChooser.IntegerNumberStyles)
 		{ }
 
 		internal override bool TryBuild(
-#if NETSTANDARD2_1_OR_GREATER
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_0_OR_GREATER
 			[NotNullWhen(true)]
 #endif
 			out CellDeserializerBase<int?>? cellDeserializer)

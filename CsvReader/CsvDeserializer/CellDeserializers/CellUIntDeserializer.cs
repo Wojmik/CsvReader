@@ -10,7 +10,7 @@ using WojciechMikołajewicz.CsvReader.CsvNodes;
 namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 {
 	sealed class CellUIntDeserializer :
-#if NETSTANDARD2_1_OR_GREATER
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
 		CellDeserializerFromMemoryBase<uint>
 #else
 		CellDeserializerFromStringBase<uint>
@@ -32,7 +32,7 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 			ValueForEmpty = valueForEmpty;
 		}
 
-#if NETSTANDARD2_1_OR_GREATER
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
 		protected override uint DeserializeFromMemory(in ReadOnlyMemory<char> value)
 		{
 			uint parsedValue;

@@ -7,18 +7,35 @@ using WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.Bindin
 
 namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration
 {
-	public abstract class DeserializerConfigurationFormatProviderNullableBase<TRecord, TDeserialized, TDeserializerConfigurator> : DeserializerConfigurationBase<TRecord, TDeserialized?>
+	/// <summary>
+	/// Base deserializer configurator for nullable <see cref="IFormatProvider"/> aware types
+	/// </summary>
+	/// <typeparam name="TDeserialized">Type deserializer deserializes to</typeparam>
+	/// <typeparam name="TDeserializerConfigurator">Type of deserializer configurator</typeparam>
+	public abstract class DeserializerConfigurationFormatProviderNullableBase<TDeserialized, TDeserializerConfigurator> : DeserializerConfigurationBase<TDeserialized?>
 		where TDeserialized : struct
-		where TDeserializerConfigurator : DeserializerConfigurationFormatProviderNullableBase<TRecord, TDeserialized, TDeserializerConfigurator>
+		where TDeserializerConfigurator : DeserializerConfigurationFormatProviderNullableBase<TDeserialized, TDeserializerConfigurator>
 	{
 		private IFormatProvider? _FormatProvider;
+		/// <summary>
+		/// Format provider used during parsing cell value to target type
+		/// </summary>
 		public IFormatProvider FormatProvider { get => _FormatProvider??RecordConfiguration.DefaultCulture; }
 
-		public DeserializerConfigurationFormatProviderNullableBase(PropertyConfigurationBase<TRecord, TDeserialized?> propertyConfiguration)
-			: base(propertyConfiguration)
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="bindingConfiguration">Binding to column configuration object</param>
+		protected DeserializerConfigurationFormatProviderNullableBase(BindingConfigurationBase bindingConfiguration)
+			: base(bindingConfiguration)
 		{ }
 
-		public TDeserializerConfigurator SetFormatProvider(IFormatProvider formatProvider)
+		/// <summary>
+		/// Sets format provider used during parsing cell value to <typeparamref name="TDeserialized"/> type. If null, <see cref="WojciechMikołajewicz.CsvReader.RecordConfiguration.DefaultCulture"/> is used.
+		/// </summary>
+		/// <param name="formatProvider">Desired format provider for parsing cell value to <typeparamref name="TDeserialized"/> type</param>
+		/// <returns>This configuration object for methods chaining</returns>
+		public TDeserializerConfigurator SetFormatProvider(IFormatProvider? formatProvider)
 		{
 			_FormatProvider = formatProvider;
 			return (TDeserializerConfigurator)this;

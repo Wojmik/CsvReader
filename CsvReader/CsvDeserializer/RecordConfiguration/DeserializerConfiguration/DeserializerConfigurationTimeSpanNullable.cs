@@ -8,19 +8,66 @@ using WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.Bindin
 
 namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration
 {
-	public class DeserializerConfigurationTimeSpanNullable<TRecord> : DeserializerConfigurationFormatProviderNullableBase<TRecord, TimeSpan, DeserializerConfigurationTimeSpanNullable<TRecord>>
+	/// <summary>
+	/// Deserializer configurator for nullable <see cref="TimeSpan"/> type
+	/// </summary>
+	public class DeserializerConfigurationTimeSpanNullable : DeserializerConfigurationFormatProviderNullableBase<TimeSpan, DeserializerConfigurationTimeSpanNullable>
 	{
-		public DeserializerConfigurationTimeSpanNullable(PropertyConfigurationBase<TRecord, TimeSpan?> propertyConfiguration)
-			: base(propertyConfiguration)
-		{ }
+		/// <summary>
+		/// Format used during parsing cell value to target type. If null, standard formats are used.
+		/// </summary>
+		public string? Format { get; private set; }
+
+		/// <summary>
+		/// <see cref="TimeSpan"/> styles used during parsing cell value to a date
+		/// </summary>
+		public TimeSpanStyles TimeSpanStyles { get; private set; }
+
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="bindingConfiguration">Binding to column configuration object</param>
+		public DeserializerConfigurationTimeSpanNullable(BindingConfigurationBase bindingConfiguration)
+			: base(bindingConfiguration)
+		{
+			TimeSpanStyles = TimeSpanStyles.None;
+		}
+
+		/// <summary>
+		/// Sets format and <see cref="TimeSpan"/> styles used during parsing cell value to <typeparamref name="TDeserialized"/> type
+		/// </summary>
+		/// <param name="format">Desired format for parsing cell value to <typeparamref name="TDeserialized"/> type</param>
+		/// <param name="timeSpanStyles"><see cref="TimeSpan"/> styles used during parsing cell value</param>
+		/// <returns>This configuration object for methods chaining</returns>
+		/// <exception cref="ArgumentNullException"><paramref name="format"/> is null</exception>
+		public DeserializerConfigurationTimeSpanNullable SetFormatAndStyles(string format, TimeSpanStyles timeSpanStyles = TimeSpanStyles.None)
+		{
+			Format = format??throw new ArgumentNullException(nameof(format));
+			TimeSpanStyles = timeSpanStyles;
+			return this;
+		}
+
+		/// <summary>
+		/// Clears format and sets <see cref="TimeSpan"/> styles to <see cref="TimeSpanStyles.None"/>. Those values will be used during parsing cell value to <typeparamref name="TDeserialized"/> type.
+		/// </summary>
+		/// <returns>This configuration object for methods chaining</returns>
+		public DeserializerConfigurationTimeSpanNullable ClearFormatAndStyles()
+		{
+			Format = null;
+			TimeSpanStyles = TimeSpanStyles.None;
+			return this;
+		}
 
 		internal override bool TryBuild(
-#if NETSTANDARD2_1_OR_GREATER
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_0_OR_GREATER
 			[NotNullWhen(true)]
 #endif
 			out CellDeserializerBase<TimeSpan?>? cellDeserializer)
 		{
-			cellDeserializer = new CellTimeSpanNullableDeserializer(FormatProvider);
+			if(Format!=null)
+				cellDeserializer = new CellTimeSpanFormattedNullableDeserializer(Format, FormatProvider, TimeSpanStyles);
+			else
+				cellDeserializer = new CellTimeSpanNullableDeserializer(FormatProvider);
 			return true;
 		}
 	}
