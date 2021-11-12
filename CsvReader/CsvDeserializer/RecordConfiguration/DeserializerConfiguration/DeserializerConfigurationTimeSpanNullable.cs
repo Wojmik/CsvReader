@@ -34,9 +34,9 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.De
 		}
 
 		/// <summary>
-		/// Sets format and <see cref="TimeSpan"/> styles used during parsing cell value to <typeparamref name="TDeserialized"/> type
+		/// Sets format and <see cref="TimeSpan"/> styles used during parsing cell value to <see cref="TimeSpan"/> type
 		/// </summary>
-		/// <param name="format">Desired format for parsing cell value to <typeparamref name="TDeserialized"/> type</param>
+		/// <param name="format">Desired format for parsing cell value to <see cref="TimeSpan"/> type</param>
 		/// <param name="timeSpanStyles"><see cref="TimeSpan"/> styles used during parsing cell value</param>
 		/// <returns>This configuration object for methods chaining</returns>
 		/// <exception cref="ArgumentNullException"><paramref name="format"/> is null</exception>
@@ -48,7 +48,7 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.De
 		}
 
 		/// <summary>
-		/// Clears format and sets <see cref="TimeSpan"/> styles to <see cref="TimeSpanStyles.None"/>. Those values will be used during parsing cell value to <typeparamref name="TDeserialized"/> type.
+		/// Clears format and sets <see cref="TimeSpan"/> styles to <see cref="TimeSpanStyles.None"/>. Those values will be used during parsing cell value to <see cref="TimeSpan"/> type.
 		/// </summary>
 		/// <returns>This configuration object for methods chaining</returns>
 		public DeserializerConfigurationTimeSpanNullable ClearFormatAndStyles()

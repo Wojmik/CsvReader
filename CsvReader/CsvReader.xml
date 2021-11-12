@@ -802,9 +802,9 @@
         </member>
         <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationGuid.SetFormat(System.String)">
             <summary>
-            Sets format used during parsing cell value to <typeparamref name="TDeserialized"/> type. If null, standard formats are used.
+            Sets format used during parsing cell value to <see cref="T:System.Guid"/> type. If null, standard formats are used.
             </summary>
-            <param name="format">Desired format for parsing cell value to <typeparamref name="TDeserialized"/> type</param>
+            <param name="format">Desired format for parsing cell value to <see cref="T:System.Guid"/> type</param>
             <returns>This configuration object for methods chaining</returns>
         </member>
         <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationGuidNullable">
@@ -825,9 +825,9 @@
         </member>
         <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationGuidNullable.SetFormat(System.String)">
             <summary>
-            Sets format used during parsing cell value to <typeparamref name="TDeserialized"/> type. If null, standard formats are used.
+            Sets format used during parsing cell value to <see cref="T:System.Guid"/> type. If null, standard formats are used.
             </summary>
-            <param name="format">Desired format for parsing cell value to <typeparamref name="TDeserialized"/> type</param>
+            <param name="format">Desired format for parsing cell value to <see cref="T:System.Guid"/> type</param>
             <returns>This configuration object for methods chaining</returns>
         </member>
         <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationInt">
@@ -1085,16 +1085,16 @@
         </member>
         <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationTimeSpan.SetFormatAndStyles(System.String,System.Globalization.TimeSpanStyles)">
             <summary>
-            Sets format and <see cref="T:System.TimeSpan"/> styles used during parsing cell value to <typeparamref name="TDeserialized"/> type
+            Sets format and <see cref="T:System.TimeSpan"/> styles used during parsing cell value to <see cref="T:System.TimeSpan"/> type
             </summary>
-            <param name="format">Desired format for parsing cell value to <typeparamref name="TDeserialized"/> type</param>
+            <param name="format">Desired format for parsing cell value to <see cref="T:System.TimeSpan"/> type</param>
             <param name="timeSpanStyles"><see cref="T:System.TimeSpan"/> styles used during parsing cell value</param>
             <returns>This configuration object for methods chaining</returns>
             <exception cref="T:System.ArgumentNullException"><paramref name="format"/> is null</exception>
         </member>
         <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationTimeSpan.ClearFormatAndStyles">
             <summary>
-            Clears format and sets <see cref="T:System.TimeSpan"/> styles to <see cref="F:System.Globalization.TimeSpanStyles.None"/>. Those values will be used during parsing cell value to <typeparamref name="TDeserialized"/> type.
+            Clears format and sets <see cref="T:System.TimeSpan"/> styles to <see cref="F:System.Globalization.TimeSpanStyles.None"/>. Those values will be used during parsing cell value to <see cref="T:System.TimeSpan"/> type.
             </summary>
             <returns>This configuration object for methods chaining</returns>
         </member>
@@ -1121,16 +1121,16 @@
         </member>
         <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationTimeSpanNullable.SetFormatAndStyles(System.String,System.Globalization.TimeSpanStyles)">
             <summary>
-            Sets format and <see cref="T:System.TimeSpan"/> styles used during parsing cell value to <typeparamref name="TDeserialized"/> type
+            Sets format and <see cref="T:System.TimeSpan"/> styles used during parsing cell value to <see cref="T:System.TimeSpan"/> type
             </summary>
-            <param name="format">Desired format for parsing cell value to <typeparamref name="TDeserialized"/> type</param>
+            <param name="format">Desired format for parsing cell value to <see cref="T:System.TimeSpan"/> type</param>
             <param name="timeSpanStyles"><see cref="T:System.TimeSpan"/> styles used during parsing cell value</param>
             <returns>This configuration object for methods chaining</returns>
             <exception cref="T:System.ArgumentNullException"><paramref name="format"/> is null</exception>
         </member>
         <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.DeserializerConfigurationTimeSpanNullable.ClearFormatAndStyles">
             <summary>
-            Clears format and sets <see cref="T:System.TimeSpan"/> styles to <see cref="F:System.Globalization.TimeSpanStyles.None"/>. Those values will be used during parsing cell value to <typeparamref name="TDeserialized"/> type.
+            Clears format and sets <see cref="T:System.TimeSpan"/> styles to <see cref="F:System.Globalization.TimeSpanStyles.None"/>. Those values will be used during parsing cell value to <see cref="T:System.TimeSpan"/> type.
             </summary>
             <returns>This configuration object for methods chaining</returns>
         </member>

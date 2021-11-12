@@ -56,7 +56,7 @@ namespace WojciechMikołajewicz.CsvReader.CsvNodes
 			int sourceIndex = StartPosition.PositionInSegment, destinationIndex = 0, skipIndex = 0;
 			while(!ReferenceEquals(segment, EndPosition.SequenceSegment))
 			{
-				CopySegment(destination, segment.Memory.Length);
+				CopySegment(destination, segment!.Memory.Length);
 
 				segment = segment.Next;
 				sourceIndex = 0;

@@ -339,7 +339,7 @@ namespace WojciechMikołajewicz.CsvReader
 			BindingConfigurationBase<TRecord>? bindingConfigurationBase = null;
 
 			var propertyType = propertyInfo.PropertyType;
-			Type underlyingType;
+			Type? underlyingType;
 
 			if(propertyType==typeof(string))
 				bindingConfigurationBase = Property((Expression<Func<TRecord, string?>>)selectorLambdaExpression);
@@ -415,12 +415,22 @@ namespace WojciechMikołajewicz.CsvReader
 			else if(propertyType==typeof(Half?))
 				bindingConfigurationBase = Property((Expression<Func<TRecord, Half?>>)selectorLambdaExpression);
 #endif
+#if NET6_0_OR_GREATER
+			else if (propertyType == typeof(DateOnly))
+				bindingConfigurationBase = Property((Expression<Func<TRecord, DateOnly>>)selectorLambdaExpression);
+			else if (propertyType == typeof(TimeOnly))
+				bindingConfigurationBase = Property((Expression<Func<TRecord, TimeOnly>>)selectorLambdaExpression);
+			else if (propertyType == typeof(DateOnly?))
+				bindingConfigurationBase = Property((Expression<Func<TRecord, DateOnly?>>)selectorLambdaExpression);
+			else if (propertyType == typeof(TimeOnly?))
+				bindingConfigurationBase = Property((Expression<Func<TRecord, TimeOnly?>>)selectorLambdaExpression);
+#endif
 			else if(propertyType.IsEnum)
 			{
 				Func<Expression<Func<TRecord, int>>, PropertyConfigurationFixedSerializer<TRecord, int, DeserializerConfigurationEnum<int>>> func = PropertyEnum;
 				var genericMethodDefinition = func.Method.GetGenericMethodDefinition();
 				var methodInfo = genericMethodDefinition.MakeGenericMethod(propertyType);
-				var restult = methodInfo.Invoke(this, new object[] { selectorLambdaExpression, });
+				var restult = methodInfo.Invoke(this, new object[] { selectorLambdaExpression, })!;
 				bindingConfigurationBase = (BindingConfigurationBase<TRecord>)restult;
 			}
 			else if((underlyingType=Nullable.GetUnderlyingType(propertyType))!=null && underlyingType.IsEnum)
@@ -428,7 +438,7 @@ namespace WojciechMikołajewicz.CsvReader
 				Func<Expression<Func<TRecord, int?>>, PropertyConfigurationFixedSerializer<TRecord, int?, DeserializerConfigurationEnumNullable<int>>> func = PropertyEnum;
 				var genericMethodDefinition = func.Method.GetGenericMethodDefinition();
 				var methodInfo = genericMethodDefinition.MakeGenericMethod(underlyingType);
-				var restult = methodInfo.Invoke(this, new object[] { selectorLambdaExpression, });
+				var restult = methodInfo.Invoke(this, new object[] { selectorLambdaExpression, })!;
 				bindingConfigurationBase = (BindingConfigurationBase<TRecord>)restult;
 			}
 
@@ -796,6 +806,47 @@ namespace WojciechMikołajewicz.CsvReader
 		public PropertyConfigurationFixedSerializer<TRecord, Half?, DeserializerConfigurationHalfNullable> Property(Expression<Func<TRecord, Half?>> selector)
 		{
 			return PropertyWithCustomDeserializer<Half?, DeserializerConfigurationHalfNullable>(selector, propConf => new DeserializerConfigurationHalfNullable(propConf));
+		}
+#endif
+#if NET6_0_OR_GREATER
+		/// <summary>
+		/// Enables configuring of selected record's property
+		/// </summary>
+		/// <param name="selector">Record's property selector</param>
+		/// <returns>Configuration object for selected property</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, DateOnly, DeserializerConfigurationDateOnly> Property(Expression<Func<TRecord, DateOnly>> selector)
+		{
+			return PropertyWithCustomDeserializer<DateOnly, DeserializerConfigurationDateOnly>(selector, propConf => new DeserializerConfigurationDateOnly(propConf));
+		}
+		
+		/// <summary>
+		/// Enables configuring of selected record's property
+		/// </summary>
+		/// <param name="selector">Record's property selector</param>
+		/// <returns>Configuration object for selected property</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, TimeOnly, DeserializerConfigurationTimeOnly> Property(Expression<Func<TRecord, TimeOnly>> selector)
+		{
+			return PropertyWithCustomDeserializer<TimeOnly, DeserializerConfigurationTimeOnly>(selector, propConf => new DeserializerConfigurationTimeOnly(propConf));
+		}
+
+		/// <summary>
+		/// Enables configuring of selected record's property
+		/// </summary>
+		/// <param name="selector">Record's property selector</param>
+		/// <returns>Configuration object for selected property</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, DateOnly?, DeserializerConfigurationDateOnlyNullable> Property(Expression<Func<TRecord, DateOnly?>> selector)
+		{
+			return PropertyWithCustomDeserializer<DateOnly?, DeserializerConfigurationDateOnlyNullable>(selector, propConf => new DeserializerConfigurationDateOnlyNullable(propConf));
+		}
+
+		/// <summary>
+		/// Enables configuring of selected record's property
+		/// </summary>
+		/// <param name="selector">Record's property selector</param>
+		/// <returns>Configuration object for selected property</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, TimeOnly?, DeserializerConfigurationTimeOnlyNullable> Property(Expression<Func<TRecord, TimeOnly?>> selector)
+		{
+			return PropertyWithCustomDeserializer<TimeOnly?, DeserializerConfigurationTimeOnlyNullable>(selector, propConf => new DeserializerConfigurationTimeOnlyNullable(propConf));
 		}
 #endif
 

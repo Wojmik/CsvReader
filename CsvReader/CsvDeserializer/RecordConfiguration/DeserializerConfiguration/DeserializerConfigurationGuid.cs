@@ -26,9 +26,9 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.De
 		{ }
 
 		/// <summary>
-		/// Sets format used during parsing cell value to <typeparamref name="TDeserialized"/> type. If null, standard formats are used.
+		/// Sets format used during parsing cell value to <see cref="Guid"/> type. If null, standard formats are used.
 		/// </summary>
-		/// <param name="format">Desired format for parsing cell value to <typeparamref name="TDeserialized"/> type</param>
+		/// <param name="format">Desired format for parsing cell value to <see cref="Guid"/> type</param>
 		/// <returns>This configuration object for methods chaining</returns>
 		public DeserializerConfigurationGuid SetFormat(string? format)
 		{

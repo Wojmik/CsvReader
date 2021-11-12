@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Buffers;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace WojciechMikołajewicz.CsvReader.MemorySequence
@@ -72,7 +73,11 @@ namespace WojciechMikołajewicz.CsvReader.MemorySequence
 		/// </summary>
 		/// <param name="obj">Object to compare</param>
 		/// <returns>True if objects are equal, false otherwise</returns>
-		public override bool Equals(object obj)
+		public override bool Equals(
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_0_OR_GREATER
+			[NotNullWhen(true)]
+#endif
+			object? obj)
 		{
 			return obj is MemorySequencePosition<T> position && Equals(position);
 		}
@@ -84,8 +89,7 @@ namespace WojciechMikołajewicz.CsvReader.MemorySequence
 		/// <returns>True if objects are equal, false otherwise</returns>
 		public bool Equals(MemorySequencePosition<T> other)
 		{
-			return other!=null
-				&& PositionInSegment==other.PositionInSegment
+			return PositionInSegment==other.PositionInSegment
 				&& InternalSequenceSegment.Array.Equals(other.InternalSequenceSegment.Array);
 				//&& SequenceSegment.Memory.Equals(other.SequenceSegment.Memory);
 		}
