@@ -45,7 +45,7 @@ namespace WojciechMikołajewicz.CsvReader.Helpers
 		/// <returns>String instance that is already in string deduplicator container or <paramref name="value"/> if it wasn't exist yiet in the container</returns>
 		public string Deduplicate(string value)
 		{
-			if(StringSet.TryGetValue(value, out string storedValue))
+			if(StringSet.TryGetValue(value, out string? storedValue))
 				return storedValue;
 
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_0_OR_GREATER
