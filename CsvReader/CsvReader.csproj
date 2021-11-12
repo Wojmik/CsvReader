@@ -13,7 +13,7 @@
 		<PackageTags>Csv CsvDeserializer CsvReader</PackageTags>
 		<PackageId>CsvDeserializer</PackageId>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Version>0.5.3</Version>
+		<Version>0.6.0</Version>
   </PropertyGroup>
 	
 	<!--For nullable to work with netstandard2.0-->
