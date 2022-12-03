@@ -12,17 +12,17 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 		CellDeserializerFromStringBase<DateTimeOffset?>
 #endif
 	{
-		private readonly string Format;
+		private readonly string _format;
 
-		private readonly IFormatProvider FormatProvider;
+		private readonly IFormatProvider _formatProvider;
 
-		private readonly DateTimeStyles DateTimeStyles;
+		private readonly DateTimeStyles _dateTimeStyles;
 
 		public CellDateTimeOffsetFormattedNullableDeserializer(string format, IFormatProvider formatProvider, DateTimeStyles dateTimeStyles)
 		{
-			Format = format;
-			FormatProvider = formatProvider;
-			DateTimeStyles = dateTimeStyles;
+			_format = format;
+			_formatProvider = formatProvider;
+			_dateTimeStyles = dateTimeStyles;
 		}
 
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
@@ -31,7 +31,7 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 			DateTimeOffset? parsedValue = default;
 
 			if(!value.IsEmpty)
-				parsedValue = DateTimeOffset.ParseExact(value.Span, Format, FormatProvider, DateTimeStyles);
+				parsedValue = DateTimeOffset.ParseExact(value.Span, _format, _formatProvider, _dateTimeStyles);
 			return parsedValue;
 		}
 #else
@@ -40,7 +40,7 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 			DateTimeOffset? parsedValue = default;
 
 			if(!string.IsNullOrEmpty(value))
-				parsedValue = DateTimeOffset.ParseExact(value, Format, FormatProvider, DateTimeStyles);
+				parsedValue = DateTimeOffset.ParseExact(value, _format, _formatProvider, _dateTimeStyles);
 			return parsedValue;
 		}
 #endif

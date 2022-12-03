@@ -11,11 +11,11 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 		CellDeserializerFromStringBase<Guid?>
 #endif
 	{
-		private readonly string Format;
+		private readonly string _format;
 
 		public CellGuidFormattedNullableDeserializer(string format)
 		{
-			Format = format;
+			_format = format;
 		}
 
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
@@ -24,7 +24,7 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 			Guid? parsedValue = default;
 
 			if(!value.IsEmpty)
-				parsedValue = Guid.ParseExact(value.Span, Format);
+				parsedValue = Guid.ParseExact(value.Span, _format);
 			return parsedValue;
 		}
 #else
@@ -33,7 +33,7 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 			Guid? parsedValue = default;
 
 			if(!string.IsNullOrEmpty(value))
-				parsedValue = Guid.ParseExact(value, Format);
+				parsedValue = Guid.ParseExact(value, _format);
 			return parsedValue;
 		}
 #endif

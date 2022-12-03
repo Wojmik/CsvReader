@@ -12,17 +12,17 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.De
 	/// </summary>
 	public class DeserializerConfigurationString : DeserializerConfigurationBase<string?>
 	{
-		private bool? _EmptyAsNull;
+		private bool? _emptyAsNull;
 		/// <summary>
 		/// Treat empty csv cell as null
 		/// </summary>
-		public bool EmptyAsNull { get => _EmptyAsNull??RecordConfiguration.DefaultEmptyAsNull; }
+		public bool EmptyAsNull { get => _emptyAsNull??RecordConfiguration.DefaultEmptyAsNull; }
 
-		private bool? _DeduplicateStrings;
+		private bool? _deduplicateStrings;
 		/// <summary>
 		/// Deduplicate strings with the same value
 		/// </summary>
-		public bool DeduplicateStrings { get => _DeduplicateStrings??RecordConfiguration.DefaultDeduplicateStrings; }
+		public bool DeduplicateStrings { get => _deduplicateStrings??RecordConfiguration.DefaultDeduplicateStrings; }
 
 		/// <summary>
 		/// Constructor
@@ -39,7 +39,7 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.De
 		/// <returns>This configuration object for methods chaining</returns>
 		public DeserializerConfigurationString SetEmptyStringBehavior(bool emptyAsNull)
 		{
-			_EmptyAsNull = emptyAsNull;
+			_emptyAsNull = emptyAsNull;
 			return this;
 		}
 
@@ -50,7 +50,7 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.De
 		/// <returns>This configuration object for methods chaining</returns>
 		public DeserializerConfigurationString SetStringsDeduplicatingBehavior(bool deduplicateStrings)
 		{
-			_DeduplicateStrings = deduplicateStrings;
+			_deduplicateStrings = deduplicateStrings;
 			return this;
 		}
 

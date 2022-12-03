@@ -27,13 +27,21 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.Bi
 		public int ColumnIndex { get; private protected set; }
 
 		/// <summary>
+		/// Is binding to column optional. Default is false which means binding to column is required.
+		/// </summary>
+		/// <remarks>
+		/// For optional bindings no exception is thrown if the column doesn't exist.
+		/// </remarks>
+		public bool Optional { get; private protected set; }
+
+		/// <summary>
 		/// Constructor
 		/// </summary>
 		/// <param name="recordConfiguration">Record configuration object</param>
 		protected BindingConfigurationBase(WojciechMikołajewicz.CsvReader.RecordConfiguration recordConfiguration)
 		{
-			this.RecordConfiguration = recordConfiguration;
-			this.ColumnIndex = -1;
+			RecordConfiguration = recordConfiguration;
+			ColumnIndex = -1;
 		}
 
 		/// <summary>
@@ -42,7 +50,7 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.Bi
 		/// <param name="columnName">Name of the column property will be bind to</param>
 		protected internal void BindToColumnInternal(string columnName)
 		{
-			ColumnName = columnName??throw new ArgumentNullException(nameof(columnName));
+			ColumnName = columnName ?? throw new ArgumentNullException(nameof(columnName));
 			ColumnIndex = -1;
 		}
 
@@ -65,6 +73,15 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.Bi
 		{
 			ColumnName = null;
 			ColumnIndex = -1;
+		}
+
+		/// <summary>
+		/// Is binding to column optional. No exception is thrown when optional column doesn't exist.
+		/// </summary>
+		/// <param name="optional">Should binding to column be optional</param>
+		protected internal void IsOptionalInternal(bool optional)
+		{
+			Optional = optional;
 		}
 	}
 

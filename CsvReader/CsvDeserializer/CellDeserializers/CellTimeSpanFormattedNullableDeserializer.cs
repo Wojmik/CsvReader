@@ -12,17 +12,17 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 		CellDeserializerFromStringBase<TimeSpan?>
 #endif
 	{
-		private readonly string Format;
+		private readonly string _format;
 
-		private readonly IFormatProvider FormatProvider;
+		private readonly IFormatProvider _formatProvider;
 
-		private readonly TimeSpanStyles TimeSpanStyles;
+		private readonly TimeSpanStyles _timeSpanStyles;
 
 		public CellTimeSpanFormattedNullableDeserializer(string format, IFormatProvider formatProvider, TimeSpanStyles timeSpanStyles)
 		{
-			Format = format;
-			FormatProvider = formatProvider;
-			TimeSpanStyles = timeSpanStyles;
+			_format = format;
+			_formatProvider = formatProvider;
+			_timeSpanStyles = timeSpanStyles;
 		}
 
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
@@ -31,7 +31,7 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 			TimeSpan? parsedValue = default;
 
 			if(!value.IsEmpty)
-				parsedValue = TimeSpan.ParseExact(value.Span, Format, FormatProvider, TimeSpanStyles);
+				parsedValue = TimeSpan.ParseExact(value.Span, _format, _formatProvider, _timeSpanStyles);
 			return parsedValue;
 		}
 #else
@@ -40,7 +40,7 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 			TimeSpan? parsedValue = default;
 
 			if(!string.IsNullOrEmpty(value))
-				parsedValue = TimeSpan.ParseExact(value, Format, FormatProvider, TimeSpanStyles);
+				parsedValue = TimeSpan.ParseExact(value, _format, _formatProvider, _timeSpanStyles);
 			return parsedValue;
 		}
 #endif

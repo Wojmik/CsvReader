@@ -11,17 +11,17 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 		CellDeserializerFromStringBase<Guid>
 #endif
 	{
-		private readonly string Format;
+		private readonly string _format;
 
-		private readonly bool AllowEmpty;
+		private readonly bool _allowEmpty;
 
-		private readonly Guid ValueForEmpty;
+		private readonly Guid _valueForEmpty;
 
 		public CellGuidFormattedDeserializer(string format, bool allowEmpty, Guid valueForEmpty)
 		{
-			Format = format;
-			AllowEmpty = allowEmpty;
-			ValueForEmpty = valueForEmpty;
+			_format = format;
+			_allowEmpty = allowEmpty;
+			_valueForEmpty = valueForEmpty;
 		}
 
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
@@ -29,10 +29,10 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 		{
 			Guid parsedValue;
 
-			if(AllowEmpty && value.IsEmpty)
-				parsedValue = ValueForEmpty;
+			if(_allowEmpty && value.IsEmpty)
+				parsedValue = _valueForEmpty;
 			else
-				parsedValue = Guid.ParseExact(value.Span, Format);
+				parsedValue = Guid.ParseExact(value.Span, _format);
 			return parsedValue;
 		}
 #else
@@ -40,10 +40,10 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 		{
 			Guid parsedValue;
 
-			if(AllowEmpty && string.IsNullOrEmpty(value))
-				parsedValue = ValueForEmpty;
+			if(_allowEmpty && string.IsNullOrEmpty(value))
+				parsedValue = _valueForEmpty;
 			else
-				parsedValue = Guid.ParseExact(value, Format);
+				parsedValue = Guid.ParseExact(value, _format);
 			return parsedValue;
 		}
 #endif

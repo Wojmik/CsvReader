@@ -62,7 +62,7 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.Bi
 			}
 
 			var setPropertyDelegate = GetSetPropertyDelegate();
-			columnBinding = new ColumnBindingToProperty<TRecord, TProperty>(ColumnName, ColumnIndex, cellDeserializer!, setPropertyDelegate);
+			columnBinding = new ColumnBindingToProperty<TRecord, TProperty>(ColumnName, ColumnIndex, Optional, cellDeserializer!, setPropertyDelegate);
 			return true;
 		}
 

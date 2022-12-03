@@ -12,17 +12,17 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.De
 	/// </summary>
 	public class DeserializerConfigurationByteArray : DeserializerConfigurationBase<byte[]?>
 	{
-		private bool? _EmptyAsNull;
+		private bool? _emptyAsNull;
 		/// <summary>
 		/// Treat empty csv cell as null
 		/// </summary>
-		public bool EmptyAsNull { get => _EmptyAsNull??RecordConfiguration.DefaultEmptyAsNull; }
+		public bool EmptyAsNull { get => _emptyAsNull??RecordConfiguration.DefaultEmptyAsNull; }
 
-		private ByteArrayEncoding? _ByteArrayEncoding;
+		private ByteArrayEncoding? _byteArrayEncoding;
 		/// <summary>
 		/// Byte array encoding
 		/// </summary>
-		public ByteArrayEncoding ByteArrayEncoding { get => _ByteArrayEncoding??RecordConfiguration.DefaultByteArrayEncoding; }
+		public ByteArrayEncoding ByteArrayEncoding { get => _byteArrayEncoding??RecordConfiguration.DefaultByteArrayEncoding; }
 
 		/// <summary>
 		/// Constructor
@@ -39,7 +39,7 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.De
 		/// <returns>This configuration object for methods chaining</returns>
 		public DeserializerConfigurationByteArray SetEmptyBehavior(bool emptyAsNull)
 		{
-			_EmptyAsNull = emptyAsNull;
+			_emptyAsNull = emptyAsNull;
 			return this;
 		}
 
@@ -50,7 +50,7 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.De
 		/// <returns>This configuration object for methods chaining</returns>
 		public DeserializerConfigurationByteArray SetByteArrayEncoding(ByteArrayEncoding byteArrayEncoding)
 		{
-			_ByteArrayEncoding = byteArrayEncoding;
+			_byteArrayEncoding = byteArrayEncoding;
 			return this;
 		}
 

@@ -9,18 +9,18 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 {
 	sealed class CellByteArrayBase64Deserializer : CellDeserializerFromStringBase<byte[]?>
 	{
-		private readonly bool EmptyAsNull;
+		private readonly bool _emptyAsNull;
 
 		public CellByteArrayBase64Deserializer(bool emptyAsNull)
 		{
-			EmptyAsNull = emptyAsNull;
+			_emptyAsNull = emptyAsNull;
 		}
 
 		protected override byte[]? DeserializeFromString(string value)
 		{
 			byte[]? val = null;
 
-			if(!EmptyAsNull || 0<value.Length)
+			if(!_emptyAsNull || 0<value.Length)
 			{
 				val = Convert.FromBase64String(value);
 			}

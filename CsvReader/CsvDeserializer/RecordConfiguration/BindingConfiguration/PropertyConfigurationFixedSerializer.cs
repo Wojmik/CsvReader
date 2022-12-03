@@ -22,14 +22,14 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.Bi
 		internal PropertyConfigurationFixedSerializer(WojciechMikołajewicz.CsvReader.RecordConfiguration recordConfiguration, Expression<Func<TRecord, TProperty>> selector, Func<PropertyConfigurationFixedSerializer<TRecord, TProperty, TSerializerConfigurator>, TSerializerConfigurator> createSerializerConfigurator)
 			: base(recordConfiguration, selector)
 		{
-			this.SerializerConfigurator = createSerializerConfigurator(this);
+			SerializerConfigurator = createSerializerConfigurator(this);
 		}
 
 		internal PropertyConfigurationFixedSerializer(BindingConfigurationBase<TRecord> bindingConfiguration, Expression<Func<TRecord, TProperty>> selector, Func<PropertyConfigurationFixedSerializer<TRecord, TProperty, TSerializerConfigurator>, TSerializerConfigurator> createSerializerConfigurator)
 			: this(bindingConfiguration.RecordConfiguration, selector, createSerializerConfigurator)
 		{
-			this.ColumnName = bindingConfiguration.ColumnName;
-			this.ColumnIndex = bindingConfiguration.ColumnIndex;
+			ColumnName = bindingConfiguration.ColumnName;
+			ColumnIndex = bindingConfiguration.ColumnIndex;
 		}
 
 		/// <summary>
@@ -40,7 +40,6 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.Bi
 		public PropertyConfigurationFixedSerializer<TRecord, TProperty, TSerializerConfigurator> ConfigureDeserializer(Action<TSerializerConfigurator> configureSerializerMethod)
 		{
 			configureSerializerMethod(SerializerConfigurator);
-
 			return this;
 		}
 
@@ -74,6 +73,17 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.Bi
 		public void Ignore()
 		{
 			IgnoreInternal();
+		}
+
+		/// <summary>
+		/// Is binding to column optional. No exception is thrown when optional column doesn't exist.
+		/// </summary>
+		/// <param name="optional">Should binding to column be optional</param>
+		/// <returns>This configuration object for methods chaining</returns>
+		public PropertyConfigurationFixedSerializer<TRecord, TProperty, TSerializerConfigurator> IsOptional(bool optional = true)
+		{
+			IsOptionalInternal(optional);
+			return this;
 		}
 
 		/// <summary>

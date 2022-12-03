@@ -7,48 +7,48 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 {
 	readonly struct NodeContainer
 	{
-		private readonly MemorySequenceSpan _MemorySequence;
+		private readonly MemorySequenceSpan _memorySequence;
 		public MemorySequenceSpan MemorySequence
 		{
-			get => NodeContainerType==NodeContainerType.MemorySequence ? _MemorySequence : throw new InvalidOperationException($"Cannot return {nameof(MemorySequence)}. Current state is {NodeContainerType}");
+			get => NodeContainerType==NodeContainerType.MemorySequence ? _memorySequence : throw new InvalidOperationException($"Cannot return {nameof(MemorySequence)}. Current state is {NodeContainerType}");
 		}
 
-		private readonly ReadOnlyMemory<char> _Memory;
+		private readonly ReadOnlyMemory<char> _memory;
 		public ReadOnlyMemory<char> Memory
 		{
-			get => NodeContainerType==NodeContainerType.Memory ? _Memory : throw new InvalidOperationException($"Cannot return {nameof(Memory)}. Current state is {NodeContainerType}");
+			get => NodeContainerType==NodeContainerType.Memory ? _memory : throw new InvalidOperationException($"Cannot return {nameof(Memory)}. Current state is {NodeContainerType}");
 		}
 
-		private readonly string? _String;
+		private readonly string? _string;
 		public string String
 		{
-			get => NodeContainerType==NodeContainerType.String ? _String! : throw new InvalidOperationException($"Cannot return {nameof(String)}. Current state is {NodeContainerType}");
+			get => NodeContainerType==NodeContainerType.String ? _string! : throw new InvalidOperationException($"Cannot return {nameof(String)}. Current state is {NodeContainerType}");
 		}
 
 		public NodeContainerType NodeContainerType { get; }
 
 		public NodeContainer(in MemorySequenceSpan memorySequence)
 		{
-			this._MemorySequence = memorySequence;
-			this._Memory = default;
-			this._String = null;
-			this.NodeContainerType = NodeContainerType.MemorySequence;
+			_memorySequence = memorySequence;
+			_memory = default;
+			_string = null;
+			NodeContainerType = NodeContainerType.MemorySequence;
 		}
 
 		public NodeContainer(in ReadOnlyMemory<char> memory)
 		{
-			this._MemorySequence = default;
-			this._Memory = memory;
-			this._String = null;
-			this.NodeContainerType = NodeContainerType.Memory;
+			_memorySequence = default;
+			_memory = memory;
+			_string = null;
+			NodeContainerType = NodeContainerType.Memory;
 		}
 
 		public NodeContainer(string str)
 		{
-			this._MemorySequence = default;
-			this._Memory = default;
-			this._String = str;
-			this.NodeContainerType = NodeContainerType.String;
+			_memorySequence = default;
+			_memory = default;
+			_string = str;
+			NodeContainerType = NodeContainerType.String;
 		}
 	}
 }

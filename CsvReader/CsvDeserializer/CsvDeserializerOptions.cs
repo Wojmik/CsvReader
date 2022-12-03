@@ -8,7 +8,7 @@ namespace WojciechMikołajewicz.CsvReader
 	/// <summary>
 	/// <see cref="CsvDeserializer{TRecord}"/> options
 	/// </summary>
-	public class CsvDeserializerOptions : CsvReaderOptions
+	class CsvDeserializerOptions : CsvReaderOptions, ICsvReaderAndDeserializerOptions
 	{
 		const bool HasHeaderRowDefault = true;
 		const bool EmptyAsNullDefault = true;
@@ -23,7 +23,7 @@ namespace WojciechMikołajewicz.CsvReader
 		/// <summary>
 		/// Comparer of column names in header row. Default is <see cref="StringComparer.OrdinalIgnoreCase"/>
 		/// </summary>
-		public IEqualityComparer<string?> HeaderRowColumnNamesComparer { get; set; }
+		public IEqualityComparer<string> HeaderRowColumnNamesComparer { get; set; }
 
 		/// <summary>
 		/// Culture used for parsing values from csv file. Default is <see cref="CultureInfo.InvariantCulture"/>

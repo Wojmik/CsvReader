@@ -12,13 +12,13 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 	sealed class CellEnumNullableDeserializer<TEnum> : CellDeserializerFromStringBase<TEnum?>
 		where TEnum : struct
 	{
-		private readonly bool IgnoreCase;
+		private readonly bool _ignoreCase;
 
 		public CellEnumNullableDeserializer(bool ignoreCase)
 		{
 			if(!typeof(TEnum).IsEnum)
 				throw new ArgumentException($"{typeof(TEnum)} is not an Enum type");
-			IgnoreCase = ignoreCase;
+			_ignoreCase = ignoreCase;
 		}
 
 		protected override TEnum? DeserializeFromString(string value)
@@ -28,9 +28,9 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 			if(!string.IsNullOrEmpty(value))
 			{
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_0_OR_GREATER
-				parsedValue = Enum.Parse<TEnum>(value, IgnoreCase);
+				parsedValue = Enum.Parse<TEnum>(value, _ignoreCase);
 #else
-				parsedValue = (TEnum)Enum.Parse(typeof(TEnum), value, IgnoreCase);
+				parsedValue = (TEnum)Enum.Parse(typeof(TEnum), value, _ignoreCase);
 #endif
 			}
 			return parsedValue;

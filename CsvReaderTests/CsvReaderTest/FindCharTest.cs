@@ -20,7 +20,10 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 			const int ChunkLength = 10;
 
 			using(var textReader = new RepeatedTextReader(TestString) { MaxReadSize = ChunkLength, })
-			using(var csvReader = new CsvReader.CsvReader(textReader, new CsvReaderOptions() { BufferSizeInChars = 32, }))
+			using(var csvReader = new CsvReader.CsvReader(textReader, options =>
+			{
+				options.BufferSizeInChars = 32;
+			}))
 			{
 				var memSeq = csvReader.CharMemorySequence_Get();
 

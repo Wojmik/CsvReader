@@ -7,23 +7,23 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.Co
 {
 	sealed class ColumnBindingToProperty<TRecord, TProperty> : ColumnBinding<TRecord>
 	{
-		private readonly CellDeserializerBase<TProperty> CellDeserializer;
+		private readonly CellDeserializerBase<TProperty> _cellDeserializer;
 
-		private readonly Action<TRecord, TProperty> SetPropertyMethod;
+		private readonly Action<TRecord, TProperty> _setPropertyMethod;
 
-		public override NodeContainerType InputType { get => CellDeserializer.InputType; }
+		public override NodeContainerType InputType { get => _cellDeserializer.InputType; }
 
-		public ColumnBindingToProperty(string? columnName, int columnIndex, CellDeserializerBase<TProperty> cellDeserializer, Action<TRecord, TProperty> setPropertyMethod)
-			: base(columnName, columnIndex)
+		public ColumnBindingToProperty(string? columnName, int columnIndex, bool optional, CellDeserializerBase<TProperty> cellDeserializer, Action<TRecord, TProperty> setPropertyMethod)
+			: base(columnName, columnIndex, optional)
 		{
-			this.CellDeserializer = cellDeserializer;
-			this.SetPropertyMethod = setPropertyMethod;
+			_cellDeserializer = cellDeserializer;
+			_setPropertyMethod = setPropertyMethod;
 		}
 
 		public override void Deserialize(TRecord record, in NodeContainer nodeContainer)
 		{
-			var deserialized = CellDeserializer.DeserializeCell(nodeContainer);
-			SetPropertyMethod.Invoke(record, deserialized);
+			var deserialized = _cellDeserializer.DeserializeCell(nodeContainer);
+			_setPropertyMethod.Invoke(record, deserialized);
 		}
 	}
 }

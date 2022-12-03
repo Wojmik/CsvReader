@@ -8,33 +8,33 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers;
 
 sealed class CellTimeOnlyFormattedDeserializer : CellDeserializerFromMemoryBase<TimeOnly>
 {
-	private readonly string Format;
+	private readonly string _format;
 
-	private readonly IFormatProvider FormatProvider;
+	private readonly IFormatProvider _formatProvider;
 
-	private readonly DateTimeStyles DateTimeStyles;
+	private readonly DateTimeStyles _dateTimeStyles;
 
-	private readonly bool AllowEmpty;
+	private readonly bool _allowEmpty;
 
-	private readonly TimeOnly ValueForEmpty;
+	private readonly TimeOnly _valueForEmpty;
 
 	public CellTimeOnlyFormattedDeserializer(string format, IFormatProvider formatProvider, DateTimeStyles dateTimeStyles, bool allowEmpty, TimeOnly valueForEmpty)
 	{
-		Format = format;
-		FormatProvider = formatProvider;
-		DateTimeStyles = dateTimeStyles;
-		AllowEmpty = allowEmpty;
-		ValueForEmpty = valueForEmpty;
+		_format = format;
+		_formatProvider = formatProvider;
+		_dateTimeStyles = dateTimeStyles;
+		_allowEmpty = allowEmpty;
+		_valueForEmpty = valueForEmpty;
 	}
 
 	protected override TimeOnly DeserializeFromMemory(in ReadOnlyMemory<char> value)
 	{
 		TimeOnly parsedValue;
 
-		if (AllowEmpty && value.IsEmpty)
-			parsedValue = ValueForEmpty;
+		if (_allowEmpty && value.IsEmpty)
+			parsedValue = _valueForEmpty;
 		else
-			parsedValue = TimeOnly.ParseExact(value.Span, Format, FormatProvider, DateTimeStyles);
+			parsedValue = TimeOnly.ParseExact(value.Span, _format, _formatProvider, _dateTimeStyles);
 		return parsedValue;
 	}
 }

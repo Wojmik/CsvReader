@@ -16,9 +16,9 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.De
 		where TDeserialized : struct
 		where TDeserializerConfigurator : DeserializerConfigurationNumberStyleFormatProviderNullableBase<TDeserialized, TDeserializerConfigurator>
 	{
-		private readonly RecordConfigurationNumberStylesChooser RecordConfigurationNumberStylesChooser;
+		private readonly RecordConfigurationNumberStylesChooser _recordConfigurationNumberStylesChooser;
 
-		private NumberStyles? _NumberStyles;
+		private NumberStyles? _numberStyles;
 		/// <summary>
 		/// Number styles used during parsing cell value to a number
 		/// </summary>
@@ -26,21 +26,21 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.De
 		{
 			get
 			{
-				return _NumberStyles??RecordConfigurationNumberStylesChooser switch
+				return _numberStyles??_recordConfigurationNumberStylesChooser switch
 				{
 					RecordConfigurationNumberStylesChooser.IntegerNumberStyles => RecordConfiguration.DefaultIntegerNumberStyles,
 					RecordConfigurationNumberStylesChooser.FloatingPointNumberStyles => RecordConfiguration.DefaultFloationgPointNumberStyles,
 					RecordConfigurationNumberStylesChooser.DecimalNumberStyles => RecordConfiguration.DefaultDecimalNumberStyles,
-					_ => throw new NotSupportedException($"Unsupported record configuration number styles chooser: {RecordConfigurationNumberStylesChooser}"),
+					_ => throw new NotSupportedException($"Unsupported record configuration number styles chooser: {_recordConfigurationNumberStylesChooser}"),
 				};
 			}
 		}
 
-		private IFormatProvider? _FormatProvider;
+		private IFormatProvider? _formatProvider;
 		/// <summary>
 		/// Format provider used during parsing cell value to target type
 		/// </summary>
-		public IFormatProvider FormatProvider { get => _FormatProvider??RecordConfiguration.DefaultCulture; }
+		public IFormatProvider FormatProvider { get => _formatProvider??RecordConfiguration.DefaultCulture; }
 
 		/// <summary>
 		/// Constructor
@@ -53,7 +53,7 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.De
 		{
 			if(!Enum.IsDefined(typeof(RecordConfigurationNumberStylesChooser), recordConfigurationNumberStylesChooser))
 				throw new NotSupportedException($"Unsupported record configuration number styles chooser: {recordConfigurationNumberStylesChooser}");
-			RecordConfigurationNumberStylesChooser = recordConfigurationNumberStylesChooser;
+			_recordConfigurationNumberStylesChooser = recordConfigurationNumberStylesChooser;
 		}
 
 		/// <summary>
@@ -63,7 +63,7 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.De
 		/// <returns>This configuration object for methods chaining</returns>
 		public TDeserializerConfigurator SetNumberStyles(NumberStyles numberStyles)
 		{
-			_NumberStyles = numberStyles;
+			_numberStyles = numberStyles;
 			return (TDeserializerConfigurator)this;
 		}
 
@@ -74,7 +74,7 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.De
 		/// <returns>This configuration object for methods chaining</returns>
 		public TDeserializerConfigurator SetFormatProvider(IFormatProvider? formatProvider)
 		{
-			_FormatProvider = formatProvider;
+			_formatProvider = formatProvider;
 			return (TDeserializerConfigurator)this;
 		}
 	}

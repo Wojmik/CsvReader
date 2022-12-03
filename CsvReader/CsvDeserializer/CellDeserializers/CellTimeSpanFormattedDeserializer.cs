@@ -12,23 +12,23 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 		CellDeserializerFromStringBase<TimeSpan>
 #endif
 	{
-		private readonly string Format;
+		private readonly string _format;
 
-		private readonly IFormatProvider FormatProvider;
+		private readonly IFormatProvider _formatProvider;
 
-		private readonly TimeSpanStyles TimeSpanStyles;
+		private readonly TimeSpanStyles _timeSpanStyles;
 
-		private readonly bool AllowEmpty;
+		private readonly bool _allowEmpty;
 
-		private readonly TimeSpan ValueForEmpty;
+		private readonly TimeSpan _valueForEmpty;
 
 		public CellTimeSpanFormattedDeserializer(string format, IFormatProvider formatProvider, TimeSpanStyles timeSpanStyles, bool allowEmpty, TimeSpan valueForEmpty)
 		{
-			Format = format;
-			FormatProvider = formatProvider;
-			TimeSpanStyles = timeSpanStyles;
-			AllowEmpty = allowEmpty;
-			ValueForEmpty = valueForEmpty;
+			_format = format;
+			_formatProvider = formatProvider;
+			_timeSpanStyles = timeSpanStyles;
+			_allowEmpty = allowEmpty;
+			_valueForEmpty = valueForEmpty;
 		}
 
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
@@ -36,10 +36,10 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 		{
 			TimeSpan parsedValue;
 
-			if(AllowEmpty && value.IsEmpty)
-				parsedValue = ValueForEmpty;
+			if(_allowEmpty && value.IsEmpty)
+				parsedValue = _valueForEmpty;
 			else
-				parsedValue = TimeSpan.ParseExact(value.Span, Format, FormatProvider, TimeSpanStyles);
+				parsedValue = TimeSpan.ParseExact(value.Span, _format, _formatProvider, _timeSpanStyles);
 			return parsedValue;
 		}
 #else
@@ -47,10 +47,10 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 		{
 			TimeSpan parsedValue;
 
-			if(AllowEmpty && string.IsNullOrEmpty(value))
-				parsedValue = ValueForEmpty;
+			if(_allowEmpty && string.IsNullOrEmpty(value))
+				parsedValue = _valueForEmpty;
 			else
-				parsedValue = TimeSpan.ParseExact(value, Format, FormatProvider, TimeSpanStyles);
+				parsedValue = TimeSpan.ParseExact(value, _format, _formatProvider, _timeSpanStyles);
 			return parsedValue;
 		}
 #endif

@@ -11,32 +11,32 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 {
 	sealed class CellBoolDeserializer : CellDeserializerFromMemoryBase<bool>
 	{
-		private readonly string TrueString;
+		private readonly string _trueString;
 
-		private readonly string FalseString;
+		private readonly string _falseString;
 
-		private readonly bool AllowEmpty;
+		private readonly bool _allowEmpty;
 
-		private readonly bool ValueForEmpty;
+		private readonly bool _valueForEmpty;
 
 		public CellBoolDeserializer(string trueString, string falseString, bool allowEmpty, bool valueForEmpty)
 		{
-			TrueString = trueString;
-			FalseString = falseString;
-			AllowEmpty = allowEmpty;
-			ValueForEmpty = valueForEmpty;
+			_trueString = trueString;
+			_falseString = falseString;
+			_allowEmpty = allowEmpty;
+			_valueForEmpty = valueForEmpty;
 		}
 
 		protected override bool DeserializeFromMemory(in ReadOnlyMemory<char> value)
 		{
 			bool parsedValue;
 
-			if(MemoryExtensions.Equals(value.Span, TrueString.AsSpan(), StringComparison.OrdinalIgnoreCase))
+			if(MemoryExtensions.Equals(value.Span, _trueString.AsSpan(), StringComparison.OrdinalIgnoreCase))
 				parsedValue = true;
-			else if(MemoryExtensions.Equals(value.Span, FalseString.AsSpan(), StringComparison.OrdinalIgnoreCase))
+			else if(MemoryExtensions.Equals(value.Span, _falseString.AsSpan(), StringComparison.OrdinalIgnoreCase))
 				parsedValue = false;
-			else if(AllowEmpty && value.IsEmpty)
-				parsedValue = ValueForEmpty;
+			else if(_allowEmpty && value.IsEmpty)
+				parsedValue = _valueForEmpty;
 			else 
 				throw new FormatException("Value is not true string nor false string");
 			return parsedValue;

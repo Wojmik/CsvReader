@@ -16,20 +16,20 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 		CellDeserializerFromStringBase<DateTime>
 #endif
 	{
-		private readonly IFormatProvider FormatProvider;
+		private readonly IFormatProvider _formatProvider;
 
-		private readonly DateTimeStyles DateTimeStyles;
+		private readonly DateTimeStyles _dateTimeStyles;
 
-		private readonly bool AllowEmpty;
+		private readonly bool _allowEmpty;
 
-		private readonly DateTime ValueForEmpty;
+		private readonly DateTime _valueForEmpty;
 
 		public CellDateTimeDeserializer(IFormatProvider formatProvider, DateTimeStyles dateTimeStyles, bool allowEmpty, DateTime valueForEmpty)
 		{
-			FormatProvider = formatProvider;
-			DateTimeStyles = dateTimeStyles;
-			AllowEmpty = allowEmpty;
-			ValueForEmpty = valueForEmpty;
+			_formatProvider = formatProvider;
+			_dateTimeStyles = dateTimeStyles;
+			_allowEmpty = allowEmpty;
+			_valueForEmpty = valueForEmpty;
 		}
 
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
@@ -37,10 +37,10 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 		{
 			DateTime parsedValue;
 
-			if(AllowEmpty && value.IsEmpty)
-				parsedValue = ValueForEmpty;
+			if(_allowEmpty && value.IsEmpty)
+				parsedValue = _valueForEmpty;
 			else
-				parsedValue = DateTime.Parse(value.Span, FormatProvider, DateTimeStyles);
+				parsedValue = DateTime.Parse(value.Span, _formatProvider, _dateTimeStyles);
 			return parsedValue;
 		}
 #else
@@ -48,10 +48,10 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 		{
 			DateTime parsedValue;
 
-			if(AllowEmpty && string.IsNullOrEmpty(value))
-				parsedValue = ValueForEmpty;
+			if(_allowEmpty && string.IsNullOrEmpty(value))
+				parsedValue = _valueForEmpty;
 			else
-				parsedValue = DateTime.Parse(value, FormatProvider, DateTimeStyles);
+				parsedValue = DateTime.Parse(value, _formatProvider, _dateTimeStyles);
 			return parsedValue;
 		}
 #endif

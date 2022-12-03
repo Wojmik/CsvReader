@@ -17,7 +17,11 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 		public async Task ReadNewLineAtChunksBoundaryTest()
 		{
 			using(var textReader = new WritableTextReader())
-			using(var csvReader = new CsvReader.CsvReader(textReader, new CsvReaderOptions() { BufferSizeInChars=32, LineEnding=LineEnding.CRLF, }))
+			using(var csvReader = new CsvReader.CsvReader(textReader, options =>
+			{
+				options.BufferSizeInChars = 32;
+				options.LineEnding = LineEnding.CRLF;
+			}))
 			{
 				var firstChunkSize = csvReader.CharMemorySequence_Get().CurrentPosition.InternalSequenceSegment.Array.Length;
 				var sample = string.Join(string.Empty, Enumerable.Range(0, firstChunkSize*5).Select(num => (num%10)));
@@ -47,7 +51,11 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 		public async Task ReadNewLineAtChunksBoundaryEofTest()
 		{
 			using(var textReader = new WritableTextReader())
-			using(var csvReader = new CsvReader.CsvReader(textReader, new CsvReaderOptions() { BufferSizeInChars=32, LineEnding=LineEnding.CRLF, }))
+			using(var csvReader = new CsvReader.CsvReader(textReader, options =>
+			{
+				options.BufferSizeInChars = 32;
+				options.LineEnding = LineEnding.CRLF;
+			}))
 			{
 				var firstChunkSize = csvReader.CharMemorySequence_Get().CurrentPosition.InternalSequenceSegment.Array.Length;
 				var sample = string.Join(string.Empty, Enumerable.Range(0, firstChunkSize+2).Select(num => (num%10)));

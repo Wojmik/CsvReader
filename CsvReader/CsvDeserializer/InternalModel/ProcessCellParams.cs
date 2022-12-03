@@ -14,9 +14,9 @@ namespace WojciechMikołajewicz.CsvReader.InternalModel
 
 		public ProcessCellParams(TRecord record)
 		{
-			this.Record = record;
-			this.ColumnIndex = 0;
-			this.BinderIndex = 0;
+			Record = record;
+			ColumnIndex = 0;
+			BinderIndex = 0;
 		}
 	}
 }
