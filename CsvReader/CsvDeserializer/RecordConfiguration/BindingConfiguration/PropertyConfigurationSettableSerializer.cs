@@ -45,9 +45,7 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.Bi
 		/// <returns>This property binding configurator for methods chaining</returns>
 		public PropertyConfigurationSettableSerializer<TRecord, TProperty> BindToColumn(string columnName)
 		{
-			ColumnName = columnName??throw new ArgumentNullException(nameof(columnName));
-			ColumnIndex = -1;
-
+			BindToColumnInternal(columnName);
 			return this;
 		}
 
@@ -58,11 +56,7 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.Bi
 		/// <returns>This property binding configurator for methods chaining</returns>
 		public PropertyConfigurationSettableSerializer<TRecord, TProperty> BindToColumn(int columnIndex)
 		{
-			if(columnIndex<0)
-				throw new ArgumentOutOfRangeException(nameof(columnIndex), columnIndex, $"{nameof(columnIndex)} cannot be less than zero");
-			ColumnName = null;
-			ColumnIndex = columnIndex;
-
+			BindToColumnInternal(columnIndex);
 			return this;
 		}
 
@@ -72,6 +66,17 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.Bi
 		public void Ignore()
 		{
 			IgnoreInternal();
+		}
+
+		/// <summary>
+		/// Is binding to column optional. No exception is thrown when optional column doesn't exist.
+		/// </summary>
+		/// <param name="optional">Should binding to column be optional</param>
+		/// <returns>This property binding configurator for methods chaining</returns>
+		public PropertyConfigurationSettableSerializer<TRecord, TProperty> IsOptional(bool optional = true)
+		{
+			IsOptionalInternal(optional);
+			return this;
 		}
 
 		/// <summary>

@@ -338,7 +338,15 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 		public async Task ReadNextNodeAsMemorySequenceBigBufferTestAsync(string sample, IEnumerable<StringNode> expectedNodes)
 		{
 			using(var textReader = new StringReader(sample))
-			using(var csvReader = new CsvReader.CsvReader(textReader, new CsvReaderOptions() { BufferSizeInChars=64, CanEscape=true, DelimiterChar=',', EscapeChar='\"', LineEnding=LineEnding.Auto, PermitEmptyLineAtEnd=false, }))
+			using(var csvReader = new CsvReader.CsvReader(textReader, options =>
+			{
+				options.BufferSizeInChars = 64;
+				options.CanEscape = true;
+				options.DelimiterChar = ',';
+				options.EscapeChar = '\"';
+				options.LineEnding = LineEnding.Auto;
+				options.PermitEmptyLineAtEnd = false;
+				}))
 			{
 				foreach(var expectedNode in expectedNodes)
 				{
@@ -355,7 +363,15 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 		public async Task ReadNextNodeAsMemorySequenceSmallBufferTestAsync(string sample, IEnumerable<StringNode> expectedNodes)
 		{
 			using(var textReader = new StringReader(sample))
-			using(var csvReader = new CsvReader.CsvReader(textReader, new CsvReaderOptions() { BufferSizeInChars=4, CanEscape=true, DelimiterChar=',', EscapeChar='\"', LineEnding=LineEnding.Auto, PermitEmptyLineAtEnd=false, }))
+			using(var csvReader = new CsvReader.CsvReader(textReader, options =>
+			{
+				options.BufferSizeInChars = 4;
+				options.CanEscape = true;
+				options.DelimiterChar = ',';
+				options.EscapeChar = '\"';
+				options.LineEnding = LineEnding.Auto;
+				options.PermitEmptyLineAtEnd = false;
+				}))
 			{
 				foreach(var expectedNode in expectedNodes)
 				{
@@ -372,7 +388,15 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 		public async Task ReadNextNodeAsMemoryBigBufferTestAsync(string sample, IEnumerable<StringNode> expectedNodes)
 		{
 			using(var textReader = new StringReader(sample))
-			using(var csvReader = new CsvReader.CsvReader(textReader, new CsvReaderOptions() { BufferSizeInChars=64, CanEscape=true, DelimiterChar=',', EscapeChar='\"', LineEnding=LineEnding.Auto, PermitEmptyLineAtEnd=false, }))
+			using(var csvReader = new CsvReader.CsvReader(textReader, options =>
+			{
+				options.BufferSizeInChars = 64;
+				options.CanEscape = true;
+				options.DelimiterChar = ',';
+				options.EscapeChar = '\"';
+				options.LineEnding = LineEnding.Auto;
+				options.PermitEmptyLineAtEnd = false;
+				}))
 			{
 				foreach(var expectedNode in expectedNodes)
 				{
@@ -388,7 +412,15 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 		public async Task ReadNextNodeAsMemorySmallBufferTestAsync(string sample, IEnumerable<StringNode> expectedNodes)
 		{
 			using(var textReader = new StringReader(sample))
-			using(var csvReader = new CsvReader.CsvReader(textReader, new CsvReaderOptions() { BufferSizeInChars=4, CanEscape=true, DelimiterChar=',', EscapeChar='\"', LineEnding=LineEnding.Auto, PermitEmptyLineAtEnd=false, }))
+			using(var csvReader = new CsvReader.CsvReader(textReader, options =>
+			{
+				options.BufferSizeInChars = 4;
+				options.CanEscape = true;
+				options.DelimiterChar = ',';
+				options.EscapeChar = '\"';
+				options.LineEnding = LineEnding.Auto;
+				options.PermitEmptyLineAtEnd = false;
+				}))
 			{
 				foreach(var expectedNode in expectedNodes)
 				{
@@ -404,7 +436,15 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 		public async Task ReadNextNodeAsStringBigBufferTestAsync(string sample, IEnumerable<StringNode> expectedNodes)
 		{
 			using(var textReader = new StringReader(sample))
-			using(var csvReader = new CsvReader.CsvReader(textReader, new CsvReaderOptions() { BufferSizeInChars=64, CanEscape=true, DelimiterChar=',', EscapeChar='\"', LineEnding=LineEnding.Auto, PermitEmptyLineAtEnd=false, }))
+			using(var csvReader = new CsvReader.CsvReader(textReader, options =>
+			{
+				options.BufferSizeInChars = 64;
+				options.CanEscape = true;
+				options.DelimiterChar = ',';
+				options.EscapeChar = '\"';
+				options.LineEnding = LineEnding.Auto;
+				options.PermitEmptyLineAtEnd = false;
+				}))
 			{
 				foreach(var expectedNode in expectedNodes)
 				{
@@ -420,7 +460,15 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 		public async Task ReadNextNodeAsStringSmallBufferTestAsync(string sample, IEnumerable<StringNode> expectedNodes)
 		{
 			using(var textReader = new StringReader(sample))
-			using(var csvReader = new CsvReader.CsvReader(textReader, new CsvReaderOptions() { BufferSizeInChars=4, CanEscape=true, DelimiterChar=',', EscapeChar='\"', LineEnding=LineEnding.Auto, PermitEmptyLineAtEnd=false, }))
+			using(var csvReader = new CsvReader.CsvReader(textReader, options =>
+			{
+				options.BufferSizeInChars = 4;
+				options.CanEscape = true;
+				options.DelimiterChar = ',';
+				options.EscapeChar = '\"';
+				options.LineEnding = LineEnding.Auto;
+				options.PermitEmptyLineAtEnd = false;
+				}))
 			{
 				foreach(var expectedNode in expectedNodes)
 				{

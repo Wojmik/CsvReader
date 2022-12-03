@@ -9,22 +9,22 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 {
 	sealed class CellStringDeduplicatedDeserializer : CellDeserializerFromStringBase<string?>
 	{
-		private readonly bool EmptyAsNull;
+		private readonly bool _emptyAsNull;
 
-		private readonly StringDeduplicator StringDeduplicator;
+		private readonly StringDeduplicator _stringDeduplicator;
 
 		public CellStringDeduplicatedDeserializer(bool emptyAsNull, StringDeduplicator stringDeduplicator)
 		{
-			EmptyAsNull = emptyAsNull;
-			StringDeduplicator = stringDeduplicator;
+			_emptyAsNull = emptyAsNull;
+			_stringDeduplicator = stringDeduplicator;
 		}
 
 		protected override string? DeserializeFromString(string value)
 		{
 			string? deduplicated = null;
 
-			if(!EmptyAsNull || 0<value.Length)
-				deduplicated = StringDeduplicator.Deduplicate(value);
+			if(!_emptyAsNull || 0<value.Length)
+				deduplicated = _stringDeduplicator.Deduplicate(value);
 
 			return deduplicated;
 		}

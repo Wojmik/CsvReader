@@ -23,18 +23,18 @@ namespace WojciechMikołajewicz.CsvReader.Helpers
 		}
 
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_0_OR_GREATER
-		private readonly HashSet<string> StringSet;
+		private readonly HashSet<string> _stringSet;
 
 		private StringDeduplicator(HashSet<string> stringSet)
 		{
-			StringSet = stringSet;
+			_stringSet = stringSet;
 		}
 #else
-		private readonly Dictionary<string, string> StringSet;
+		private readonly Dictionary<string, string> _stringSet;
 
 		private StringDeduplicator(Dictionary<string, string> stringSet)
 		{
-			StringSet = stringSet;
+			_stringSet = stringSet;
 		}
 #endif
 
@@ -45,13 +45,13 @@ namespace WojciechMikołajewicz.CsvReader.Helpers
 		/// <returns>String instance that is already in string deduplicator container or <paramref name="value"/> if it wasn't exist yiet in the container</returns>
 		public string Deduplicate(string value)
 		{
-			if(StringSet.TryGetValue(value, out string? storedValue))
+			if(_stringSet.TryGetValue(value, out string? storedValue))
 				return storedValue;
 
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_0_OR_GREATER
-			StringSet.Add(value);
+			_stringSet.Add(value);
 #else
-			StringSet.Add(value, value);
+			_stringSet.Add(value, value);
 #endif
 
 			return value;

@@ -11,23 +11,23 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 {
 	sealed class CellBoolNullableDeserializer : CellDeserializerFromMemoryBase<bool?>
 	{
-		private readonly string TrueString;
+		private readonly string _trueString;
 
-		private readonly string FalseString;
+		private readonly string _falseString;
 
 		public CellBoolNullableDeserializer(string trueString, string falseString)
 		{
-			TrueString = trueString;
-			FalseString = falseString;
+			_trueString = trueString;
+			_falseString = falseString;
 		}
 
 		protected override bool? DeserializeFromMemory(in ReadOnlyMemory<char> value)
 		{
 			bool? parsedValue;
 
-			if(MemoryExtensions.Equals(value.Span, TrueString.AsSpan(), StringComparison.OrdinalIgnoreCase))
+			if(MemoryExtensions.Equals(value.Span, _trueString.AsSpan(), StringComparison.OrdinalIgnoreCase))
 				parsedValue = true;
-			else if(MemoryExtensions.Equals(value.Span, FalseString.AsSpan(), StringComparison.OrdinalIgnoreCase))
+			else if(MemoryExtensions.Equals(value.Span, _falseString.AsSpan(), StringComparison.OrdinalIgnoreCase))
 				parsedValue = false;
 			else if(value.IsEmpty)
 				parsedValue = default;

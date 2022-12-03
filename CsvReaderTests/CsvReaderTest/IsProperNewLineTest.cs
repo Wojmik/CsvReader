@@ -19,9 +19,14 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 		[DataRow(LineEnding.CR, "\r")]
 		public void CheckSearchArray(LineEnding lineEnding, string newLineSearchCharacters)
 		{
-			var csvReaderOptions = new CsvReaderOptions() { LineEnding = lineEnding, BufferSizeInChars = 32, };
+			char delimiterChar = '\0';
 			using(var textReader = new StringReader(string.Empty))
-			using(var csvReader = new CsvReader.CsvReader(textReader, csvReaderOptions))
+			using(var csvReader = new CsvReader.CsvReader(textReader, options =>
+			{
+				options.LineEnding = lineEnding;
+				options.BufferSizeInChars = 32;
+				delimiterChar = options.DelimiterChar;
+			}))
 			{
 				Assert.AreEqual(lineEnding, csvReader.LineEnding);
 
@@ -29,7 +34,7 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 
 				Assert.AreEqual(newLineSearchCharacters.Length+1, searchArray.Length);
 				
-				Assert.IsTrue(0<=searchArray.Span.IndexOf(csvReaderOptions.DelimiterChar));
+				Assert.IsTrue(0<=searchArray.Span.IndexOf(delimiterChar));
 				foreach(var ch in newLineSearchCharacters)
 					Assert.IsTrue(0<=searchArray.Span.IndexOf(ch));
 			}
@@ -52,7 +57,11 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 		public async Task IsProperNewLineTestAsync(LineEnding lineEnding, string sample, bool expected)
 		{
 			using(var textReader = new StringReader(sample))
-			using(var csvReader = new CsvReader.CsvReader(textReader, new CsvReaderOptions() { LineEnding = lineEnding, BufferSizeInChars = 32, }))
+			using(var csvReader = new CsvReader.CsvReader(textReader, options =>
+			{
+				options.LineEnding = lineEnding;
+				options.BufferSizeInChars = 32;
+			}))
 			{
 				var charRead = await csvReader.GetCharAsync(csvReader.CharMemorySequence_Get().CurrentPosition, 0, default);
 
@@ -74,9 +83,14 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 		[DataRow("\r\nA", true, LineEnding.CRLF, "\r")]
 		public async Task AutoLineEndingTestAsync(string sample, bool expected, LineEnding afterLineEnding, string afterNewLineSearchCharacters)
 		{
-			var csvReaderOptions = new CsvReaderOptions() { LineEnding = LineEnding.Auto, BufferSizeInChars = 32, };
-			using(var textReader = new StringReader(sample))
-			using(var csvReader = new CsvReader.CsvReader(textReader, csvReaderOptions))
+			char delimiterChar = '\0';
+			using (var textReader = new StringReader(sample))
+			using(var csvReader = new CsvReader.CsvReader(textReader, options =>
+			{
+				options.LineEnding = LineEnding.Auto;
+				options.BufferSizeInChars = 32;
+				delimiterChar = options.DelimiterChar;
+			}))
 			{
 				var charRead = await csvReader.GetCharAsync(csvReader.CharMemorySequence_Get().CurrentPosition, 0, default);
 
@@ -90,7 +104,7 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 
 				Assert.AreEqual(afterNewLineSearchCharacters.Length+1, searchArray.Length);
 
-				Assert.IsTrue(0<=searchArray.Span.IndexOf(csvReaderOptions.DelimiterChar));
+				Assert.IsTrue(0<=searchArray.Span.IndexOf(delimiterChar));
 				foreach(var ch in afterNewLineSearchCharacters)
 					Assert.IsTrue(0<=searchArray.Span.IndexOf(ch));
 			}

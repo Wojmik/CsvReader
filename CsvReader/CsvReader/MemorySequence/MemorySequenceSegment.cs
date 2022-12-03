@@ -20,7 +20,7 @@ namespace WojciechMikołajewicz.CsvReader.MemorySequence
 		/// <summary>
 		/// Number of elements stored in <see cref="Array"/>
 		/// </summary>
-		internal int Count { get => this.Memory.Length; set => this.Memory=new ReadOnlyMemory<T>(this.Array, 0, value); }
+		internal int Count { get => this.Memory.Length; set => this.Memory = new ReadOnlyMemory<T>(this.Array, 0, value); }
 
 		/// <summary>
 		/// Next node of MemorySequenceSegment&lt;T&gt; type
@@ -39,14 +39,14 @@ namespace WojciechMikołajewicz.CsvReader.MemorySequence
 		/// <param name="minimumLength">Minimum memory size for this <see cref="MemorySequenceSegment{T}"/></param>
 		internal MemorySequenceSegment(MemorySequenceSegment<T>? previous, int minimumLength)
 		{
-			if(previous!=null)
+			if (previous != null)
 			{
-				previous.NextInternal=this;
-				previous.Next=this;
-				RunningIndex=previous.RunningIndex+previous.Array.Length;
+				previous.NextInternal = this;
+				previous.Next = this;
+				RunningIndex = previous.RunningIndex + previous.Array.Length;
 			}
 
-			Array=ArrayPool<T>.Shared.Rent(minimumLength);
+			Array = ArrayPool<T>.Shared.Rent(minimumLength);
 		}
 
 		/// <summary>
@@ -55,13 +55,13 @@ namespace WojciechMikołajewicz.CsvReader.MemorySequence
 		/// <param name="previous">Previous <see cref="MemorySequenceSegment{T}"/>. This <see cref="MemorySequenceSegment{T}"/> is being set as <see cref="ReadOnlySequenceSegment{T}.Next"/> of <paramref name="previous"/> <see cref="MemorySequenceSegment{T}"/></param>
 		internal void Reuse(MemorySequenceSegment<T> previous)
 		{
-			this.NextInternal=null;
-			this.Next=null;
-			this.Count=0;
-			this.RunningIndex=previous.RunningIndex+previous.Array.Length;
+			this.NextInternal = null;
+			this.Next = null;
+			this.Count = 0;
+			this.RunningIndex = previous.RunningIndex + previous.Array.Length;
 
-			previous.NextInternal=this;
-			previous.Next=this;
+			previous.NextInternal = this;
+			previous.Next = this;
 		}
 
 		/// <summary>
@@ -69,15 +69,15 @@ namespace WojciechMikołajewicz.CsvReader.MemorySequence
 		/// </summary>
 		public void Dispose()
 		{
-			T[] segment = this.Array;
+			var segment = Array;
 
-			if(segment!=null)
+			if (segment != null)
 			{
-				this.Memory = default;
+				Memory = default;
 				ArrayPool<T>.Shared.Return(segment, true);
 				//This is set to null by design. From safety reason should not exist any referance to array after returned to pool. After Dispose segment is useless anyway.
 #pragma warning disable CS8625
-				this.Array = null;
+				Array = null;
 #pragma warning restore CS8625
 			}
 		}

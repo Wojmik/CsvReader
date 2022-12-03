@@ -13,17 +13,17 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.De
 	/// </summary>
 	public class DeserializerConfigurationBool : DeserializerConfigurationNotNullableBase<bool, DeserializerConfigurationBool>
 	{
-		private string? _TrueString;
+		private string? _trueString;
 		/// <summary>
 		/// Csv cell value that is interpreted as true value
 		/// </summary>
-		public string TrueString { get => _TrueString??RecordConfiguration.DefaultBoolTrueString; }
+		public string TrueString { get => _trueString??RecordConfiguration.DefaultBoolTrueString; }
 
-		private string? _FalseString;
+		private string? _falseString;
 		/// <summary>
 		/// Csv cell value that is interpreted as false value
 		/// </summary>
-		public string FalseString { get => _FalseString??RecordConfiguration.DefaultBoolFalseString; }
+		public string FalseString { get => _falseString??RecordConfiguration.DefaultBoolFalseString; }
 
 		/// <summary>
 		/// Constructor
@@ -41,7 +41,7 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.De
 		/// <exception cref="ArgumentNullException"><paramref name="trueString"/> is null</exception>
 		public DeserializerConfigurationBool SetTrueString(string trueString)
 		{
-			_TrueString = trueString??throw new ArgumentNullException(nameof(trueString));
+			_trueString = trueString??throw new ArgumentNullException(nameof(trueString));
 			return this;
 		}
 
@@ -53,7 +53,7 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.De
 		/// <exception cref="ArgumentNullException"><paramref name="falseString"/> is null</exception>
 		public DeserializerConfigurationBool SetFalseString(string falseString)
 		{
-			_FalseString = falseString??throw new ArgumentNullException(nameof(falseString));
+			_falseString = falseString??throw new ArgumentNullException(nameof(falseString));
 			return this;
 		}
 

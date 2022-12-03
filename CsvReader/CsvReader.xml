@@ -142,6 +142,14 @@
             Zero based index of the column property is bind to
             </summary>
         </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase.Optional">
+            <summary>
+            Is binding to column optional. Default is false which means binding to column is required.
+            </summary>
+            <remarks>
+            For optional bindings no exception is thrown if the column doesn't exist.
+            </remarks>
+        </member>
         <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase.#ctor(WojciechMikołajewicz.CsvReader.RecordConfiguration)">
             <summary>
             Constructor
@@ -164,6 +172,12 @@
             <summary>
             Clears property binding which means property will be ignored during deserialization because lack of binding to a csv column
             </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase.IsOptionalInternal(System.Boolean)">
+            <summary>
+            Is binding to column optional. No exception is thrown when optional column doesn't exist.
+            </summary>
+            <param name="optional">Should binding to column be optional</param>
         </member>
         <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.BindingConfigurationBase`1">
             <summary>
@@ -245,6 +259,13 @@
             Stets to ignore this record's property during csv deserialization. This property won't be set during deserialization.
             </summary>
         </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.PropertyConfigurationFixedSerializer`3.IsOptional(System.Boolean)">
+            <summary>
+            Is binding to column optional. No exception is thrown when optional column doesn't exist.
+            </summary>
+            <param name="optional">Should binding to column be optional</param>
+            <returns>This configuration object for methods chaining</returns>
+        </member>
         <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.PropertyConfigurationFixedSerializer`3.TryBuildDeserializer(WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers.CellDeserializerBase{`1}@)">
             <summary>
             Tries build cell deserializer to property's type
@@ -287,12 +308,34 @@
             Clears property binding which means property will be ignored during deserialization because lack of binding to a csv column
             </summary>
         </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.PropertyConfigurationSettableSerializer`2.IsOptional(System.Boolean)">
+            <summary>
+            Is binding to column optional. No exception is thrown when optional column doesn't exist.
+            </summary>
+            <param name="optional">Should binding to column be optional</param>
+            <returns>This property binding configurator for methods chaining</returns>
+        </member>
         <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.BindingConfiguration.PropertyConfigurationSettableSerializer`2.TryBuildDeserializer(WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers.CellDeserializerBase{`1}@)">
             <summary>
             Tries build cell deserializer to property's type
             </summary>
             <param name="cellDeserializer">Cell deserializer</param>
             <returns></returns>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.ColumnBinders.BindingType">
+            <summary>
+            Binding type
+            </summary>
+        </member>
+        <member name="F:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.ColumnBinders.BindingType.ByColumnIndex">
+            <summary>
+            Binding by column index
+            </summary>
+        </member>
+        <member name="F:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.ColumnBinders.BindingType.ByColumnName">
+            <summary>
+            Binding by column name
+            </summary>
         </member>
         <member name="T:WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.DeserializerConfiguration.ByteArrayEncoding">
             <summary>
@@ -1231,43 +1274,85 @@
             Does csv contain header row
             </summary>
         </member>
-        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializer`1.HeaderRowColumnNamesComparer">
+        <member name="F:WojciechMikołajewicz.CsvReader.CsvDeserializer`1._headerRowColumnNamesComparer">
             <summary>
             Comparer of column names in header row
             </summary>
         </member>
-        <member name="F:WojciechMikołajewicz.CsvReader.CsvDeserializer`1.CheckColumnsCountConsistency">
+        <member name="F:WojciechMikołajewicz.CsvReader.CsvDeserializer`1._checkColumnsCountConsistency">
             <summary>
             Check if columns count is equal in every row
             </summary>
         </member>
-        <member name="P:WojciechMikołajewicz.CsvReader.CsvDeserializer`1.CsvReader">
+        <member name="F:WojciechMikołajewicz.CsvReader.CsvDeserializer`1._csvReader">
             <summary>
             Low level csv reader
             </summary>
         </member>
-        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer`1.#ctor(System.IO.TextReader,WojciechMikołajewicz.CsvReader.CsvDeserializerOptions,WojciechMikołajewicz.CsvReader.ICsvRecordTypeConfiguration{`0})">
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer`1.#ctor(System.IO.TextReader,System.Action{WojciechMikołajewicz.CsvReader.ICsvReaderAndDeserializerOptions},WojciechMikołajewicz.CsvReader.ICsvRecordTypeConfiguration{`0})">
             <summary>
             Constructor
             </summary>
             <param name="textReader">Text reader</param>
-            <param name="options">Options</param>
+            <param name="optionsDelegate">Method to configure options</param>
             <param name="recordConfiguration"><typeparamref name="TRecord"/> type configuration</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="textReader"/> is null or <paramref name="recordConfiguration"/> is null with lack of header row</exception>
+            <exception cref="T:WojciechMikołajewicz.CsvReader.Exceptions.BindingConfigurationException">Binding by column names with lack of header row or optional columns bound by index before required columns detected</exception>
         </member>
-        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer`1.#ctor(WojciechMikołajewicz.CsvReader.CsvReader,WojciechMikołajewicz.CsvReader.CsvDeserializerOptions,WojciechMikołajewicz.CsvReader.ICsvRecordTypeConfiguration{`0})">
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer`1.#ctor(WojciechMikołajewicz.CsvReader.CsvReader,System.Action{WojciechMikołajewicz.CsvReader.ICsvDeserializerOptions},WojciechMikołajewicz.CsvReader.ICsvRecordTypeConfiguration{`0})">
             <summary>
             Constructor
             </summary>
             <param name="csvReader">Low level csv reader</param>
-            <param name="options">Options</param>
+            <param name="optionsDelegate">Method to configure options</param>
             <param name="recordConfiguration"><typeparamref name="TRecord"/> type configuration</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="csvReader"/> is null or <paramref name="recordConfiguration"/> is null with lack of header row</exception>
+            <exception cref="T:WojciechMikołajewicz.CsvReader.Exceptions.BindingConfigurationException">Binding by column names with lack of header row or optional columns bound by index before required columns detected</exception>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer`1.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializer.CsvReaderAndOptions,WojciechMikołajewicz.CsvReader.ICsvRecordTypeConfiguration{`0})">
+            <summary>
+            Constructor
+            </summary>
+            <param name="csvReaderAndOptions">Low level csv reader and options</param>
+            <param name="recordConfiguration"><typeparamref name="TRecord"/> type configuration</param>
+            <exception cref="T:System.ArgumentNullException">csvReaderAndOptions.csvReader is null or csvReaderAndOptions.options is null or <paramref name="recordConfiguration"/> is null with lack of header row</exception>
+            <exception cref="T:WojciechMikołajewicz.CsvReader.Exceptions.BindingConfigurationException">Binding by column names with lack of header row or optional columns bound by index before required columns detected</exception>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer`1.ReadAllToListAsync(System.Threading.CancellationToken)">
+            <summary>
+            Reads all records from csv to a <see cref="T:System.Collections.Generic.List`1"/>
+            </summary>
+            <param name="cancellationToken">Cancellation token</param>
+            <returns>List of <typeparamref name="TRecord"/></returns>
+            <exception cref="T:WojciechMikołajewicz.CsvReader.Exceptions.DeserializationException">
+            <para>Csv not well formated.</para>
+            <list type="bullet">
+            <item>Unexpected character after escaped cell</item>
+            <item>Unexpected end of stream inside escaped cell</item>
+            <item>Inconsistent number of columns in rows when <see cref="P:WojciechMikołajewicz.CsvReader.CsvDeserializerOptions.CheckColumnsCountConsistency"/> set to true</item>
+            </list>
+            </exception>
         </member>
         <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer`1.Read">
             <summary>
             Enumerates records from csv
             </summary>
             <returns>Enumerable of <typeparamref name="TRecord"/></returns>
-            <exception cref="T:System.Runtime.Serialization.SerializationException">
+            <exception cref="T:WojciechMikołajewicz.CsvReader.Exceptions.DeserializationException">
+            <para>Csv not well formated.</para>
+            <list type="bullet">
+            <item>Unexpected character after escaped cell</item>
+            <item>Unexpected end of stream inside escaped cell</item>
+            <item>Inconsistent number of columns in rows when <see cref="P:WojciechMikołajewicz.CsvReader.CsvDeserializerOptions.CheckColumnsCountConsistency"/> set to true</item>
+            </list>
+            </exception>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvDeserializer`1.ReadAllToList">
+            <summary>
+            Reads all records from csv to a <see cref="T:System.Collections.Generic.List`1"/>
+            </summary>
+            <returns>List of <typeparamref name="TRecord"/></returns>
+            <exception cref="T:WojciechMikołajewicz.CsvReader.Exceptions.DeserializationException">
             <para>Csv not well formated.</para>
             <list type="bullet">
             <item>Unexpected character after escaped cell</item>
@@ -1342,6 +1427,50 @@
             </summary>
             <param name="value">String to deduplicate</param>
             <returns>String instance that is already in string deduplicator container or <paramref name="value"/> if it wasn't exist yiet in the container</returns>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.ICsvDeserializerOptions">
+            <summary>
+            <see cref="T:WojciechMikołajewicz.CsvReader.CsvDeserializer`1"/> options
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.ICsvDeserializerOptions.HasHeaderRow">
+            <summary>
+            Does csv contain header row. Default is true
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.ICsvDeserializerOptions.HeaderRowColumnNamesComparer">
+            <summary>
+            Comparer of column names in header row. Default is <see cref="P:System.StringComparer.OrdinalIgnoreCase"/>
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.ICsvDeserializerOptions.DeserializationCulture">
+            <summary>
+            Culture used for parsing values from csv file. Default is <see cref="!:CultureInfo.InvariantCulture"/>
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.ICsvDeserializerOptions.EmptyAsNull">
+            <summary>
+            If empty strings should be converted to nulls. Default is true
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.ICsvDeserializerOptions.DeduplicateStrings">
+            <summary>
+            If strings with the same value should be deduplicated. Default is true
+            </summary>
+            <remarks>
+            Set it to true if you want to store all records in memory at once - it will reduce memory consumption.
+            Set it to false if you want to read, process and forget records one by one.
+            </remarks>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.ICsvDeserializerOptions.CheckColumnsCountConsistency">
+            <summary>
+            Check if columns count is equal in every row. Default is true
+            </summary>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.ICsvReaderAndDeserializerOptions">
+            <summary>
+            <see cref="T:WojciechMikołajewicz.CsvReader.CsvReader"/> and <see cref="T:WojciechMikołajewicz.CsvReader.CsvDeserializer`1"/> options
+            </summary>
         </member>
         <member name="T:WojciechMikołajewicz.CsvReader.ICsvRecordTypeConfiguration`1">
             <summary>
@@ -1430,7 +1559,7 @@
             Is configuration object in building phase
             </summary>
         </member>
-        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration.#ctor(WojciechMikołajewicz.CsvReader.CsvDeserializerOptions,WojciechMikołajewicz.CsvReader.Helpers.StringDeduplicator)">
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration.#ctor(WojciechMikołajewicz.CsvReader.ICsvDeserializerOptions,WojciechMikołajewicz.CsvReader.Helpers.StringDeduplicator)">
             <summary>
             Constructor
             </summary>
@@ -1514,7 +1643,7 @@
             <returns>This configuration object for methods chaining</returns>
             <exception cref="T:System.InvalidOperationException">Object is in building state, configuration cannot be changed anymore</exception>
         </member>
-        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.SetDefaultDecimalNumberStyles(System.Globalization.DateTimeStyles)">
+        <member name="M:WojciechMikołajewicz.CsvReader.RecordConfiguration`1.SetDefaultDateStyles(System.Globalization.DateTimeStyles)">
             <summary>
             Sets default date styles
             </summary>
@@ -2053,14 +2182,16 @@
             Current position in cvs stream
             </summary>
         </member>
-        <member name="M:WojciechMikołajewicz.CsvReader.CsvReader.#ctor(System.IO.TextReader)">
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvReader.#ctor(System.IO.TextReader,System.Action{WojciechMikołajewicz.CsvReader.ICsvReaderOptions})">
             <summary>
             Constructor
             </summary>
             <param name="textReader">Text reader to read csv nodes from</param>
+            <param name="optionsDelegate">Method to configure options</param>
             <exception cref="T:System.ArgumentNullException"><paramref name="textReader"/> is null</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">Buffer size in chars is too small</exception>
         </member>
-        <member name="M:WojciechMikołajewicz.CsvReader.CsvReader.#ctor(System.IO.TextReader,WojciechMikołajewicz.CsvReader.CsvReaderOptions)">
+        <member name="M:WojciechMikołajewicz.CsvReader.CsvReader.#ctor(System.IO.TextReader,WojciechMikołajewicz.CsvReader.ICsvReaderOptions)">
             <summary>
             Constructor
             </summary>
@@ -2165,6 +2296,46 @@
         <member name="M:WojciechMikołajewicz.CsvReader.CsvReaderOptions.#ctor">
             <summary>
             Constructor
+            </summary>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.ICsvReaderOptions">
+            <summary>
+            <see cref="T:WojciechMikołajewicz.CsvReader.CsvReader"/> options
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.ICsvReaderOptions.CanEscape">
+            <summary>
+            Data can be enclosed with escape characters to store control characters. Default is true
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.ICsvReaderOptions.PermitEmptyLineAtEnd">
+            <summary>
+            Permits empty line at the end of the file. If false, empty line at the end of file is interpreted as record. Default is true
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.ICsvReaderOptions.EscapeChar">
+            <summary>
+            Escape character. Default is '"'
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.ICsvReaderOptions.DelimiterChar">
+            <summary>
+            Cells delimiter character. Default is ','
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.ICsvReaderOptions.LineEnding">
+            <summary>
+            Line ending. Default is <see cref="F:WojciechMikołajewicz.CsvReader.LineEnding.Auto"/>
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.ICsvReaderOptions.BufferSizeInChars">
+            <summary>
+            Minimum size of single buffer segment in chars. Default is 32768
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.ICsvReaderOptions.LeaveOpen">
+            <summary>
+            Leave underlying <see cref="T:System.IO.TextReader"/> open. Default is false
             </summary>
         </member>
         <member name="T:WojciechMikołajewicz.CsvReader.LineEnding">
@@ -2326,6 +2497,114 @@
             <summary>
             Returns memory of this <see cref="T:WojciechMikołajewicz.CsvReader.MemorySequence.MemorySequenceSegment`1"/> to the shared pool
             </summary>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.Exceptions.BindingConfigurationException">
+            <summary>
+            Binding configuration exception
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.Exceptions.BindingConfigurationException.#ctor(System.String)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="message">Error message</param>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.Exceptions.DeserializationException">
+            <summary>
+            Deserialization exception
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.Exceptions.DeserializationException.RowIndex">
+            <summary>
+            Zero based row index
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.Exceptions.DeserializationException.ColumnIndex">
+            <summary>
+            Zero based column index
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.Exceptions.DeserializationException.ColumnName">
+            <summary>
+            Column name
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.Exceptions.DeserializationException.#ctor(System.Int32,System.Int32,System.String,System.String)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="rowIndex">Zero based row index</param>
+            <param name="columnIndex">Zero based column index</param>
+            <param name="columnName">Column name</param>
+            <param name="message">Error Message</param>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.Exceptions.DeserializationException.#ctor(System.Int32,System.Int32,System.String,System.String,System.Exception)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="rowIndex">Zero based row index</param>
+            <param name="columnIndex">Zero based column index</param>
+            <param name="columnName">Column name</param>
+            <param name="message">Error Message</param>
+            <param name="innerException">Inner exception</param>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.Exceptions.MissingBindingsException">
+            <summary>
+            Missing binding exception
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.Exceptions.MissingBindingsException.MissingColumns">
+            <summary>
+            Collection of missing columns
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.Exceptions.MissingBindingsException.ColumnsCount">
+            <summary>
+            The number of columns
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.Exceptions.MissingBindingsException.Message">
+            <summary>
+            Error message
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.Exceptions.MissingBindingsException.#ctor(System.Collections.Generic.List{WojciechMikołajewicz.CsvReader.Exceptions.MissingBindingsException.ColumnInfo},System.Int32)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="missingColumns">Collection of missing colums</param>
+            <param name="columnsCount">The number of columns</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="missingColumns"/> is null</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="missingColumns"/> is empty or <paramref name="columnsCount"/> is less than zero</exception>
+        </member>
+        <member name="T:WojciechMikołajewicz.CsvReader.Exceptions.MissingBindingsException.ColumnInfo">
+            <summary>
+            Column info
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.Exceptions.MissingBindingsException.ColumnInfo.Name">
+            <summary>
+            Column name
+            </summary>
+        </member>
+        <member name="P:WojciechMikołajewicz.CsvReader.Exceptions.MissingBindingsException.ColumnInfo.Index">
+            <summary>
+            Column index
+            </summary>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.Exceptions.MissingBindingsException.ColumnInfo.#ctor(System.String,System.Nullable{System.Int32})">
+            <summary>
+            Constructor
+            </summary>
+            <param name="name">Column name</param>
+            <param name="index">Column index</param>
+            <exception cref="T:System.InvalidOperationException"><paramref name="name"/> and <paramref name="index"/> are null simultaneously</exception>
+        </member>
+        <member name="M:WojciechMikołajewicz.CsvReader.Exceptions.MissingBindingsException.ColumnInfo.ToString">
+            <summary>
+            Returns a string that represents the current object.
+            </summary>
+            <returns>A string that represents the current object.</returns>
         </member>
     </members>
 </doc>

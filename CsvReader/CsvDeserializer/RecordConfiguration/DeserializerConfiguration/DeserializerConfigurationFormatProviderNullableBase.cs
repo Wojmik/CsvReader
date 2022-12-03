@@ -16,11 +16,11 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.De
 		where TDeserialized : struct
 		where TDeserializerConfigurator : DeserializerConfigurationFormatProviderNullableBase<TDeserialized, TDeserializerConfigurator>
 	{
-		private IFormatProvider? _FormatProvider;
+		private IFormatProvider? _formatProvider;
 		/// <summary>
 		/// Format provider used during parsing cell value to target type
 		/// </summary>
-		public IFormatProvider FormatProvider { get => _FormatProvider??RecordConfiguration.DefaultCulture; }
+		public IFormatProvider FormatProvider { get => _formatProvider??RecordConfiguration.DefaultCulture; }
 
 		/// <summary>
 		/// Constructor
@@ -37,7 +37,7 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.De
 		/// <returns>This configuration object for methods chaining</returns>
 		public TDeserializerConfigurator SetFormatProvider(IFormatProvider? formatProvider)
 		{
-			_FormatProvider = formatProvider;
+			_formatProvider = formatProvider;
 			return (TDeserializerConfigurator)this;
 		}
 	}

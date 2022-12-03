@@ -16,20 +16,20 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 		CellDeserializerFromStringBase<uint>
 #endif
 	{
-		private readonly NumberStyles NumberStyles;
+		private readonly NumberStyles _numberStyles;
 
-		private readonly IFormatProvider FormatProvider;
+		private readonly IFormatProvider _formatProvider;
 
-		private readonly bool AllowEmpty;
+		private readonly bool _allowEmpty;
 
-		private readonly uint ValueForEmpty;
+		private readonly uint _valueForEmpty;
 
 		public CellUIntDeserializer(NumberStyles numberStyles, IFormatProvider formatProvider, bool allowEmpty, uint valueForEmpty)
 		{
-			NumberStyles = numberStyles;
-			FormatProvider = formatProvider;
-			AllowEmpty = allowEmpty;
-			ValueForEmpty = valueForEmpty;
+			_numberStyles = numberStyles;
+			_formatProvider = formatProvider;
+			_allowEmpty = allowEmpty;
+			_valueForEmpty = valueForEmpty;
 		}
 
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
@@ -37,10 +37,10 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 		{
 			uint parsedValue;
 
-			if(AllowEmpty && value.IsEmpty)
-				parsedValue = ValueForEmpty;
+			if(_allowEmpty && value.IsEmpty)
+				parsedValue = _valueForEmpty;
 			else
-				parsedValue = uint.Parse(value.Span, NumberStyles, FormatProvider);
+				parsedValue = uint.Parse(value.Span, _numberStyles, _formatProvider);
 			return parsedValue;
 		}
 #else
@@ -48,10 +48,10 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 		{
 			uint parsedValue;
 
-			if(AllowEmpty && string.IsNullOrEmpty(value))
-				parsedValue = ValueForEmpty;
+			if(_allowEmpty && string.IsNullOrEmpty(value))
+				parsedValue = _valueForEmpty;
 			else
-				parsedValue = uint.Parse(value, NumberStyles, FormatProvider);
+				parsedValue = uint.Parse(value, _numberStyles, _formatProvider);
 			return parsedValue;
 		}
 #endif

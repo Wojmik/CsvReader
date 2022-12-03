@@ -16,10 +16,17 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 		[TestMethod]
 		public async Task EndOfStreamInsideEscapedCellTestAsync()
 		{
-			const string sample = "\"Test \"\"line\"\"\nsecond \"\"line\"\"";
+			const string Sample = "\"Test \"\"line\"\"\nsecond \"\"line\"\"";
 
-			using(var textReader = new StringReader(sample))
-			using(var csvReader = new CsvReader.CsvReader(textReader, new CsvReaderOptions() { BufferSizeInChars=64, CanEscape=true, DelimiterChar=',', EscapeChar='\"', LineEnding=LineEnding.Auto, }))
+			using(var textReader = new StringReader(Sample))
+			using(var csvReader = new CsvReader.CsvReader(textReader, options =>
+			{
+				options.BufferSizeInChars = 64;
+				options.CanEscape = true;
+				options.DelimiterChar = ',';
+				options.EscapeChar = '\"';
+				options.LineEnding = LineEnding.Auto;
+				}))
 			{
 				await Assert.ThrowsExceptionAsync<SerializationException>(async () => await csvReader.ReadNextNodeAsMemorySequenceAsync(default));
 			}
@@ -28,10 +35,17 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 		[TestMethod]
 		public async Task UnexpectedCharAfterEscapedCellTestAsync()
 		{
-			const string sample = "\"Test \"\"line\"\"\nsecond \"\"line\"\"\"a";
+			const string Sample = "\"Test \"\"line\"\"\nsecond \"\"line\"\"\"a";
 
-			using(var textReader = new StringReader(sample))
-			using(var csvReader = new CsvReader.CsvReader(textReader, new CsvReaderOptions() { BufferSizeInChars=64, CanEscape=true, DelimiterChar=',', EscapeChar='\"', LineEnding=LineEnding.Auto, }))
+			using(var textReader = new StringReader(Sample))
+			using(var csvReader = new CsvReader.CsvReader(textReader, options =>
+			{
+				options.BufferSizeInChars = 64;
+				options.CanEscape = true;
+				options.DelimiterChar = ',';
+				options.EscapeChar = '\"';
+				options.LineEnding = LineEnding.Auto;
+				}))
 			{
 				await Assert.ThrowsExceptionAsync<SerializationException>(async () => await csvReader.ReadNextNodeAsMemorySequenceAsync(default));
 			}

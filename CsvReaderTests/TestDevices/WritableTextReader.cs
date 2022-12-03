@@ -10,13 +10,13 @@ namespace WojciechMikołajewicz.CsvReaderTests.TestDevices
 {
 	class WritableTextReader : TextReader
 	{
-		private string Data = string.Empty;
+		private string _data = string.Empty;
 
 		public int Position { get; set; }
 
 		public void WriteAllText(string text)
 		{
-			Data = text;
+			_data = text;
 		}
 
 		public override async Task<int> ReadAsync(char[] buffer, int index, int count)
@@ -31,12 +31,12 @@ namespace WojciechMikołajewicz.CsvReaderTests.TestDevices
 #endif
 			ValueTask<int> ReadAsync(Memory<char> buffer, CancellationToken cancellationToken = default)
 		{
-			int toWrite = Math.Min(buffer.Length, Data.Length - Position);
+			int toWrite = Math.Min(buffer.Length, _data.Length - Position);
 
 			if(toWrite<=0)
 				return new ValueTask<int>(0);
 
-			Data.AsMemory(Position, toWrite).CopyTo(buffer);
+			_data.AsMemory(Position, toWrite).CopyTo(buffer);
 			Position += toWrite;
 
 			return new ValueTask<int>(toWrite);

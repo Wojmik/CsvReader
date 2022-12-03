@@ -33,13 +33,13 @@ namespace WojciechMikołajewicz.CsvReaderTests
 
 		public static MemorySequence<char> CharMemorySequence_Get(this CsvReader.CsvReader @this)
 		{
-			var memberInfo = typeof(CsvReader.CsvReader).GetField("CharMemorySequence", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+			var memberInfo = typeof(CsvReader.CsvReader).GetField("_charMemorySequence", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
 			return (MemorySequence<char>)memberInfo.GetValue(@this);
 		}
 
 		public static Memory<char> SearchArray_Get(this CsvReader.CsvReader @this)
 		{
-			var memberInfo = typeof(CsvReader.CsvReader).GetField("SearchArray", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+			var memberInfo = typeof(CsvReader.CsvReader).GetField("_searchArray", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
 			return (Memory<char>)memberInfo.GetValue(@this);
 		}
 

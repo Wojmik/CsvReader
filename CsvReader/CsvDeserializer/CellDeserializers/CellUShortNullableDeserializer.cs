@@ -16,14 +16,14 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 		CellDeserializerFromStringBase<ushort?>
 #endif
 	{
-		private readonly NumberStyles NumberStyles;
+		private readonly NumberStyles _numberStyles;
 
-		private readonly IFormatProvider FormatProvider;
+		private readonly IFormatProvider _formatProvider;
 
 		public CellUShortNullableDeserializer(NumberStyles numberStyles, IFormatProvider formatProvider)
 		{
-			NumberStyles = numberStyles;
-			FormatProvider = formatProvider;
+			_numberStyles = numberStyles;
+			_formatProvider = formatProvider;
 		}
 
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
@@ -32,7 +32,7 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 			ushort? parsedValue = default;
 
 			if(!value.IsEmpty)
-				parsedValue = ushort.Parse(value.Span, NumberStyles, FormatProvider);
+				parsedValue = ushort.Parse(value.Span, _numberStyles, _formatProvider);
 			return parsedValue;
 		}
 #else
@@ -41,7 +41,7 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 			ushort? parsedValue = default;
 
 			if(!string.IsNullOrEmpty(value))
-				parsedValue = ushort.Parse(value, NumberStyles, FormatProvider);
+				parsedValue = ushort.Parse(value, _numberStyles, _formatProvider);
 			return parsedValue;
 		}
 #endif

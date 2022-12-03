@@ -8,16 +8,16 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 {
 	sealed class CellDeserializerFromMemorySequence<TDeserialized> : CellDeserializerFromMemorySequenceBase<TDeserialized>
 	{
-		private readonly Func<MemorySequenceSpan, TDeserialized> DeserializeMethod;
+		private readonly Func<MemorySequenceSpan, TDeserialized> _deserializeMethod;
 
 		public CellDeserializerFromMemorySequence(Func<MemorySequenceSpan, TDeserialized> deserializeMethod)
 		{
-			this.DeserializeMethod = deserializeMethod;
+			_deserializeMethod = deserializeMethod;
 		}
 
 		protected override TDeserialized DeserializeFromMemorySequence(in MemorySequenceSpan value)
 		{
-			return DeserializeMethod.Invoke(value);
+			return _deserializeMethod.Invoke(value);
 		}
 	}
 }

@@ -10,18 +10,18 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 {
 	sealed class CellByteArrayHexDeserializer : CellDeserializerFromMemoryBase<byte[]?>
 	{
-		private readonly bool EmptyAsNull;
+		private readonly bool _emptyAsNull;
 
 		public CellByteArrayHexDeserializer(bool emptyAsNull)
 		{
-			EmptyAsNull = emptyAsNull;
+			_emptyAsNull = emptyAsNull;
 		}
 
 		protected override byte[]? DeserializeFromMemory(in ReadOnlyMemory<char> value)
 		{
 			byte[]? val = null;
 
-			if(!EmptyAsNull || 0<value.Length)
+			if(!_emptyAsNull || 0<value.Length)
 			{
 				if((value.Length&1)==1)
 					throw new ArgumentException("Broken hex string");

@@ -95,7 +95,7 @@ namespace WojciechMikołajewicz.CsvReader
 		/// </summary>
 		/// <param name="options">Deserializer options</param>
 		/// <param name="stringDeduplicator">String deduplicator</param>
-		protected RecordConfiguration(CsvDeserializerOptions options, StringDeduplicator stringDeduplicator)
+		protected RecordConfiguration(ICsvDeserializerOptions options, StringDeduplicator stringDeduplicator)
 		{
 			DefaultCulture = options.DeserializationCulture;
 			HasHeaderRow = options.HasHeaderRow;
@@ -133,7 +133,7 @@ namespace WojciechMikołajewicz.CsvReader
 
 		private Dictionary<string, BindingConfigurationBase<TRecord>> PropertyConfigurations { get; }
 
-		internal RecordConfiguration(CsvDeserializerOptions options, StringDeduplicator stringDeduplicator)
+		internal RecordConfiguration(ICsvDeserializerOptions options, StringDeduplicator stringDeduplicator)
 			: base(options, stringDeduplicator)
 		{
 			ChangeParameterNameExpressionVisitor = new ChangeParameterNameExpressionVisitor("0prm0");
@@ -251,7 +251,7 @@ namespace WojciechMikołajewicz.CsvReader
 		/// <param name="defaultDateStyles">Date styles to set as default</param>
 		/// <returns>This configuration object for methods chaining</returns>
 		/// <exception cref="InvalidOperationException">Object is in building state, configuration cannot be changed anymore</exception>
-		public RecordConfiguration<TRecord> SetDefaultDecimalNumberStyles(DateTimeStyles defaultDateStyles)
+		public RecordConfiguration<TRecord> SetDefaultDateStyles(DateTimeStyles defaultDateStyles)
 		{
 			CheckBuildingState();
 			DefaultDateStyles = defaultDateStyles;

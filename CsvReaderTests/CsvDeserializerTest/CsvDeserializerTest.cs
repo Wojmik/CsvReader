@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WojciechMikołajewicz.CsvReader;
+using WojciechMikołajewicz.CsvReaderTests.CsvDeserializerTest.TestItem;
 
 namespace WojciechMikołajewicz.CsvReaderTests.CsvDeserializerTest
 {
@@ -20,11 +21,11 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvDeserializerTest
 7,Abcd,Efgh,Saturday,Friday
 8,,,1,
 ",
-				new TestItem[]
+				new TestItem.TestItem[]
 				{
-					new TestItem(){ Id=7, Text1="Abcd", Text2="Efgh", DayOfWeek=DayOfWeek.Saturday, DayOfWeekNullable=DayOfWeek.Friday, },
+					new TestItem.TestItem() { Id=7, Text1="Abcd", Text2="Efgh", DayOfWeek=DayOfWeek.Saturday, DayOfWeekNullable=DayOfWeek.Friday, },
 #pragma warning disable CS8625
-					new TestItem(){ Id=8, Text1=null, Text2=null, DayOfWeek=(DayOfWeek)1, DayOfWeekNullable=null, },
+					new TestItem.TestItem() { Id=8, Text1=null, Text2=null, DayOfWeek=(DayOfWeek)1, DayOfWeekNullable=null, },
 #pragma warning restore CS8625
 				}
 			};
@@ -33,16 +34,16 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvDeserializerTest
 #if NETCOREAPP3_0_OR_GREATER
 		[DataTestMethod]
 		[DynamicData(nameof(GetSampleData), DynamicDataSourceType.Method)]
-		public async Task DeserializeTestAsync(string sampleCsvContent, TestItem[] expected)
+		public async Task DeserializeTestAsync(string sampleCsvContent, TestItem.TestItem[] expected)
 		{
-			var actual = new List<TestItem>();
+			var actual = new List<TestItem.TestItem>();
 
 			var recordConf = new RecordConfigurator();
 
-			using(var textReader = new StringReader(sampleCsvContent))
-			using(var deserializer = new CsvDeserializer<TestItem>(textReader, recordConfiguration: recordConf))
+			using (var textReader = new StringReader(sampleCsvContent))
+			using (var deserializer = new CsvDeserializer<TestItem.TestItem>(textReader, recordConfiguration: recordConf))
 			{
-				await foreach(var item in deserializer.ReadAsync())
+				await foreach (var item in deserializer.ReadAsync())
 					actual.Add(item);
 			}
 
@@ -52,25 +53,59 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvDeserializerTest
 
 		[DataTestMethod]
 		[DynamicData(nameof(GetSampleData), DynamicDataSourceType.Method)]
-		public void DeserializeTest(string sampleCsvContent, TestItem[] expected)
+		public async Task DeserializeToListTestAsync(string sampleCsvContent, TestItem.TestItem[] expected)
 		{
-			var actual = new List<TestItem>();
+			List<TestItem.TestItem> actual;
 
 			var recordConf = new RecordConfigurator();
 
-			using(var textReader = new StringReader(sampleCsvContent))
-			using(var deserializer = new CsvDeserializer<TestItem>(textReader, recordConfiguration: recordConf))
+			using (var textReader = new StringReader(sampleCsvContent))
+			using (var deserializer = new CsvDeserializer<TestItem.TestItem>(textReader, recordConfiguration: recordConf))
 			{
-				foreach(var item in deserializer.Read())
+				actual = await deserializer.ReadAllToListAsync();
+			}
+
+			Assert.IsTrue(Enumerable.SequenceEqual(expected, actual, new TestItemEqualityComparer()));
+		}
+
+		[DataTestMethod]
+		[DynamicData(nameof(GetSampleData), DynamicDataSourceType.Method)]
+		public void DeserializeTest(string sampleCsvContent, TestItem.TestItem[] expected)
+		{
+			var actual = new List<TestItem.TestItem>();
+
+			var recordConf = new RecordConfigurator();
+
+			using (var textReader = new StringReader(sampleCsvContent))
+			using (var deserializer = new CsvDeserializer<TestItem.TestItem>(textReader, recordConfiguration: recordConf))
+			{
+				foreach (var item in deserializer.Read())
 					actual.Add(item);
 			}
 
 			Assert.IsTrue(Enumerable.SequenceEqual(expected, actual, new TestItemEqualityComparer()));
 		}
 
-		class RecordConfigurator : ICsvRecordTypeConfiguration<TestItem>
+		[DataTestMethod]
+		[DynamicData(nameof(GetSampleData), DynamicDataSourceType.Method)]
+		public void DeserializeToListTest(string sampleCsvContent, TestItem.TestItem[] expected)
 		{
-			public void Configure(RecordConfiguration<TestItem> recordConfiguration)
+			List<TestItem.TestItem> actual;
+
+			var recordConf = new RecordConfigurator();
+
+			using (var textReader = new StringReader(sampleCsvContent))
+			using (var deserializer = new CsvDeserializer<TestItem.TestItem>(textReader, recordConfiguration: recordConf))
+			{
+				actual = deserializer.ReadAllToList();
+			}
+
+			Assert.IsTrue(Enumerable.SequenceEqual(expected, actual, new TestItemEqualityComparer()));
+		}
+
+		class RecordConfigurator : ICsvRecordTypeConfiguration<TestItem.TestItem>
+		{
+			public void Configure(RecordConfiguration<TestItem.TestItem> recordConfiguration)
 			{
 				//recordConfiguration
 				//	.Property(rec => rec.Text)
@@ -91,65 +126,6 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvDeserializerTest
 				//	.ConfigureDeserializer(deserializer =>
 				//	{
 				//	});
-			}
-		}
-
-		public class TestItem
-		{
-			public int Id { get; set; }
-
-#pragma warning disable CS8618
-			public string Text1 { get; set; }
-#pragma warning restore CS8618
-
-#if NETCOREAPP3_0_OR_GREATER
-			public string? Text2 { get; set; }
-#else
-			public string Text2 { get; set; }
-#endif
-
-			public DayOfWeek DayOfWeek { get; set; }
-
-			public DayOfWeek? DayOfWeekNullable { get; set; }
-		}
-
-		class TestItemEqualityComparer : IEqualityComparer<TestItem>
-		{
-#if NETCOREAPP3_0_OR_GREATER
-			public bool Equals(TestItem? x, TestItem? y)
-#else
-			public bool Equals(TestItem x, TestItem y)
-#endif
-			{
-				return
-					(x==null && y==null) ||
-					(x!=null && y!=null
-					&& x.Id==y.Id
-					&& x.Text1==y.Text1
-					&& x.Text2==y.Text2
-					&& x.DayOfWeek==y.DayOfWeek
-					&& Nullable.Equals(x.DayOfWeekNullable, y.DayOfWeekNullable)
-					);
-			}
-
-#if NETCOREAPP3_0_OR_GREATER
-			public int GetHashCode(TestItem? obj)
-#else
-			public int GetHashCode(TestItem obj)
-#endif
-			{
-				int hashCode = -1219660215;
-				if(obj!=null)
-				{
-					hashCode=hashCode*-1521134295+obj.Id.GetHashCode();
-					hashCode=hashCode*-1521134295+EqualityComparer<string>.Default.GetHashCode(obj.Text1);
-#pragma warning disable CS8604
-					hashCode=hashCode*-1521134295+EqualityComparer<string>.Default.GetHashCode(obj.Text2);
-#pragma warning restore CS8604
-					hashCode=hashCode*-1521134295+obj.DayOfWeek.GetHashCode();
-					hashCode=hashCode*-1521134295+obj.DayOfWeekNullable.GetHashCode();
-				}
-				return hashCode;
 			}
 		}
 	}

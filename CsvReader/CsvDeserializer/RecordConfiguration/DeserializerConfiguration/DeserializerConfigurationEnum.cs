@@ -15,11 +15,11 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.De
 	public class DeserializerConfigurationEnum<TEnum> : DeserializerConfigurationNotNullableBase<TEnum, DeserializerConfigurationEnum<TEnum>>
 		where TEnum : struct
 	{
-		private bool? _IgnoreCase;
+		private bool? _ignoreCase;
 		/// <summary>
 		/// Is casing ignoring during enum parsing from text representation
 		/// </summary>
-		public bool IgnoreCase { get => _IgnoreCase??RecordConfiguration.DefaultEnumsIgnoreCase; }
+		public bool IgnoreCase { get => _ignoreCase??RecordConfiguration.DefaultEnumsIgnoreCase; }
 
 		/// <summary>
 		/// Constructor
@@ -39,7 +39,7 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.De
 		/// <returns>This configuration object for methods chaining</returns>
 		public DeserializerConfigurationEnum<TEnum> SetIgnoreCase(bool ignoreCase)
 		{
-			_IgnoreCase = ignoreCase;
+			_ignoreCase = ignoreCase;
 			return this;
 		}
 

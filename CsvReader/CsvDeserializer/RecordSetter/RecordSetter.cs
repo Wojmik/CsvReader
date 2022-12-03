@@ -6,16 +6,16 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordSetter
 {
 	sealed class RecordSetter<TRecord, TProperty> : RecordSetterBase<TRecord, TProperty>
 	{
-		private readonly Action<TRecord, TProperty> RecordSetterMethod;
+		private readonly Action<TRecord, TProperty> _recordSetterMethod;
 
 		public RecordSetter(Action<TRecord, TProperty> recordSetterMethod)
 		{
-			this.RecordSetterMethod = recordSetterMethod;
+			_recordSetterMethod = recordSetterMethod;
 		}
 
 		public override void SetRecordData(TRecord record, TProperty property)
 		{
-			RecordSetterMethod.Invoke(record, property);
+			_recordSetterMethod.Invoke(record, property);
 		}
 	}
 }

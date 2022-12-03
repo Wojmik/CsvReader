@@ -7,7 +7,7 @@ namespace WojciechMikołajewicz.CsvReader
 	/// <summary>
 	/// <see cref="CsvReader"/> options
 	/// </summary>
-	public class CsvReaderOptions
+	class CsvReaderOptions : ICsvReaderOptions
 	{
 		const bool CanEscapeDefault = true;
 		const bool PermitEmptyLineAtEndDefault = true;

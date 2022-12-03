@@ -8,17 +8,17 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers;
 
 sealed class CellDateOnlyFormattedNullableDeserializer : CellDeserializerFromMemoryBase<DateOnly?>
 {
-	private readonly string Format;
+	private readonly string _format;
 
-	private readonly IFormatProvider FormatProvider;
+	private readonly IFormatProvider _formatProvider;
 
-	private readonly DateTimeStyles DateTimeStyles;
+	private readonly DateTimeStyles _dateTimeStyles;
 
 	public CellDateOnlyFormattedNullableDeserializer(string format, IFormatProvider formatProvider, DateTimeStyles dateTimeStyles)
 	{
-		Format = format;
-		FormatProvider = formatProvider;
-		DateTimeStyles = dateTimeStyles;
+		_format = format;
+		_formatProvider = formatProvider;
+		_dateTimeStyles = dateTimeStyles;
 	}
 
 	protected override DateOnly? DeserializeFromMemory(in ReadOnlyMemory<char> value)
@@ -26,7 +26,7 @@ sealed class CellDateOnlyFormattedNullableDeserializer : CellDeserializerFromMem
 		DateOnly? parsedValue = default;
 
 		if (!value.IsEmpty)
-			parsedValue = DateOnly.ParseExact(value.Span, Format, FormatProvider, DateTimeStyles);
+			parsedValue = DateOnly.ParseExact(value.Span, _format, _formatProvider, _dateTimeStyles);
 		return parsedValue;
 	}
 }

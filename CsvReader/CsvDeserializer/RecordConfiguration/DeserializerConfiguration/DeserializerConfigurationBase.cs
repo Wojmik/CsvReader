@@ -29,7 +29,7 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.De
 		/// <param name="bindingConfiguration">Binding to column configuration object</param>
 		protected DeserializerConfigurationBase(BindingConfigurationBase bindingConfiguration)
 		{
-			this.BindingConfiguration = bindingConfiguration;
+			BindingConfiguration = bindingConfiguration;
 		}
 
 		internal abstract bool TryBuild(

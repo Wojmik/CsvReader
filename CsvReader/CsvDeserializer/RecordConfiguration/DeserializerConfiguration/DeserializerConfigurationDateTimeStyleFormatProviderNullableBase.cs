@@ -16,17 +16,17 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.De
 		where TDeserialized : struct
 		where TDeserializerConfigurator : DeserializerConfigurationDateTimeStyleFormatProviderNullableBase<TDeserialized, TDeserializerConfigurator>
 	{
-		private DateTimeStyles? _DateTimeStyles;
+		private DateTimeStyles? _dateTimeStyles;
 		/// <summary>
 		/// Date styles used during parsing cell value to a date
 		/// </summary>
-		public DateTimeStyles DateTimeStyles { get => _DateTimeStyles??RecordConfiguration.DefaultDateStyles; }
+		public DateTimeStyles DateTimeStyles { get => _dateTimeStyles??RecordConfiguration.DefaultDateStyles; }
 
-		private IFormatProvider? _FormatProvider;
+		private IFormatProvider? _formatProvider;
 		/// <summary>
 		/// Format provider used during parsing cell value to target type
 		/// </summary>
-		public IFormatProvider FormatProvider { get => _FormatProvider??RecordConfiguration.DefaultCulture; }
+		public IFormatProvider FormatProvider { get => _formatProvider??RecordConfiguration.DefaultCulture; }
 
 		/// <summary>
 		/// Format used during parsing cell value to target type. If null, standard formats are used.
@@ -48,7 +48,7 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.De
 		/// <returns>This configuration object for methods chaining</returns>
 		protected TDeserializerConfigurator SetDateTimeStyles(DateTimeStyles dateTimeStyles)
 		{
-			_DateTimeStyles = dateTimeStyles;
+			_dateTimeStyles = dateTimeStyles;
 			return (TDeserializerConfigurator)this;
 		}
 
@@ -59,7 +59,7 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.RecordConfiguration.De
 		/// <returns>This configuration object for methods chaining</returns>
 		public TDeserializerConfigurator SetFormatProvider(IFormatProvider? formatProvider)
 		{
-			_FormatProvider = formatProvider;
+			_formatProvider = formatProvider;
 			return (TDeserializerConfigurator)this;
 		}
 

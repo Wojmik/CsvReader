@@ -1,4 +1,4 @@
-﻿# ﻿Csv Deserializer library
+﻿﻿# ﻿Csv Deserializer library
 
 This project contains modern, fast, highly configurable, low allocation Csv Reader for .Net applications.
 
@@ -17,23 +17,20 @@ using WojciechMikołajewicz.CsvReader;
 using var textReader = new StreamReader(pathToCsvFile, Encoding.UTF8, true);//Create TextReader
 using var csvDeserializer = new CsvDeserializer<Record>(textReader);//Create CsvDeserializer from TextReader
 
-//Read csv records (lines) to Record objects
-await foreach(var item in csvDeserializer.ReadAsync().WithCancellation(cancellationToken).ConfigureAwait(false))
-{
-    //Do something with the item
-}
+//Read all csv records (lines) to List of Record objects
+var list = await csvDeserializer.ReadAllToListAsync();
 ```
 
 Above is the simplest case. It assumes that csv file has a header row and that Record properties are named same as columns in header row in csv file. It also assumes standard delimiter which is coma ',' as name of the format says (csv – comma-separated values).
 
 ### Change settings
 
-To change default settings like column separator or others you have to pass `CsvDeserializerOptions` object to `CsvDeserializer` constructor like that:
+To change default settings like column separator or others you have to pass configuration delegate to `CsvDeserializer` constructor like that:
 
 ```c#
-using var csvDeserializer = new CsvDeserializer<Record>(textReader, new CsvDeserializerOptions()
+using var csvDeserializer = new CsvDeserializer<Record>(textReader, options =>
 {
-	DelimiterChar = '\t',//Changes columns separator to tab
+	options.DelimiterChar = '\t';//Changes columns separator to tab
 });
 ```
 
@@ -77,11 +74,11 @@ class PersonConfiguration : ICsvRecordTypeConfiguration<Person>
 Then you have to pass `PersonConfiguration` object to `CsvDeserializer` constructor:
 
 ```c#
-using var csvDeserializer = new CsvDeserializer<Person>(textReader, new CsvDeserializerOptions()
+using var csvDeserializer = new CsvDeserializer<Person>(textReader, options =>
 {
-	DelimiterChar = '\t',//Changes columns separator to tab
-	HasHeaderRow = false,//File does not contain header row
+	options.DelimiterChar = '\t';//Changes columns separator to tab
+	options.HasHeaderRow = false;//File does not contain header row
 }, new PersonConfiguration());//Creates and pass person configuration object to constructor
 ```
 
-And that's it. You can now enumerate results from `ReadAsync` or `Read` methods (like in first example).
+And that's it. You can now enumerate results from `ReadAsync` or `ReadAllToListAsync` methods (like in first example).

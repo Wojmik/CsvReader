@@ -11,14 +11,14 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 		CellDeserializerFromStringBase<Guid>
 #endif
 	{
-		private readonly bool AllowEmpty;
+		private readonly bool _allowEmpty;
 
-		private readonly Guid ValueForEmpty;
+		private readonly Guid _valueForEmpty;
 
 		public CellGuidDeserializer(bool allowEmpty, Guid valueForEmpty)
 		{
-			AllowEmpty = allowEmpty;
-			ValueForEmpty = valueForEmpty;
+			_allowEmpty = allowEmpty;
+			_valueForEmpty = valueForEmpty;
 		}
 
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
@@ -26,8 +26,8 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 		{
 			Guid parsedValue;
 
-			if(AllowEmpty && value.IsEmpty)
-				parsedValue = ValueForEmpty;
+			if(_allowEmpty && value.IsEmpty)
+				parsedValue = _valueForEmpty;
 			else
 				parsedValue = Guid.Parse(value.Span);
 			return parsedValue;
@@ -37,8 +37,8 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.CellDeserializers
 		{
 			Guid parsedValue;
 
-			if(AllowEmpty && string.IsNullOrEmpty(value))
-				parsedValue = ValueForEmpty;
+			if(_allowEmpty && string.IsNullOrEmpty(value))
+				parsedValue = _valueForEmpty;
 			else
 				parsedValue = Guid.Parse(value);
 			return parsedValue;

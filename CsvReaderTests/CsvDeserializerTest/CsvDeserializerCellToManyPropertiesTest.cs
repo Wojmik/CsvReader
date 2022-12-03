@@ -39,10 +39,10 @@ A5d2fb0283c36a01
 
 			var recordConf = new RecordConfigurator();
 
-			using(var textReader = new StringReader(sampleCsvContent))
-			using(var deserializer = new CsvDeserializer<TestItem>(textReader, recordConfiguration: recordConf))
+			using (var textReader = new StringReader(sampleCsvContent))
+			using (var deserializer = new CsvDeserializer<TestItem>(textReader, recordConfiguration: recordConf))
 			{
-				await foreach(var item in deserializer.ReadAsync())
+				await foreach (var item in deserializer.ReadAsync())
 					actual.Add(item);
 			}
 
@@ -52,16 +52,33 @@ A5d2fb0283c36a01
 
 		[DataTestMethod]
 		[DynamicData(nameof(GetSampleData), DynamicDataSourceType.Method)]
+		public async Task DeserializeToListTestAsync(string sampleCsvContent, TestItem[] expected)
+		{
+			List<TestItem> actual;
+
+			var recordConf = new RecordConfigurator();
+
+			using (var textReader = new StringReader(sampleCsvContent))
+			using (var deserializer = new CsvDeserializer<TestItem>(textReader, recordConfiguration: recordConf))
+			{
+				actual = await deserializer.ReadAllToListAsync();
+			}
+
+			Assert.IsTrue(Enumerable.SequenceEqual(expected, actual, new TestItemEqualityComparer()));
+		}
+
+		[DataTestMethod]
+		[DynamicData(nameof(GetSampleData), DynamicDataSourceType.Method)]
 		public void DeserializeTest(string sampleCsvContent, TestItem[] expected)
 		{
 			var actual = new List<TestItem>();
 
 			var recordConf = new RecordConfigurator();
 
-			using(var textReader = new StringReader(sampleCsvContent))
-			using(var deserializer = new CsvDeserializer<TestItem>(textReader, recordConfiguration: recordConf))
+			using (var textReader = new StringReader(sampleCsvContent))
+			using (var deserializer = new CsvDeserializer<TestItem>(textReader, recordConfiguration: recordConf))
 			{
-				foreach(var item in deserializer.Read())
+				foreach (var item in deserializer.Read())
 					actual.Add(item);
 			}
 
@@ -127,10 +144,10 @@ A5d2fb0283c36a01
 #endif
 			{
 				return
-					(x==null && y==null) ||
-					(x!=null && y!=null
-					&& x.Id==y.Id
-					&& x.IdText==y.IdText
+					(x == null && y == null) ||
+					(x != null && y != null
+					&& x.Id == y.Id
+					&& x.IdText == y.IdText
 					&& Enumerable.SequenceEqual(x.FromBase64, y.FromBase64)
 					&& Enumerable.SequenceEqual(x.FromHex, y.FromHex)
 					);
@@ -143,16 +160,16 @@ A5d2fb0283c36a01
 #endif
 			{
 				int hashCode = -1219660215;
-				if(obj!=null)
+				if (obj != null)
 				{
-					hashCode=hashCode*-1521134295+obj.Id.GetHashCode();
-					hashCode=hashCode*-1521134295+EqualityComparer<string>.Default.GetHashCode(obj.IdText);
-					if(obj.FromBase64!=null)
-						foreach(var bt in obj.FromBase64)
-							hashCode=hashCode*-1521134295+bt.GetHashCode();
-					if(obj.FromHex!=null)
-						foreach(var bt in obj.FromHex)
-							hashCode=hashCode*-1521134295+bt.GetHashCode();
+					hashCode = hashCode * -1521134295 + obj.Id.GetHashCode();
+					hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(obj.IdText);
+					if (obj.FromBase64 != null)
+						foreach (var bt in obj.FromBase64)
+							hashCode = hashCode * -1521134295 + bt.GetHashCode();
+					if (obj.FromHex != null)
+						foreach (var bt in obj.FromHex)
+							hashCode = hashCode * -1521134295 + bt.GetHashCode();
 				}
 				return hashCode;
 			}

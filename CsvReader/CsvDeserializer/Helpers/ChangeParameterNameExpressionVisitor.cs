@@ -9,21 +9,21 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.Helpers
 	{
 		public string NewParameterName { get; }
 
-		private ParameterExpression? OldParameter;
-		private ParameterExpression? NewParameter;
+		private ParameterExpression? _oldParameter;
+		private ParameterExpression? _newParameter;
 
 		public ChangeParameterNameExpressionVisitor(string newParameterName)
 		{
-			this.NewParameterName = newParameterName;
+			NewParameterName = newParameterName;
 		}
 
 		public Expression ChangeParameterName(Expression node, ParameterExpression oldParameter, out ParameterExpression newParameter)
 		{
-			this.OldParameter = oldParameter;
-			this.NewParameter = Expression.Parameter(oldParameter.Type, NewParameterName);
-			newParameter = this.NewParameter;
+			_oldParameter = oldParameter;
+			_newParameter = Expression.Parameter(oldParameter.Type, NewParameterName);
+			newParameter = _newParameter;
 
-			var newExpression = this.Visit(node);
+			var newExpression = Visit(node);
 
 			return newExpression;
 		}
@@ -32,8 +32,8 @@ namespace WojciechMikołajewicz.CsvReader.CsvDeserializer.Helpers
 		{
 			Expression newParameterExpression;
 
-			if(node.Equals(OldParameter))
-				newParameterExpression = NewParameter!;
+			if(node.Equals(_oldParameter))
+				newParameterExpression = _newParameter!;
 			else
 				newParameterExpression = base.VisitParameter(node);
 

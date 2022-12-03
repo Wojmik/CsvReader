@@ -20,7 +20,10 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 		public async Task TestAsync()
 		{
 			using(var textReader = new StringReader(TestString))
-			using(var csvReader = new CsvReader.CsvReader(textReader, new CsvReaderOptions() { BufferSizeInChars = 32, }))
+			using(var csvReader = new CsvReader.CsvReader(textReader, options =>
+			{
+				options.BufferSizeInChars = 32;
+			}))
 			{
 				Assert.AreEqual(0, csvReader.Position, "Position should be 0 and is {0}", csvReader.Position);
 
@@ -73,7 +76,10 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 #endif
 
 			using(var textReader = new RepeatedTextReader(TestString) { MaxReadSize = ChunkLength, })
-			using(var csvReader = new CsvReader.CsvReader(textReader, new CsvReaderOptions() { BufferSizeInChars = 32, }))
+			using(var csvReader = new CsvReader.CsvReader(textReader, options =>
+			{
+				options.BufferSizeInChars = 32;
+			}))
 			{
 				while(sequenceSwitch<3)
 				{
@@ -130,12 +136,15 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 		[TestMethod]
 		public async Task TestEmojiAtSegmentsBoundaryAsync()
 		{
-			const string emoji = "😎";
+			const string Emoji = "😎";
 
 			using(var memoryStream = new MemoryStream())
 			using(var streamWritter = new StreamWriter(memoryStream, Encoding.UTF8))
 			using(var streamReader = new StreamReader(memoryStream, streamWritter.Encoding, true))
-			using(var csvReader = new CsvReader.CsvReader(streamReader, new CsvReaderOptions() { BufferSizeInChars = 32, }))
+			using(var csvReader = new CsvReader.CsvReader(streamReader, options =>
+			{
+				options.BufferSizeInChars = 32;
+			}))
 			{
 				MemorySequenceSegmentSpan<char> segmentRead = default;
 				var segmentLength = csvReader.CharMemorySequence_Get().CurrentPosition.InternalSequenceSegment.Array.Length;
@@ -153,8 +162,8 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 				}
 
 				//Save emoji at the segments boundary
-				streamWritter.Write(emoji);
-				sbExpected.Append(emoji);
+				streamWritter.Write(Emoji);
+				sbExpected.Append(Emoji);
 
 				//Write something else for the second segment
 				pos = written % TestString.Length;
