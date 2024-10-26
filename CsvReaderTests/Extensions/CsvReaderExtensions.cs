@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,11 +26,19 @@ namespace WojciechMikołajewicz.CsvReaderTests
 			return (ValueTask<ReadCharResult>)memberInfo.Invoke(@this, new object[] { currentPosition, offset, cancellationToken, });
 		}
 
+#if NET8_0_OR_GREATER
+		public static ValueTask<ReadCharResult> FindCharAsync(this CsvReader.CsvReader @this, MemorySequencePosition<char> currentPosition, int offset, SearchValues<char> charsToFind, CancellationToken cancellationToken)
+		{
+			var memberInfo = typeof(CsvReader.CsvReader).GetMethod("FindCharAsync", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+			return (ValueTask<ReadCharResult>)memberInfo.Invoke(@this, new object[] { currentPosition, offset, charsToFind, cancellationToken, });
+		}
+#else
 		public static ValueTask<ReadCharResult> FindCharAsync(this CsvReader.CsvReader @this, MemorySequencePosition<char> currentPosition, int offset, ReadOnlyMemory<char> charsToFind, CancellationToken cancellationToken)
 		{
 			var memberInfo = typeof(CsvReader.CsvReader).GetMethod("FindCharAsync", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
 			return (ValueTask<ReadCharResult>)memberInfo.Invoke(@this, new object[] { currentPosition, offset, charsToFind, cancellationToken, });
 		}
+#endif
 
 		public static MemorySequence<char> CharMemorySequence_Get(this CsvReader.CsvReader @this)
 		{
@@ -37,11 +46,19 @@ namespace WojciechMikołajewicz.CsvReaderTests
 			return (MemorySequence<char>)memberInfo.GetValue(@this);
 		}
 
-		public static Memory<char> SearchArray_Get(this CsvReader.CsvReader @this)
+#if NET8_0_OR_GREATER
+		public static SearchValues<char>? SearchValues_Get(this CsvReader.CsvReader @this)
 		{
-			var memberInfo = typeof(CsvReader.CsvReader).GetField("_searchArray", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+			var memberInfo = typeof(CsvReader.CsvReader).GetField("_searchValues", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+			return (SearchValues<char>?)memberInfo.GetValue(@this);
+		}
+#else
+		public static Memory<char> SearchValues_Get(this CsvReader.CsvReader @this)
+		{
+			var memberInfo = typeof(CsvReader.CsvReader).GetField("_searchValues", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
 			return (Memory<char>)memberInfo.GetValue(@this);
 		}
+#endif
 
 		public static ValueTask<bool> IsProperNewLineAsync(this CsvReader.CsvReader @this, ReadCharResult charRead, CancellationToken cancellationToken)
 		{

@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -17,7 +18,7 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 		[DataRow(LineEnding.CRLF, "\r")]
 		[DataRow(LineEnding.LF, "\n")]
 		[DataRow(LineEnding.CR, "\r")]
-		public void CheckSearchArray(LineEnding lineEnding, string newLineSearchCharacters)
+		public void CheckSearchValues(LineEnding lineEnding, string newLineSearchCharacters)
 		{
 			char delimiterChar = '\0';
 			using(var textReader = new StringReader(string.Empty))
@@ -30,13 +31,20 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 			{
 				Assert.AreEqual(lineEnding, csvReader.LineEnding);
 
-				var searchArray = csvReader.SearchArray_Get();
+				var searchValues = csvReader.SearchValues_Get();
 
-				Assert.AreEqual(newLineSearchCharacters.Length+1, searchArray.Length);
+#if NET8_0_OR_GREATER
+				Assert.IsNotNull(searchValues);
+				Assert.IsTrue(searchValues.Contains(delimiterChar));
+				foreach (var ch in newLineSearchCharacters)
+					Assert.IsTrue(searchValues.Contains(ch));
+#else
+				Assert.AreEqual(newLineSearchCharacters.Length+1, searchValues.Length);
 				
-				Assert.IsTrue(0<=searchArray.Span.IndexOf(delimiterChar));
+				Assert.IsTrue(0<=searchValues.Span.IndexOf(delimiterChar));
 				foreach(var ch in newLineSearchCharacters)
-					Assert.IsTrue(0<=searchArray.Span.IndexOf(ch));
+					Assert.IsTrue(0<=searchValues.Span.IndexOf(ch));
+#endif
 			}
 		}
 
@@ -100,13 +108,20 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 
 				Assert.AreEqual(afterLineEnding, csvReader.LineEnding);
 
-				var searchArray = csvReader.SearchArray_Get();
+				var searchValues = csvReader.SearchValues_Get();
 
-				Assert.AreEqual(afterNewLineSearchCharacters.Length+1, searchArray.Length);
+#if NET8_0_OR_GREATER
+				Assert.IsNotNull(searchValues);
+				Assert.IsTrue(searchValues.Contains(delimiterChar));
+				foreach (var ch in afterNewLineSearchCharacters)
+					Assert.IsTrue(searchValues.Contains(ch));
+#else
+				Assert.AreEqual(afterNewLineSearchCharacters.Length+1, searchValues.Length);
 
-				Assert.IsTrue(0<=searchArray.Span.IndexOf(delimiterChar));
+				Assert.IsTrue(0<=searchValues.Span.IndexOf(delimiterChar));
 				foreach(var ch in afterNewLineSearchCharacters)
-					Assert.IsTrue(0<=searchArray.Span.IndexOf(ch));
+					Assert.IsTrue(0<=searchValues.Span.IndexOf(ch));
+#endif
 			}
 		}
 	}

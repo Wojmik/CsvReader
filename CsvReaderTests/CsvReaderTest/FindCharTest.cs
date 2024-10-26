@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,8 +28,14 @@ namespace WojciechMikołajewicz.CsvReaderTests.CsvReaderTest
 			{
 				var memSeq = csvReader.CharMemorySequence_Get();
 
+#if NET8_0_OR_GREATER
+				var charsToFind = SearchValues.Create(['\"']);
+#else
+				var charsToFind = new char[] { '\"' };
+#endif
+
 				//Read third char again
-				var foundChar = await csvReader.FindCharAsync(memSeq.CurrentPosition, 109, new char[] { '\"' }, default);
+				var foundChar = await csvReader.FindCharAsync(memSeq.CurrentPosition, 109, charsToFind, default);
 				Assert.AreEqual(false, foundChar.EndOfStream);
 
 				int skipTimes = Math.DivRem(109, TestString.Length, out int startPosInTestString);

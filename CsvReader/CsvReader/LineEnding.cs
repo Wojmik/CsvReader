@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace WojciechMikołajewicz.CsvReader
+﻿namespace WojciechMikołajewicz.CsvReader
 {
 	/// <summary>
 	/// Line ending

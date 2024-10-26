@@ -43,9 +43,13 @@ namespace WojciechMikołajewicz.CsvReader
 		/// </summary>
 		public bool PermitEmptyLineAtEnd { get; }
 
-		private readonly ReadOnlyMemory<char> _escapeCharArray;
-
-		private Memory<char> _searchArray;
+#if NET8_0_OR_GREATER
+		private readonly SearchValues<char> _escapeSearchValues;
+		private SearchValues<char> _searchValues;
+#else
+		private readonly ReadOnlyMemory<char> _escapeSearchValues;
+		private Memory<char> _searchValues;
+#endif
 
 		private MemorySequence<char> _charMemorySequence;
 
@@ -123,30 +127,47 @@ namespace WojciechMikołajewicz.CsvReader
 			_nextNodeIsCell = true;
 
 			//Create data for SearchArray
+#if NET8_0_OR_GREATER
+			Span<char> searchArray = stackalloc char[4];
+#else
 			var searchArray = new char[2 + (CanEscape ? 1 : 0) + (LineEnding == LineEnding.Auto ? 1 : 0)];
-			int i = 0;
-			if (CanEscape)
-			{
-				searchArray[i++] = EscapeChar;
-				_escapeCharArray = new ReadOnlyMemory<char>(searchArray, 0, 1);
-			}
-			_searchArray = new Memory<char>(searchArray, i, searchArray.Length - i);
-			searchArray[i++] = DelimiterChar;
+#endif
+			int i;
+			searchArray[0] = DelimiterChar;
 			switch (LineEnding)
 			{
 				case LineEnding.Auto:
-					searchArray[i++] = '\r';
-					searchArray[i++] = '\n';
+					searchArray[1] = '\r';
+					searchArray[2] = '\n';
+					i = 3;
 					break;
 				case LineEnding.LF:
-					searchArray[i++] = '\n';
+					searchArray[1] = '\n';
+					i = 2;
 					break;
 				case LineEnding.CRLF:
 				case LineEnding.CR:
-					searchArray[i++] = '\r';
+					searchArray[1] = '\r';
+					i = 2;
 					break;
 				default:
 					throw new ArgumentException("Wrong line ending value", $"{nameof(options)}.{nameof(options.LineEnding)}");
+			}
+#if NET8_0_OR_GREATER
+			_searchValues = SearchValues.Create(searchArray.Slice(0, i));
+			_escapeSearchValues = default!;
+#else
+			_searchValues = new Memory<char>(searchArray, 0, i);
+#endif
+
+			if (CanEscape)
+			{
+				searchArray[i] = EscapeChar;
+#if NET8_0_OR_GREATER
+				_escapeSearchValues = SearchValues.Create(searchArray.Slice(i, 1));
+#else
+				_escapeSearchValues = new ReadOnlyMemory<char>(searchArray, i, 1);
+#endif
 			}
 
 			//Add first segment to CharMemorySequence
@@ -316,7 +337,7 @@ namespace WojciechMikołajewicz.CsvReader
 
 				while (true)
 				{
-					readResult = await FindCharAsync(currentPosition, 1, _escapeCharArray, cancellationToken)
+					readResult = await FindCharAsync(currentPosition, 1, _escapeSearchValues, cancellationToken)
 						.ConfigureAwait(false);
 
 					if (readResult.EndOfStream)
@@ -365,7 +386,7 @@ namespace WojciechMikołajewicz.CsvReader
 			//Find any of delimiter chars
 			while (true)
 			{
-				found = await FindCharAsync(found.FoundPosition, 0, _searchArray, cancellationToken)
+				found = await FindCharAsync(found.FoundPosition, 0, _searchValues, cancellationToken)
 					.ConfigureAwait(false);
 
 				//Check end of stream
@@ -426,8 +447,12 @@ namespace WojciechMikołajewicz.CsvReader
 						case LineEnding.Auto:
 							found = await GetCharAsync(charRead.FoundPosition, 1, cancellationToken)
 								.ConfigureAwait(false);
-							_searchArray = _searchArray.Slice(0, _searchArray.Length - 1);//Change SearchArray to search only delimiter and '\r'
-							if (found.Character == '\n')//Don't have to check end of stream - found.Character is '\0' if end of stream
+#if NET8_0_OR_GREATER
+							_searchValues = SearchValues.Create([DelimiterChar, '\r']);
+#else
+							_searchValues = _searchValues.Slice(0, 2);//Change SearchArray to search only delimiter and '\r'
+#endif
+							if (found.Character == '\n')//Don't have to check end of stream - found. Character is '\0' if end of stream
 								LineEnding = LineEnding.CRLF;
 							else
 								LineEnding = LineEnding.CR;
@@ -442,8 +467,12 @@ namespace WojciechMikołajewicz.CsvReader
 							properLineEnding = true;
 							break;
 						case LineEnding.Auto:
-							_searchArray = _searchArray.Slice(0, _searchArray.Length - 1);//Change SearchArray to search only delimiter and '\n'
-							_searchArray.Span[_searchArray.Length - 1] = '\n';
+#if NET8_0_OR_GREATER
+							_searchValues = SearchValues.Create([DelimiterChar, '\n']);
+#else
+							_searchValues.Span[1] = '\n';
+							_searchValues = _searchValues.Slice(0, 2);//Change SearchArray to search only delimiter and '\n'
+#endif
 							LineEnding = LineEnding.LF;
 							properLineEnding = true;
 							break;
@@ -511,7 +540,16 @@ namespace WojciechMikołajewicz.CsvReader
 			return new ReadCharResult(new MemorySequencePosition<char>(currentSegment, readingPositionInSegment), currentSegment.Array[readingPositionInSegment], false);
 		}
 
-		private async ValueTask<ReadCharResult> FindCharAsync(MemorySequencePosition<char> currentPosition, int offset, ReadOnlyMemory<char> charsToFind, CancellationToken cancellationToken)
+		private async ValueTask<ReadCharResult> FindCharAsync(
+			MemorySequencePosition<char> currentPosition,
+			int offset,
+#if NET8_0_OR_GREATER
+			SearchValues<char> charsToFind,
+#else
+			ReadOnlyMemory<char> charsToFind,
+#endif
+			CancellationToken cancellationToken
+			)
 		{
 			MemorySequenceSegment<char> currentSegment = currentPosition.InternalSequenceSegment;
 			int readingPositionInSegment = currentPosition.PositionInSegment + offset, indexOfFound;
@@ -519,7 +557,14 @@ namespace WojciechMikołajewicz.CsvReader
 			Debug.Assert(offset >= 0, $"{nameof(offset)} cannot be negative");
 
 			//Try find any of searching chars in current chunk of data
-			while (0 > (indexOfFound = currentSegment.Memory.Span.Slice(Math.Min(readingPositionInSegment, currentSegment.Memory.Length)).IndexOfAny(charsToFind.Span)))
+			while (0 > (indexOfFound = currentSegment.Memory.Span
+				.Slice(Math.Min(readingPositionInSegment, currentSegment.Memory.Length))
+#if NET8_0_OR_GREATER
+				.IndexOfAny(charsToFind)
+#else
+				.IndexOfAny(charsToFind.Span)
+#endif
+				))
 			{
 				readingPositionInSegment += Math.Max(currentSegment.Memory.Length - readingPositionInSegment, 0);
 
